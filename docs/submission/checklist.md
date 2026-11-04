@@ -4,8 +4,8 @@ Source: https://kiroween.devpost.com/rules and /details/faqs (read Nov 3, 2026).
 
 ## Before building further (user actions)
 
-- [ ] Register for Kiroween 2026 on Devpost
-- [ ] Request the 4,000 free Kiro credits (by Dec 1, 12:00 PM PT) and redeem them (by Dec 4)
+- [x] Register for Kiroween 2026 on Devpost (done by the user, confirmed Nov 4, 2026)
+- [x] Request the 4,000 free Kiro credits (by Dec 1, 12:00 PM PT) and redeem them (by Dec 4) (done by the user, credits in use as of Nov 4, 2026)
 - [ ] Decide team members and which bonus prizes apply (blog post, social post, student, startup)
 
 ## Required content
