@@ -1,12 +1,611 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DORMBIT demo</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="DORMBIT finds the projects you stopped touching, seals each into a capsule you can verify, and restores it byte for byte. Local only, open source." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>DORMBIT · Pick up where your project stopped</title>
+    <link rel="preload" href="../../packages/ui/src/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="./src/landing/landing.css" />
+    <script type="module" src="./src/landing/main.ts"></script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="nav">
+      <div class="wrap nav__in">
+        <a class="wordmark" href="#top">DORMBIT</a>
+        <nav class="nav__links" aria-label="Primary">
+          <a href="#how">How it works</a>
+          <a href="#verify">Verification</a>
+          <a href="#limits">Limits</a>
+        </nav>
+        <a class="btn btn--signal btn--sm" href="demo/">Run the demo</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- 1. Hero -->
+      <section class="hero" id="top" aria-labelledby="hero-title" data-shot="hero">
+        <div class="hero__glow" aria-hidden="true"><span class="glow glow--signal"></span><span class="glow glow--steel"></span><span class="glow glow--ember"></span></div>
+        <div class="wrap hero__grid">
+          <div class="hero__copy">
+            <p class="label hero__spec">DB-1 · macOS 13+ · Local only · MIT</p>
+            <h1 id="hero-title" class="hero__title">
+              <span class="line"><span>Pick up where</span></span>
+              <span class="line"><span>your project</span></span>
+              <span class="line"><span>stopped.</span></span>
+            </h1>
+            <p class="hero__lede">
+              DORMBIT finds the projects you stopped touching, seals each one into a capsule you can
+              verify, and restores it byte for byte. Then it tells you where you left off.
+            </p>
+            <div class="hero__actions">
+              <a class="btn btn--signal" href="demo/">Run the demo in your browser</a>
+              <a class="btn btn--ghost" href="https://github.com/AmirmLotfy/dormbit/releases">Download for macOS</a>
+            </div>
+            <p class="hero__note">The demo is synthetic. It never reads your files.</p>
+          </div>
+
+          <figure class="hero__unit">
+            <div class="hero__stage">
+            <svg viewBox="0 0 560 460" role="img" aria-labelledby="unit-title">
+              <title id="unit-title">
+                A DORMBIT capsule drawn like a flight recorder, painted international orange
+              </title>
+              <ellipse class="u-shadow" cx="270" cy="430" rx="240" ry="16" />
+              <polygon class="u-side" points="420,170 500,118 500,352 420,404" />
+              <polygon class="u-top" points="40,170 120,118 500,118 420,170" />
+              <rect class="u-front" x="40" y="170" width="380" height="234" />
+              <rect class="u-tape" x="40" y="192" width="380" height="22" />
+              <rect class="u-tape" x="40" y="360" width="380" height="22" />
+              <polygon class="u-tape-side" points="420,192 500,140 500,162 420,214" />
+              <polygon class="u-tape-side" points="420,360 500,308 500,330 420,382" />
+              <path class="u-cyl" d="M200 62 L200 138 A70 18 0 0 0 340 138 L340 62 Z" />
+              <path
+                class="u-tape"
+                d="M200 86 L200 104 A70 18 0 0 0 340 104 L340 86 A70 18 0 0 1 200 86 Z"
+              />
+              <ellipse class="u-cyl-top" cx="270" cy="62" rx="70" ry="18" />
+              <text
+                class="u-stencil"
+                x="62"
+                y="262"
+                textLength="336"
+                lengthAdjust="spacingAndGlyphs"
+              >
+                DORMBIT CAPSULE
+              </text>
+              <text class="u-small" x="62" y="290" textLength="336" lengthAdjust="spacingAndGlyphs">
+                RECOVER WITH DORMBIT · DO NOT DISCARD
+              </text>
+              <text class="u-mono" x="62" y="320">dockline-invoices.dormbit</text>
+              <text class="u-mono" x="62" y="341">sha256 e0a0 323b … c6e3 74</text>
+              <circle class="u-screw" cx="54" cy="181" r="4" />
+              <circle class="u-screw" cx="406" cy="181" r="4" />
+              <circle class="u-screw" cx="54" cy="394" r="4" />
+              <circle class="u-screw" cx="406" cy="394" r="4" />
+            </svg>
+            </div>
+            <figcaption class="label hero__caption">
+              Flight recorders are painted this orange so they can be found. So are capsules. Drag to turn it.
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="ticker" aria-hidden="true">
+          <p class="ticker__tape">
+            <span>DORMBIT</span><span>manifest.json</span><span>objects/e0a0323b851f…</span
+            ><span>objects/71c80953c425…</span><span>objects/3e6b3a07b831…</span
+            ><span>objects/c41cc19649c6…</span><span>END</span> <span>DORMBIT</span
+            ><span>manifest.json</span><span>objects/e0a0323b851f…</span
+            ><span>objects/71c80953c425…</span><span>objects/3e6b3a07b831…</span
+            ><span>objects/c41cc19649c6…</span><span>END</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- 2. The problem -->
+      <section class="stop" aria-labelledby="stop-title" data-shot="stop">
+        <div class="wrap stop__grid">
+          <h2 id="stop-title" class="h2">Projects don't end. They stop.</h2>
+          <div class="stop__body">
+            <p class="lede">
+              Months later the code is still on disk. What you were in the middle of is not anywhere
+              you'd think to look.
+            </p>
+            <table class="manifest">
+              <caption class="label">
+                Easy to lose track of · dockline-invoices
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Item</th>
+                  <th scope="col">What it was</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="mono">feature/csv-export</td>
+                  <td>3 commits that were never pushed</td>
+                </tr>
+                <tr>
+                  <td class="mono">stash@{0}</td>
+                  <td>"wip: rounding fix", stashed and forgotten</td>
+                </tr>
+                <tr>
+                  <td class="mono">NOTES.md</td>
+                  <td>Untracked, so git never saw it</td>
+                </tr>
+                <tr>
+                  <td class="mono">~/.claude/projects/…</td>
+                  <td>What your agent tried last</td>
+                </tr>
+                <tr class="manifest__last">
+                  <td class="mono">where you left off</td>
+                  <td>The brief rebuilds it from evidence, line by line</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. How it works: pinned on wide screens -->
+      <section class="steps" id="how" aria-labelledby="steps-title" data-shot="steps">
+        <div class="steps__pin">
+          <div class="wrap steps__head">
+            <h2 id="steps-title" class="h2">Six steps. Each one checked.</h2>
+            <div class="gauge" aria-hidden="true">
+              <span class="gauge__fill"></span>
+              <ol class="gauge__marks">
+                <li>Find</li>
+                <li>Plan</li>
+                <li>Capture</li>
+                <li>Verify</li>
+                <li>Restore</li>
+                <li>Brief</li>
+              </ol>
+            </div>
+          </div>
+
+          <ol class="wrap steps__list">
+            <li class="step">
+              <div class="step__text">
+                <p class="label step__no">Step 1 of 6 · Find</p>
+                <h3 class="step__title">Point it at a folder.</h3>
+                <p>
+                  DORMBIT lists the projects inside and when each was last touched. It reads git
+                  through libgit2 and never runs your code.
+                </p>
+              </div>
+              <div class="screen" aria-hidden="true">
+                <p class="screen__bar"><span>~/dev</span><span>4 projects</span></p>
+                <p class="row">
+                  <span>dockline-invoices</span><span class="dim">7 mo</span
+                  ><span class="dim">rust · ts</span>
+                </p>
+                <p class="row">
+                  <span>harbor-sync</span><span class="dim">1 yr</span><span class="dim">go</span>
+                </p>
+                <p class="row">
+                  <span>paperweight</span><span class="dim">2 yr</span
+                  ><span class="dim">python</span>
+                </p>
+                <p class="row">
+                  <span>kestrel-notes</span><span class="dim">9 mo</span
+                  ><span class="dim">rust</span>
+                </p>
+              </div>
+            </li>
+
+            <li class="step">
+              <div class="step__text">
+                <p class="label step__no">Step 2 of 6 · Plan</p>
+                <h3 class="step__title">See what it keeps, and why.</h3>
+                <p>
+                  Every file gets a decision and a reason. Secrets and rebuildable folders stay out.
+                  Nothing is captured until you approve the plan.
+                </p>
+              </div>
+              <div class="screen" aria-hidden="true">
+                <p class="screen__bar">
+                  <span>Plan · dockline-invoices</span><span>digest 3f9a…</span>
+                </p>
+                <p class="row">
+                  <span>src/ (41 files)</span><span class="tag tag--keep">Keep</span
+                  ><span class="dim">source</span>
+                </p>
+                <p class="row">
+                  <span>NOTES.md</span><span class="tag tag--keep">Keep</span
+                  ><span class="dim">untracked</span>
+                </p>
+                <p class="row">
+                  <span>.env</span><span class="tag tag--warn">Skip</span
+                  ><span class="dim">secret</span>
+                </p>
+                <p class="row">
+                  <span>target/ (1.2 GB)</span><span class="tag">Skip</span
+                  ><span class="dim">rebuildable</span>
+                </p>
+                <p class="row">
+                  <span>node_modules/ (380 MB)</span><span class="tag">Skip</span
+                  ><span class="dim">rebuildable</span>
+                </p>
+              </div>
+            </li>
+
+            <li class="step">
+              <div class="step__text">
+                <p class="label step__no">Step 3 of 6 · Capture</p>
+                <h3 class="step__title">One file you can carry.</h3>
+                <p>
+                  A capsule holds a manifest, one compressed object per file, and an END record that
+                  catches a truncated copy.
+                </p>
+              </div>
+              <div class="screen" aria-hidden="true">
+                <p class="screen__bar"><span>dockline-invoices.dormbit</span><span>Sample</span></p>
+                <div class="tape">
+                  <span class="cell">DORMBIT</span><span class="cell">manifest.json</span
+                  ><span class="cell cell--wide">objects/ × 212</span><span class="cell">END</span>
+                </div>
+                <div class="meter"><span class="meter__fill"></span></div>
+                <p class="dim">212 of 212 objects · 46.8 MB</p>
+              </div>
+            </li>
+
+            <li class="step">
+              <div class="step__text">
+                <p class="label step__no">Step 4 of 6 · Verify</p>
+                <h3 class="step__title">Re-hash everything.</h3>
+                <p>
+                  Each object is hashed again with SHA-256 and compared with the manifest. A damaged
+                  capsule fails loudly and names the file.
+                </p>
+              </div>
+              <div class="screen" aria-hidden="true">
+                <p class="screen__bar"><span>Integrity</span><span>212 objects</span></p>
+                <div class="objgrid"><span class="objgrid__ok"></span></div>
+                <p class="dim">212 of 212 match · END trailer matches</p>
+              </div>
+            </li>
+
+            <li class="step">
+              <div class="step__text">
+                <p class="label step__no">Step 5 of 6 · Restore</p>
+                <h3 class="step__title">Into a new folder, all at once.</h3>
+                <p>
+                  Files are staged and verified first, then moved into place in one step. An
+                  interrupted restore never leaves a half-written project.
+                </p>
+              </div>
+              <div class="screen" aria-hidden="true">
+                <p class="screen__bar">
+                  <span>~/Restored/dockline-invoices</span><span>new folder</span>
+                </p>
+                <ol class="states">
+                  <li><span class="lamp-dot"></span>Staged</li>
+                  <li><span class="lamp-dot"></span>Written</li>
+                  <li><span class="lamp-dot"></span>Verified</li>
+                  <li><span class="lamp-dot"></span>Committed</li>
+                </ol>
+              </div>
+            </li>
+
+            <li class="step">
+              <div class="step__text">
+                <p class="label step__no">Step 6 of 6 · Brief</p>
+                <h3 class="step__title">Where you stopped, with receipts.</h3>
+                <p>
+                  The resurrection brief says what's preserved and what you'll need to rebuild.
+                  Every line cites the evidence behind it.
+                </p>
+              </div>
+              <div class="screen screen--brief" aria-hidden="true">
+                <p class="screen__bar"><span>Resurrection brief</span><span>4 outcomes</span></p>
+                <p class="brief-line">
+                  You stopped on <b>feature/csv-export</b>, 3 commits ahead of origin, partway
+                  through a rounding fix. <span class="cite">F-12</span>
+                </p>
+                <p class="row">
+                  <span>Files</span><span class="ok">✓ Preserved</span><span></span>
+                </p>
+                <p class="row">
+                  <span>Context</span><span class="ok">✓ Preserved</span><span></span>
+                </p>
+                <p class="row">
+                  <span>Session</span><span class="warn">◆ Partial</span><span></span>
+                </p>
+                <p class="row">
+                  <span>Build</span><span class="dim">? Not captured</span><span></span>
+                </p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 4. Verification -->
+      <section class="verify" id="verify" aria-labelledby="verify-title" data-shot="verify">
+        <div class="wrap verify__grid">
+          <div class="verify__copy">
+            <h2 id="verify-title" class="h2">A report, not a promise.</h2>
+            <p class="lede">
+              Backups say they worked. DORMBIT shows the hash it expected, the hash it found, and
+              which file is to blame when they differ.
+            </p>
+          </div>
+
+          <div class="report" role="group" aria-label="Sample verification report">
+            <div class="report__head">
+              <span class="label">Verification report</span>
+              <span class="label report__sample">Sample</span>
+            </div>
+            <p class="report__file mono">dockline-invoices.dormbit</p>
+            <div class="hash">
+              <span class="label hash__label">SHA-256</span>
+              <span class="hash__line"
+                ><span class="hash__dots">················</span
+                ><span class="hash__val">e0a0323b851f2bce</span></span
+              >
+              <span class="hash__line"
+                ><span class="hash__dots">················</span
+                ><span class="hash__val">71c80953c4254273</span></span
+              >
+              <span class="hash__line"
+                ><span class="hash__dots">················</span
+                ><span class="hash__val">3e6b3a07b8311b36</span></span
+              >
+              <span class="hash__line"
+                ><span class="hash__dots">················</span
+                ><span class="hash__val">c41cc19649c6e374</span></span
+              >
+            </div>
+            <ul class="checks">
+              <li>
+                <span class="lamp lamp--ok"><b aria-hidden="true">✓</b>Pass</span
+                ><span>DORMBIT marker</span><span class="mono">dormbit-capsule/1</span>
+              </li>
+              <li>
+                <span class="lamp lamp--ok"><b aria-hidden="true">✓</b>Pass</span
+                ><span>Manifest</span><span class="mono">schema 1</span>
+              </li>
+              <li>
+                <span class="lamp lamp--ok"><b aria-hidden="true">✓</b>Pass</span
+                ><span>Objects re-hashed</span><span class="mono">212 / 212</span>
+              </li>
+              <li>
+                <span class="lamp lamp--ok"><b aria-hidden="true">✓</b>Pass</span
+                ><span>END trailer</span><span class="mono">digest matches</span>
+              </li>
+              <li>
+                <span class="lamp lamp--warn"><b aria-hidden="true">◆</b>Note</span
+                ><span>Registry</span><span class="mono">not registered</span>
+              </li>
+            </ul>
+            <div class="seal" aria-hidden="true">
+              <svg viewBox="0 0 120 120">
+                <circle class="seal__ring" cx="60" cy="60" r="56" />
+                <path
+                  class="seal__ticks"
+                  d="M60.0 26.0L60.0 5.2M63.3 26.2L63.7 22.2M66.6 26.7L69.8 11.0M69.9 27.5L71.0 23.6M73.0 28.6L75.9 21.6M76.0 30.0L79.0 24.4M78.9 31.7L83.1 25.4M81.6 33.7L92.5 20.4M84.0 36.0L93.7 26.3M86.3 38.4L94.0 32.1M88.3 41.1L92.6 38.2M90.0 44.0L109.4 33.6M91.4 47.0L97.3 44.5M92.5 50.1L109.0 45.1M93.3 53.4L111.4 49.8M93.8 56.7L114.5 54.6M94.0 60.0L106.4 60.0M93.8 63.3L99.0 63.8M93.3 66.6L111.4 70.2M92.5 69.9L105.6 73.8M91.4 73.0L95.1 74.5M90.0 76.0L103.0 83.0M88.3 78.9L96.6 84.4M86.3 81.6L92.2 86.4M84.0 84.0L97.1 97.1M81.6 86.3L87.2 93.1M78.9 88.3L82.4 93.6M76.0 90.0L80.7 98.8M73.0 91.4L76.4 99.5M69.9 92.5L71.7 98.7M66.6 93.3L69.1 105.5M63.3 93.8L64.1 101.4M60.0 94.0L60.0 101.6M56.7 93.8L54.6 114.5M53.4 93.3L51.2 104.3M50.1 92.5L45.1 109.0M47.0 91.4L44.1 98.4M44.0 90.0L36.4 104.1M41.1 88.3L38.9 91.6M38.4 86.3L30.6 95.9M36.0 84.0L23.8 96.2M33.7 81.6L23.2 90.2M31.7 78.9L25.4 83.1M30.0 76.0L25.4 78.5M28.6 73.0L23.8 75.0M27.5 69.9L11.0 74.9M26.7 66.6L19.2 68.1M26.2 63.3L15.0 64.4M26.0 60.0L7.6 60.0M26.2 56.7L17.4 55.8M26.7 53.4L21.6 52.4M27.5 50.1L9.9 44.8M28.6 47.0L11.6 39.9M30.0 44.0L25.4 41.5M31.7 41.1L19.4 32.9M33.7 38.4L25.1 31.3M36.0 36.0L29.7 29.7M38.4 33.7L29.0 22.3M41.1 31.7L30.9 16.4M44.0 30.0L38.7 20.1M47.0 28.6L39.0 9.4M50.1 27.5L47.9 20.2M53.4 26.7L50.9 14.5M56.7 26.2L55.8 17.4"
+                />
+                <text class="seal__text" x="60" y="64" text-anchor="middle">VERIFIED</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Dashboard preview -->
+      <section class="shelf" id="shelf" aria-labelledby="shelf-title" data-shot="shelf">
+        <div class="wrap">
+          <div class="shelf__head">
+            <h2 id="shelf-title" class="h2">Your shelf of stopped projects.</h2>
+            <p class="lede">
+              Dense when you have fifty of them. Still readable on a phone when you're checking one.
+            </p>
+          </div>
+
+          <div class="window" role="group" aria-label="Preview of the DORMBIT shelf">
+            <div class="window__bar">
+              <span class="window__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="label">DORMBIT · Shelf</span>
+              <span class="label window__scope">~/dev · 5 projects</span>
+            </div>
+            <div class="window__body">
+              <ul class="side" aria-label="App sections (preview)">
+                <li class="side__item is-current">Shelf</li>
+                <li class="side__item">Capsules</li>
+                <li class="side__item">Restores</li>
+                <li class="side__item">Settings</li>
+              </ul>
+              <table class="projects">
+                <caption class="visually-hidden">
+                  Projects found in ~/dev
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Project</th>
+                    <th scope="col">Stack</th>
+                    <th scope="col">Git</th>
+                    <th scope="col">Last touched</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Capsule</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">
+                      <span class="p-name">dockline-invoices</span
+                      ><span class="p-path mono">~/dev/clients/…/dockline-invoices</span>
+                    </th>
+                    <td data-label="Stack">
+                      <span class="chip">Rust</span><span class="chip">TS</span>
+                    </td>
+                    <td data-label="Git" class="mono">main · 3 modified · ↑2</td>
+                    <td data-label="Last touched">7 months</td>
+                    <td data-label="Size" class="mono">48.2 MB</td>
+                    <td data-label="Capsule">
+                      <span class="lamp lamp--ok"><b aria-hidden="true">✓</b>Verified</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <span class="p-name">harbor-sync</span
+                      ><span class="p-path mono">~/dev/harbor-sync</span>
+                    </th>
+                    <td data-label="Stack"><span class="chip">Go</span></td>
+                    <td data-label="Git" class="mono">feature/retry · 1 modified</td>
+                    <td data-label="Last touched">1 year</td>
+                    <td data-label="Size" class="mono">12.9 MB</td>
+                    <td data-label="Capsule">
+                      <span class="lamp lamp--warn"><b aria-hidden="true">◆</b>Needs decision</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <span class="p-name">tidewater-site</span
+                      ><span class="p-path mono">~/Sites/tidewater-site</span>
+                    </th>
+                    <td data-label="Stack"><span class="chip">Astro</span></td>
+                    <td data-label="Git" class="mono">main · 12 modified</td>
+                    <td data-label="Last touched">5 months</td>
+                    <td data-label="Size" class="mono">210 MB</td>
+                    <td data-label="Capsule">
+                      <span class="lamp lamp--fail"><b aria-hidden="true">✕</b>Failed check</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <span class="p-name">kestrel-notes</span
+                      ><span class="p-path mono">~/dev/kestrel-notes</span>
+                    </th>
+                    <td data-label="Stack"><span class="chip">Rust</span></td>
+                    <td data-label="Git" class="mono">detached at 4be1c09</td>
+                    <td data-label="Last touched">9 months</td>
+                    <td data-label="Size" class="mono">7.4 MB</td>
+                    <td data-label="Capsule">
+                      <span class="lamp lamp--none"><b aria-hidden="true">?</b>Unknown</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <span class="p-name">paperweight</span
+                      ><span class="p-path mono">~/dev/sandbox/paperweight</span>
+                    </th>
+                    <td data-label="Stack"><span class="chip">Python</span></td>
+                    <td data-label="Git" class="mono">main · clean</td>
+                    <td data-label="Last touched">2 years</td>
+                    <td data-label="Size" class="mono">3.1 MB</td>
+                    <td data-label="Capsule">
+                      <span class="lamp lamp--none"><b aria-hidden="true">–</b>No capsule</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Operating limits -->
+      <section class="limits" id="limits" aria-labelledby="limits-title" data-shot="limits">
+        <div class="wrap limits__grid">
+          <div class="limits__copy">
+            <h2 id="limits-title" class="h2">Hard limits, printed on the box.</h2>
+            <p class="lede">
+              These aren't settings. They're enforced in the build: banned APIs, an allowlist of 28
+              commands, and tests that fail if either one changes.
+            </p>
+          </div>
+          <div class="placard">
+            <span class="screw screw--tl" aria-hidden="true"></span>
+            <span class="screw screw--tr" aria-hidden="true"></span>
+            <span class="screw screw--bl" aria-hidden="true"></span>
+            <span class="screw screw--br" aria-hidden="true"></span>
+            <p class="placard__title">Operating limits</p>
+            <dl class="placard__rows">
+              <div>
+                <dt>Never deletes your files</dt>
+                <dd>It reads and copies. Cleanup touches only its own staging folder.</dd>
+              </div>
+              <div>
+                <dt>Never runs your code</dt>
+                <dd>No shell, no build, no git command line. Git is read through libgit2.</dd>
+              </div>
+              <div>
+                <dt>Never uploads anything</dt>
+                <dd>No account, no telemetry, no network calls. Capsules stay on your disk.</dd>
+              </div>
+              <div>
+                <dt>Asks before reading agent sessions</dt>
+                <dd>
+                  Claude Code, Codex, and Kiro exports are read for metadata only, after you switch
+                  each one on.
+                </dd>
+              </div>
+              <div>
+                <dt>Restores into a new folder</dt>
+                <dd>It refuses to write into a folder that already exists.</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Call to action -->
+      <section class="cta" id="demo" aria-labelledby="cta-title" data-shot="cta">
+        <div class="wrap">
+          <h2 id="cta-title" class="cta__title">Wake one up.</h2>
+          <div class="cta__grid">
+            <p class="cta__lede">
+              Run DORMBIT on a synthetic project in your browser. It's the real Rust core, compiled
+              to WebAssembly, and nothing on your machine is read.
+            </p>
+            <div class="cta__actions">
+              <a class="btn btn--dark" href="demo/">Run the demo</a>
+              <a class="btn btn--outline" href="https://github.com/AmirmLotfy/dormbit/releases">Download for macOS</a>
+              <p class="cta__note">
+                Ad-hoc signed, not notarized. macOS asks you to approve it once in Privacy &amp;
+                Security.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="wrap">
+        <dl class="titleblock">
+          <div>
+            <dt>Project</dt>
+            <dd>DORMBIT</dd>
+          </div>
+          <div>
+            <dt>Built with</dt>
+            <dd>Kiro, for Kiroween 2026</dd>
+          </div>
+          <div>
+            <dt>License</dt>
+            <dd>MIT</dd>
+          </div>
+          <div>
+            <dt>Source</dt>
+            <dd>
+              <a href="https://github.com/AmirmLotfy/dormbit">github.com/AmirmLotfy/dormbit</a>
+            </dd>
+          </div>
+          <div>
+            <dt>Sheet</dt>
+            <dd>1 of 1</dd>
+          </div>
+        </dl>
+      </div>
+    </footer>
   </body>
 </html>

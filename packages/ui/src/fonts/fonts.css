@@ -1,0 +1,21 @@
+/* DORMBIT type (ADR-011). Self-hosted Latin subsets, SIL Open Font License 1.1; see OFL-*.txt.
+   No web-font requests: every face loads from this package. */
+@font-face {
+  font-family: "Archivo";
+  src: url("./archivo.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Atkinson Next";
+  src: url("./atkinson-next.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Atkinson Mono";
+  src: url("./atkinson-mono.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
