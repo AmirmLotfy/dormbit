@@ -1,0 +1,14 @@
+# Kiro usage log
+
+Evidence of how Kiro was actually used. Only things that happened are listed. The Devpost write-up draws from this file.
+
+| Date (PT) | Feature | What happened | Link |
+|---|---|---|---|
+| Nov 3 | Plan mode | Researched Kiro docs, hackathon rules, competitors, and agent storage formats; produced the master plan; approved it before any file was written | [MASTER_PLAN.md](../MASTER_PLAN.md) |
+| Nov 4 | Steering of agent behavior via permissions | Installed a workspace `permissions.yaml`; Kiro skipped rules pointing outside the workspace, so they moved to user scope. A deny rule blocked a broad `rm -rf` the agent attempted | [recommended-permissions.yaml](recommended-permissions.yaml), STATUS D-1 |
+| Nov 4 | Hooks (command) | Created probe hooks for 5 trigger types via the hook tool; Kiro asked for approval on each write to `.kiro/hooks/`; one was denied by the user. Payload capture is pending a new session | [feature-probe.md](feature-probe.md) |
+| Nov 4 | Sub-agents | Parallel `general-task-execution` sub-agents wrote the 8 specs, PRD, architecture, threat model, capsule format, and 8 ADRs from the master plan. One sub-agent was interrupted mid-run and its output was re-requested | `.kiro/specs/`, `docs/` |
+| Nov 4 | Spec validator | `validate_spec_format` rejected two of the template's conventions (property heading form; missing Task Dependency Graph). Specs were corrected rather than the validator bypassed | STATUS D-3, D-4 |
+| Nov 4 | gitleaks pre-commit | Blocked a commit on an illustrative hex value in a design doc; reviewed and recorded in `.gitleaksignore` | commit `8df7e79` |
+
+Not yet used (do not claim): Analyze Requirements, Correctness / property-based tests inside Kiro, custom agents, steering files, MCP, Powers, skills, Workflows.
