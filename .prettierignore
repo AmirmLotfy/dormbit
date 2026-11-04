@@ -5,3 +5,6 @@ fixtures/
 **/dist/
 .kiro/hooks/
 .kiro/
+
+# Evidence records are machine-written proof; never reformat them.
+docs/evidence/runs/

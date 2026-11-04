@@ -20,8 +20,9 @@ const redact = (s) => (home && home !== "/" ? String(s).split(home).join("~") : 
 const raw = readFileSync(opts.log, "utf8");
 const clean = redact(raw);
 if (clean !== raw) writeFileSync(opts.log, clean);
-// eslint-disable-next-line no-control-regex -- strip ANSI color codes before parsing
-const text = clean.replace(/\u001b\[[0-9;?]*[A-Za-z]/g, "");
+// Strip ANSI color codes before parsing. Built from a string so no control character sits in a regex literal.
+const ansi = new RegExp(`${String.fromCharCode(27)}\\[[0-9;?]*[A-Za-z]`, "g");
+const text = clean.replace(ansi, "");
 const lines = text.split(/\r?\n/);
 
 const counts = { passed: 0, failed: 0, skipped: 0 };
