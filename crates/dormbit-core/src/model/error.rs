@@ -78,6 +78,13 @@ impl DormbitError {
     pub fn window_closed() -> Self {
         Self::new(ErrorCode::Cancelled, "window closed")
     }
+
+    /// Maps a Tauri IPC failure (for example a Channel send into a closed window) to
+    /// [`DormbitError::window_closed`]. Used as `.map_err(DormbitError::ipc)` at the IPC
+    /// boundary; the original error isn't forwarded since it may contain a path.
+    pub fn ipc<E>(_err: E) -> Self {
+        Self::window_closed()
+    }
 }
 
 #[cfg(test)]

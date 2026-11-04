@@ -1,6 +1,6 @@
 //! Integers that survive a JavaScript round trip.
 
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use ts_rs::TS;
 
 /// The largest integer JavaScript represents exactly: 2^53 - 1.
@@ -10,8 +10,7 @@ const MAX: u64 = (1 << 53) - 1;
 ///
 /// Serializes as a plain JSON number and is exported to TypeScript as `number`.
 /// Deserializing a larger value fails, so untrusted input can't smuggle one in.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, TS)]
-#[serde(try_from = "u64", into = "u64")]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, TS)]
 #[ts(type = "number")]
 pub struct SafeU64(u64);
 
@@ -43,6 +42,19 @@ impl TryFrom<u64> for SafeU64 {
     type Error = SafeU64Overflow;
     fn try_from(v: u64) -> Result<Self, Self::Error> {
         Self::new(v)
+    }
+}
+
+impl Serialize for SafeU64 {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_u64(self.0)
+    }
+}
+
+impl<'de> Deserialize<'de> for SafeU64 {
+    fn deserialize<D: Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
+        let v = u64::deserialize(d)?;
+        Self::new(v).map_err(serde::de::Error::custom)
     }
 }
 

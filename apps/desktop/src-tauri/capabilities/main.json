@@ -1,0 +1,6 @@
+{
+  "identifier": "main",
+  "description": "The main window may call exactly the allowlisted DORMBIT commands. No core:*, fs, shell, dialog, http, opener, or process permissions.",
+  "windows": ["main"],
+  "permissions": ["allow-app-info"]
+}

@@ -72,6 +72,9 @@ importers:
 
   apps/desktop:
     dependencies:
+      '@dormbit/schema':
+        specifier: workspace:*
+        version: link:../../packages/schema
       '@dormbit/ui':
         specifier: workspace:*
         version: link:../../packages/ui
