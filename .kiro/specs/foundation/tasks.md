@@ -1,0 +1,216 @@
+# Implementation Plan
+
+- [ ] 1. Monorepo scaffold (P02-T01, Task 9)
+  - Depends on: Phase 01 (Task 8) exit: the 8 specs reviewed by the User.
+  - [ ] 1.1 Create the root workspace files
+    - Root `package.json` (`packageManager: pnpm@11.23.0`, `engines.node: 24.19.0`, scripts `build`, `lint`, `typecheck`, `test`, `format:check`), `pnpm-workspace.yaml` (`apps/*`, `packages/*`, `e2e`, empty `save-prefix`).
+    - Root `Cargo.toml` with `resolver = "3"`, members `crates/*`, `apps/desktop/src-tauri`, `fixtures/dockline/generator`, `[workspace.lints]`, and `[workspace.dependencies]` with exact `=` versions (environment.md versions; `git2` without default features plus `vendored-libgit2`; `flate2` with `rust_backend`; `wasm-bindgen = "=0.2.130"`).
+    - Leave `rust-toolchain.toml` and `.mise.toml` unchanged.
+    - _Requirements: 1.8, 1.9, 2.5, 2.7, 3.1, 3.3, 3.4, 3.5, 3.8_
+  - [ ] 1.2 Create the six crate skeletons
+    - `crates/dormbit-core` (lib, `#![forbid(unsafe_code)]`, `cfg_attr(not(test), deny(clippy::unwrap_used, clippy::expect_used, clippy::panic))`, `pub const VERSION`), `crates/dormbit-core/clippy.toml` with `std::fs`, `std::process`, `std::net` disallowed.
+    - `dormbit-fs`, `dormbit-git`, `dormbit-agents`, `dormbit-wasm` (cdylib + rlib), `dormbit-cli` (bin) as empty skeletons depending on `dormbit-core` as §6 shows; each with `[lints] workspace = true`.
+    - _Requirements: 1.2, 2.1, 2.2, 2.4, 6.3, 6.4, 6.5, 6.6_
+  - [ ] 1.3 Create the app and package skeletons
+    - `apps/desktop` (Vite + React 19 entry in `src/`; `src-tauri` created in task 2), `apps/demo` (Vite + React placeholder page).
+    - `packages/schema` (`generated/`, `src/`, `test/`), `packages/client`, `packages/ui` (placeholder export).
+    - Exact versions only; `pnpm install` writes `pnpm-lock.yaml`.
+    - _Requirements: 1.1, 1.3, 3.2, 3.5_
+  - [ ] 1.4 Create the remaining §6 folders
+    - `fixtures/dockline/`, `fixtures/golden/`, `fixtures/malicious/`, `e2e/`, `docs/{architecture,security,release,submission}/` and any other missing `docs/` subfolder, `.github/workflows/`, `scripts/`, each with a one-line `README.md` naming the spec that fills it.
+    - _Requirements: 1.4, 1.5_
+  - [ ] 1.5 Configure strict TypeScript
+    - `tsconfig.base.json` with the three flags; every `tsconfig.json` extends it; `packages/schema/test/strict-canary.ts`.
+    - _Requirements: 4.1, 4.2, 4.4, 4.5, 4.6_
+  - [ ] 1.6 Configure ESLint and Prettier
+    - `eslint.config.js` per design (typescript-eslint, jsx-a11y recommended, react-hooks as errors, `no-restricted-syntax` for `dangerouslySetInnerHTML`, `noInlineConfig: true`); `.prettierrc.json`, `.prettierignore`.
+    - Lint_Canary test in `packages/schema/test/lint-canary.test.ts` using the ESLint Node API on three source strings.
+    - Confirm the TypeScript version works with typescript-eslint (design Open question 1) and record the choice for `tech.md`.
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
+  - [ ] 1.7 Configure rustfmt and clippy
+    - `rustfmt.toml` (`edition = "2024"`, `max_width = 100`); run `cargo fmt --all` and `cargo clippy --workspace --all-targets --locked -- -D warnings` until clean.
+    - _Requirements: 6.1, 6.2_
+  - [ ] 1.8 Write the layout, dependency, and pin checks
+    - `scripts/check-layout.sh`, `scripts/check-deps.sh`, `scripts/check-pins.mjs` per design; each exits 1 with one line per failure.
+    - Prove each check fails once on a deliberate break in a temp copy (missing folder, `^` version, `git2` with `https`), then passes on the real tree.
+    - _Requirements: 1.6, 1.7, 2.3, 2.6, 3.6, 3.7, 4.3_
+  - [ ] 1.9 Remove `spikes/`
+    - Delete `spikes/` and the `spikes/**` lines in `.gitignore`; keep `docs/evidence/P00-T03-spikes.md`, ADR-001, and ADR-002 unchanged.
+    - Commit with a message naming `P02-T01` and the three go results.
+    - _Requirements: 7.1, 7.2, 7.3_
+  - [ ] 1.10 Checkpoint: run `pnpm lint`, `pnpm typecheck`, `pnpm -r build`, `cargo build --workspace --locked`, and the three check scripts through `scripts/evidence/run.sh` (the runner lands in task 4; until then record the commands and exit codes in the commit message, and re-run them through the runner in 4.6)
+    - _Requirements: 7.4_
+
+- [ ] 2. Hardened Tauri shell (P02-T02, Task 10)
+  - Depends on: task 1.
+  - [ ] 2.1 Create `apps/desktop/src-tauri`
+    - `Cargo.toml` (`tauri`, `tauri-build` from the workspace, no `devtools` feature, no plugins), `tauri.conf.json` per design (identifier `io.github.amirmlotfy.dormbit`, CSP, `freezePrototype`, `withGlobalTauri: false`, `signingIdentity: "-"`, `minimumSystemVersion: "13.0"`, window `main` at 1100×720 minimum, no window `url`).
+    - App icon from the spike's source image is out of scope; use Tauri's default icon until Task 49.
+    - _Requirements: 8.1, 8.2, 8.3, 8.6, 8.7, 8.8, 8.9, 8.10_
+  - [ ] 2.2 Add the command allowlist and capability
+    - `build.rs` with `AppManifest::new().commands(&["app_info"])`; `capabilities/main.json` granting only `allow-app-info` to window `main`.
+    - If the window or Channel fails without a core permission, add only that exact permission and record why (design Open question 3).
+    - _Requirements: 8.4, 8.5_
+  - [ ] 2.3 Implement `app_info`
+    - `AppInfo`, `BuildProfile`, `AppInfoEvent` in `crates/dormbit-core/src/model/app.rs`; the command in `src-tauri/src/commands/app_info.rs` sends `info` then `done` over the Channel and returns the AppInfo; `src-tauri/src/redact.rs` with `redact_home`.
+    - _Requirements: 9.1, 9.2, 9.3, 14.7_
+  - [ ] 2.4 Show the version in the window
+    - `apps/desktop/src/appInfo.ts` (`loadAppInfo` with Channel, Zod parsing, `IPC_SCHEMA_MISMATCH` on failure) and the main view showing "DORMBIT <version>".
+    - Component tests with mocked IPC: valid payload, version `9.9.9`, invalid payload shows the error state and no version.
+    - _Requirements: 9.4, 9.5, 9.6_
+  - [ ] 2.5 Write the Allowlist_Guard
+    - `src-tauri/tests/allowlist.rs`: parse every Capability_File, `generate_handler!` in `src/lib.rs`, `.commands(&[...])` in `build.rs`, `Cargo.toml`, `apps/desktop/package.json`, and `cargo metadata` features of `tauri`; compare with `PLAN_COMMANDS`, `EXPECTED_PERMISSIONS`, and `BANNED_PREFIXES`.
+    - Self-tests with `fs:default`, an extra handler, an unlisted manifest command, `tauri-plugin-shell`, and the `devtools` feature.
+    - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7_
+  - [ ] 2.6 Check the release build
+    - Build with `pnpm --filter ./apps/desktop tauri build --bundles app` (`CI=true` if run non-interactively, per the spike note); `codesign -dv` shows `Signature=adhoc`; the Allowlist_Guard confirms `devtools` is off.
+    - Launch the release app and confirm the window shows the version from Rust; save a screenshot under `.scratch/` and describe it in the gate note.
+    - _Requirements: 8.6, 8.8, 9.4_
+  - [ ] 2.7 Checkpoint: run `cargo test -p dormbit-desktop --test allowlist` and the desktop component tests through `scripts/evidence/run.sh` once task 4 lands (record exit codes in the commit until then)
+
+- [ ] 3. Shared contracts (P02-T03, Task 11)
+  - Depends on: task 2 (AppInfo types and the IPC pattern).
+  - [ ] 3.1 Add `SafeU64`, IDs, `ErrorCode`, and `DormbitError`
+    - `crates/dormbit-core/src/model/{num.rs,id.rs,error.rs}`: `SafeU64` with `new` failing above 2^53 - 1 and `#[ts(type = "number")]`; UUID string newtypes; `ErrorCode` with the 13 §8 codes and `retryable()` per the design table; `DormbitError::new`.
+    - Unit tests: the retryable table; `SafeU64::new` at 2^53 - 1 and 2^53; SCREAMING_SNAKE_CASE serialization.
+    - _Requirements: 11.6, 14.1, 14.2, 14.3_
+  - [ ] 3.2 Declare the §8 models
+    - `crates/dormbit-core/src/model/`: `ScopeGrant`, `ProjectRecord`, `GitSnapshot`, `CapturePlan`, `ApprovedPlan`, `Finding`, `Brief`, `VerificationReport`, `RestoreJournal`, `RestoreReport` field for field from §8; minimal IPC types in `model/ipc.rs` (`JobEvent`, `RestoreInput`, `CapsuleRef`, and the others listed in design) marked for the owning spec.
+    - `Option<T>` serialized as `null`, snake_case fields, `#[derive(TS)]` with `#[ts(export)]` on every type.
+    - _Requirements: 11.1, 11.4, 11.5, 11.7_
+  - [ ] 3.3 Export the TypeScript types
+    - `scripts/gen-schema.sh` per design; commit `packages/schema/generated/` with a sorted `index.ts`.
+    - Run it twice and compare to prove the output is stable; add the CI drift check (`git diff --exit-code packages/schema/generated`) to task 6.
+    - _Requirements: 11.2, 11.3_
+  - [ ] 3.4 Write the Zod schemas and type tests
+    - `packages/schema/src/*.ts`: one strict `<Type>Schema` per generated type; `ErrorCodeSchema` with the 13 codes plus `IPC_SCHEMA_MISMATCH`.
+    - `packages/schema/test/types.test-d.ts` (`expectTypeOf` per schema, run by `pnpm typecheck`); `coverage.test.ts` (every generated type has a schema); `error-codes.test.ts` (Rust set equals TS set minus the Client-only code, read from the generated `ErrorCode.ts`).
+    - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 14.4, 14.6_
+  - [ ] 3.5 Define `DormbitClient` and `JobEvent`
+    - `packages/client/src/DormbitClient.ts` with the 28 methods from design, no path-typed parameters; a test that compares method names with the Plan_Command_List converted to camelCase.
+    - Unknown error codes from IPC map to `IPC_SCHEMA_MISMATCH` in a shared `parseError` helper.
+    - _Requirements: 13.1, 13.2, 14.5_
+  - [ ] 3.6 Implement `MockClient` and the Client_Contract
+    - `packages/client/src/mock/`: Dockline-shaped dataset, job step loop (`state`, `progress`, `done`), cancel → `cancelled`, per-method overrides; every return parsed by its schema.
+    - `packages/client/src/contract.ts` (`runClientContract`) and `contract.test.ts` running it on MockClient.
+    - _Requirements: 13.3, 13.4, 13.5, 13.6, 13.7_
+  - [ ] 3.7 Write property test for the schema round trip
+    - **Property 1 (PROP-11 setup): Schema round trip**
+    - `crates/dormbit-core/tests/schema_parity.rs` (`write_samples`, `read_samples`), `crates/dormbit-core/tests/support/arb.rs`, `packages/schema/test/parity.test.ts`, `packages/schema/test/arb.ts`, and `scripts/schema-parity.sh`; defaults 256 cases per type, `PROPTEST_CASES` and `FC_NUM_RUNS` override.
+    - **Validates: Requirements 11.1, 11.4, 11.5, 12.1, 12.4, 14.2, 15.1, 15.2, 15.3, 15.4, 15.5, 15.6**
+  - [ ] 3.8 Show mock data in the desktop app
+    - With `VITE_DORMBIT_CLIENT=mock` in dev mode, the desktop view lists MockClient projects parsed with `ProjectRecordSchema`; a component test covers it.
+    - _Requirements: 13.8_
+  - [ ] 3.9 Checkpoint: run `scripts/schema-parity.sh`, `pnpm typecheck`, and `pnpm test --filter @dormbit/schema --filter @dormbit/client` through `scripts/evidence/run.sh` once task 4 lands
+
+- [ ] 4. Test setup and the Dockline fixture (P02-T04, Task 12)
+  - Depends on: task 3 (`GitSnapshot` type for the Sidecar).
+  - [ ] 4.1 Wire up Rust test tools
+    - `proptest` and `insta` as workspace dev-dependencies; snapshot helper macro pointing at `fixtures/golden/<area>/`; a trivial snapshot test proving the path and the CI no-write behavior.
+    - _Requirements: 16.1, 16.2_
+  - [ ] 4.2 Wire up TypeScript test tools
+    - Root `vitest.config.ts` with projects for `apps/*` and `packages/*`, jsdom for UI packages, Testing Library, user-event, and fast-check; `pnpm test` runs all.
+    - _Requirements: 16.3_
+  - [ ] 4.3 Set up Playwright and axe
+    - `e2e/package.json`, `playwright.config.ts` (Chromium, WebKit, Firefox; `webServer` = `vite preview` of `apps/demo`), `e2e/smoke/placeholder.spec.ts` with `@axe-core/playwright`.
+    - Ask the User to approve the browser download, then run `playwright install chromium webkit firefox`.
+    - _Requirements: 16.4, 16.5, 16.6, 27.5_
+  - [ ] 4.4 Write the Evidence_Runner
+    - `scripts/evidence/run.sh` and `scripts/evidence/write-record.mjs` per design: argv execution, exit-code passthrough, `~` redaction, Raw log in `.scratch/logs/`, cargo/Vitest/Playwright count parsing, env values, usage exit 2, missing command 127.
+    - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5, 17.6, 17.7, 17.8, 17.9, 17.10_
+  - [ ] 4.5 Test the Evidence_Runner
+    - `scripts/evidence/test-run.sh`: runs `true`, `false`, a missing command, a `printf` of a fake cargo summary, a Vitest-style summary, and no arguments; checks each record's fields and that no record contains the home prefix; `shellcheck` clean.
+    - _Requirements: 17.2, 17.4, 17.6, 17.7, 17.9, 17.10, 17.11_
+  - [ ] 4.6 Re-run the earlier checkpoints through the Evidence_Runner
+    - Run the commands from 1.10, 2.7, and 3.9 through `scripts/evidence/run.sh` with `EVIDENCE_TASK` set and commit the records.
+    - _Requirements: 17.3_
+  - [ ] 4.7 Build the Project tree in the generator
+    - `fixtures/dockline/generator/src/tree.rs`: manifests (React + Vite + TypeScript, Fastify, Drizzle), `README.md`, `docs/ROADMAP.md`, `CHANGELOG.md`, `src/pdf/renderInvoice.ts` with TODO and FIXME, a test with one `it.skip`, `.kiro/specs/pdf-export/tasks.md` (7 tasks, 3 checked), `.gitignore`, `.env` with `fake` values, `.env.example`, `.nvmrc`.
+    - _Requirements: 18.2, 18.6, 18.7, 18.8_
+  - [ ] 4.8 Build the Git history in the generator
+    - `src/history.rs`: fixed `.git/config` (`logallrefupdates = false`), cleared template files, 24 commits with the two `.invalid` authors and fixed dates (17 on `main`, 7 on `feature/pdf-export` including `WIP: pdf totals`), HEAD on `feature/pdf-export`, one stash with a fixed stasher, then 2 modified files, 1 untracked note, `data/dev.sqlite`, `dist/`, `node_modules/`; run with `HOME` and `XDG_CONFIG_HOME` set to an empty temp folder.
+    - _Requirements: 18.3, 18.4, 18.5, 18.9, 18.11, 19.3_
+  - [ ] 4.9 Build the Agent stores in the generator
+    - `src/stores.rs`: synthetic Claude Code JSONL under `agent-stores/claude/projects/-Users-dockline-demo-Projects-dockline-invoices/` and a stored zip `agent-stores/kiro-export/dockline-pdf-export.zip` with `session.json` and `messages.jsonl`; placeholder message text only.
+    - _Requirements: 18.1, 18.10, 18.13_
+  - [ ] 4.10 Write the tar packer and the Sidecar
+    - `src/pack.rs` (ustar, sorted, fixed mtime, uid/gid 0, modes 0644/0755) and `src/sidecar.rs` (`git_snapshot` from git2 into the core `GitSnapshot`, `expected_hashes`, `fixture_sha256`, `demo_clock`, `agent_metadata`); write both outputs to temp names in `--out` and rename at the end.
+    - _Requirements: 19.1, 19.2, 19.4, 19.7_
+  - [ ] 4.11 Commit the fixture and write the Fixture_Check
+    - Generate into `fixtures/dockline/` and commit `dockline-invoices.tar` and `dockline-invoices.sidecar.json`.
+    - `fixtures/dockline/generator/tests/fixture_check.rs`: regenerate into a temp folder, compare entries except `dockline-invoices/.git/index` and the Sidecar except the two excluded fields, print each difference.
+    - _Requirements: 19.5, 19.6_
+  - [ ] 4.12 Write property test for generator determinism
+    - **Property 2: The Dockline generator is deterministic**
+    - `fixtures/dockline/generator/tests/determinism.rs`: proptest over output folder names, `TZ` values, and umasks, 8 cases, comparing two runs.
+    - **Validates: Requirements 19.1, 19.2, 19.3, 19.5**
+  - [ ] 4.13 Scan and check the extracted fixture
+    - Extract to `.scratch/dockline/`; `gitleaks dir` reports zero findings; `git -C .scratch/dockline/dockline-invoices status --porcelain` lists the 2 modified files and 1 untracked note; `git stash list` shows 1 entry; a search for the User's home path and real names finds nothing.
+    - _Requirements: 18.5, 18.12, 18.13, 19.8_
+  - [ ] 4.14 Checkpoint: run `cargo test -p dockline-gen --locked`, `scripts/evidence/test-run.sh`, `pnpm test`, and `pnpm --filter e2e exec playwright test` through `scripts/evidence/run.sh`
+
+- [ ] 5. Kiro setup (P02-T05, Task 13)
+  - Depends on: task 4 (Evidence_Runner, used by hooks); Task 4 (P00-T04) probe hooks installed.
+  - [ ] 5.1 Record hook payloads and remove the probes
+    - Read `.scratch/hook-probe/`, write the field names per trigger to `docs/kiro/feature-probe.md`, including whether `PreTaskExec` and `PostTaskExec` identify the task.
+    - Ask the User to approve removing `.kiro/hooks/probe-*.json`, then remove them.
+    - _Requirements: 22.1, 22.2_
+  - [ ] 5.2 Write the Steering files
+    - The 12 files in `.kiro/steering/` per the design table, with `inclusion` front matter and `fileMatchPattern` where needed; `project-status.md` with `#[[file:docs/status/HANDOFF.md]]`; `ui-design.md` points to §9 until the token file exists.
+    - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7, 20.8_
+  - [ ] 5.3 Write the Custom agents
+    - Confirm the agent front matter keys against Kiro's docs; write the six `.kiro/agents/*.md` files per the design table (resources, write limits, shell limits, no `model`, no `hooks`); `reviewer` prompt ends with `APPROVED` or `NEEDS_CHANGES`.
+    - _Requirements: 21.1, 21.2, 21.3, 21.4, 21.5, 21.6, 21.7, 21.8_
+  - [ ] 5.4 Write the hook scripts
+    - `scripts/hooks/{format,stop-gate,secret-scan,security-tests,task-tests,release-gate}.sh` and `scripts/hooks/task-tests.json` per design, using the field names from 5.1; `shellcheck` clean.
+    - Unit-test each script by piping recorded payloads from 5.1 into it: a path outside the repo, a `.rs` file, three stop-gate failures in a row, a fake secret generated at run time, and each release-gate condition failing.
+    - _Requirements: 22.4, 22.5, 22.6, 22.7, 22.8, 22.9, 22.10, 22.11, 22.12, 22.14, 22.16_
+  - [ ] 5.5 Install the Hook files
+    - With the User's approval for `.kiro/hooks/` writes, create the seven Hooks (or five Hooks plus the `task-tests` Skill and the `release-gate` Skill if 5.1 found the task hooks can't identify the task).
+    - _Requirements: 22.3, 22.13, 22.15_
+  - [ ] 5.6 Write the Skills
+    - `.kiro/skills/{visual-qa,release-gate,demo-video}/SKILL.md` with `name` equal to the folder and a `description`; reference them from agents with `skill://` resources.
+    - _Requirements: 23.1, 21.3_
+  - [ ] 5.7 Write the MCP_Config and `.kiroignore`
+    - `.kiro/settings/mcp.json` with `playwright` (exact version, `--isolated`, `.scratch/playwright`, allowed origins) and `playwright-chrome` (`--extension`, `disabled: true`); no GitHub server.
+    - `.kiroignore` with the four entries; check whether it blocks reads of `.scratch/` and record the result (requirements Open question 9).
+    - Launch the `playwright` server once and load the `apps/demo` preview.
+    - _Requirements: 23.2, 23.3, 23.4, 23.5_
+  - [ ] 5.8 Write the Check_Config
+    - `scripts/kiro/check-config.mjs` covering Requirements 20-23; prove it fails on a temp copy with a wrong inclusion mode and an agent with a `model` field.
+    - _Requirements: 20.9, 21.10, 23.8_
+  - [ ] 5.9 Apply and test permissions
+    - Ask the User to approve the Recommended permissions file; the User copies it into `~/.kiro/workspace-roots/<hash>/permissions.yaml` and the user-scope file into `~/.kiro/settings/permissions.yaml`.
+    - Run one allowed command (`cargo --version`), one asked command (`gh repo view`), and one denied command (`git reset --hard`, expected to be blocked); ask the `architect` agent to write `crates/dormbit-core/src/lib.rs` and confirm the denial; record all outcomes in `docs/kiro/feature-probe.md`.
+    - _Requirements: 21.9, 23.6, 23.7_
+  - [ ] 5.10 Fire each Hook once
+    - In a new session (hooks load at session start): save a `.rs` and a `.ts` file (format runs), end a turn with a type error (stop-gate returns it), write a file with a run-time generated fake secret (secret-scan blocks it), save a security-module path, finish a task (task-tests and review-reminder), start a release task with red evidence (release-gate blocks it). Record each result in `docs/kiro/feature-probe.md` and `docs/kiro/usage-log.md`.
+    - _Requirements: 22.4, 22.6, 22.9, 22.11, 22.12, 22.13, 22.14, 27.3_
+  - [ ] 5.11 Checkpoint: run `node scripts/kiro/check-config.mjs` and `shellcheck scripts/hooks/*.sh` through `scripts/evidence/run.sh`
+
+- [ ] 6. CI and Devpost draft (P02-T06, Task 14)
+  - Depends on: tasks 1-5.
+  - [ ] 6.1 Write `ci.yml`
+    - `.github/workflows/ci.yml` on `macos-15` with the `rust`, `ts`, `wasm`, `contracts`, `e2e`, `security`, and `meta` jobs per design; top-level `permissions: contents: read`; actions pinned to full SHAs; `PROPTEST_CASES=512`, `FC_NUM_RUNS=512`, `INSTA_UPDATE=no`.
+    - _Requirements: 24.1, 24.2, 24.3, 24.4, 24.5, 24.9, 24.10, 24.11, 11.3, 15.6_
+  - [ ] 6.2 Add supply-chain checks
+    - `deny.toml` per design; gitleaks release download with checksum check and full-history scan (`fetch-depth: 0`); `pnpm audit --audit-level high`; run all three locally first and fix or record findings.
+    - _Requirements: 24.6, 24.7, 24.8_
+  - [ ] 6.3 Lint the workflow and scripts
+    - `actionlint .github/workflows/*.yml` and `shellcheck scripts/**/*.sh .githooks/*` clean.
+    - _Requirements: 24.9_
+  - [ ] 6.4 Write `SECURITY.md`
+    - Supported versions, reporting through GitHub private vulnerability reporting, what DORMBIT protects, the §7 stated limits, VER-2 integrity limit, no telemetry.
+    - Ask the User before enabling private vulnerability reporting on the repo.
+    - _Requirements: 25.1, 25.2, 25.3, 25.4, 25.5_
+  - [ ] 6.5 Write the Devpost draft
+    - `docs/submission/devpost-draft.md` with the sections in design; every unmeasured number or claim marked `TBD (Task N)`.
+    - Ask the User about teammates and bonus prizes and record the answers; remind the User to save the draft on Devpost themselves.
+    - _Requirements: 26.1, 26.2, 26.3, 26.4_
+  - [ ] 6.6 Push and get the first green run
+    - Push to `main` (task ID in the commit message); fix failures until the first `ci` run on `main` is green; add the status badge to `README.md`.
+    - _Requirements: 24.11, 24.12, 27.4_
+  - [ ] 6.7 Write the Phase 02 gate
+    - `docs/status/gates/P02.md` (CI run link, hook summary, what's missing, what's next); update `docs/status/STATUS.md` and `docs/status/HANDOFF.md`; add notable Kiro usage to `docs/kiro/usage-log.md`.
+    - _Requirements: 27.1, 27.2, 27.3_
+  - [ ] 6.8 Checkpoint: run `actionlint`, `cargo deny check`, `pnpm audit --audit-level high`, and `gitleaks git --redact` through `scripts/evidence/run.sh`, and record the green CI run URL in the gate note

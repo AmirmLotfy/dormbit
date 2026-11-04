@@ -1,0 +1,209 @@
+# Implementation Plan
+
+- [ ] 1. Scope enforcement (P03-T01, Task 15)
+  - Owner: rust-security
+  - Depends on: foundation tasks 1-6 (P02-T01 to P02-T06, Tasks 9-14): the workspace scaffold, the hardened Tauri shell, shared contracts and `DormbitError` codes, test tooling and the Dockline fixture, Kiro hooks and agents, and CI.
+  - [ ] 1.1 Add `RelPath`, `ReadVfs`, and `MemVfs` to `dormbit-core`
+    - `crates/dormbit-core/src/path.rs`: `RelPath::parse` rejects empty, absolute, `..`, empty-component, and NUL paths with `PATH_UNSAFE`; `nfc_key()` via `unicode-normalization`.
+    - `crates/dormbit-core/src/vfs.rs`: the read-only `ReadVfs` trait, `EntryKind`, `Metadata`, `Limited`, `VfsError`.
+    - `crates/dormbit-core/src/vfs/mem.rs`: `MemVfs` with files, directories, symlinks, and special entries, and a switch for directory listing order (used by Property 16).
+    - _Requirements: 5.3, 6.1_
+  - [ ] 1.2 Implement `SourceDir` over `cap-std` in `dormbit-fs`
+    - `crates/dormbit-fs/src/scope/source.rs`: resolve each component with `cap_fs_ext::DirExt::open_dir_nofollow`; open files with `read(true)`, `FollowSymlinks::No`, and `O_NONBLOCK`; `fstat` and reject non-regular files; read at most `max_bytes + 1`.
+    - Map `cap-std` and OS errors to `VfsError`; `Unsafe` becomes `PATH_UNSAFE`.
+    - Add `cap-fs-ext` (see design Open question 4) with a pinned version.
+    - _Requirements: 5.1, 5.4, 6.3, 7.2, 7.4_
+  - [ ] 1.3 Prove `SourceDir` has no write API
+    - `compile_fail` doc tests in `source.rs` for create, write, remove, rename, and set-permissions calls.
+    - A unit test that `SourceDir`'s public API returns no `cap_std::fs::Dir`, raw fd, or absolute path.
+    - _Requirements: 6.2, 6.4_
+  - [ ] 1.4 Implement `ScopeRegistry`
+    - `crates/dormbit-fs/src/scope/mod.rs`: `grant`, `list`, `revoke`, `source`, `load`, `records`; `open_ambient_dir` only here; Grant identity from the opened handle's metadata; `root_display` with `~`; same identity and kind returns the existing grant; `source` only for available `Read` grants.
+    - `load` reopens each record and marks it unavailable on failure or identity mismatch.
+    - _Requirements: 1.3, 1.5, 1.6, 2.6, 2.7, 3.1, 3.2, 3.4, 4.1, 4.5_
+  - [ ] 1.5 Add the Rust-side folder picker and `scope_pick`
+    - `apps/desktop/src-tauri/src/picker.rs`: `FolderPicker` trait, `NativeFolderPicker` using `tauri-plugin-dialog`'s Rust `blocking_pick_folder` inside an async command, and `StubFolderPicker` behind the `test-picker` feature.
+    - `scope_pick(kind)` returns `SCOPE_DENIED` for `RestoreTarget` and `Ok(None)` when the picker is dismissed. Add it to `AppManifest::commands` and the capability; grant no `dialog:*` permission.
+    - A test that `PickedFolder` is constructed only in `picker.rs`.
+    - _Requirements: 1.1, 1.2, 1.4, 1.7, 1.8, 2.1_
+  - [ ] 1.6 Add static checks to `clippy.toml`
+    - `disallowed-methods`: `cap_std::ambient_authority` outside `crates/dormbit-fs/src/scope/` (allowed with a scoped `#[allow]` there and in the `cli` constructor).
+    - `disallowed-types`: `std::process::Command` in `dormbit-core`, `dormbit-fs`, `dormbit-git`, and `src-tauri`; `std::fs` items in `dormbit-core`.
+    - _Requirements: 5.2, 5.5, 14.2_
+  - [ ] 1.7 Write the scope escape fixtures
+    - Generator code in `fixtures/malicious/scope/` that builds each case in a temp folder at test time: absolute symlink out, `../` symlink out, in-root chain ending outside, directory symlink loop, FIFO named `package.json`, `..` and absolute request paths, NUL in a requested name.
+    - One example test per case with its expected result (`PATH_UNSAFE`, `Symlink` entry, or `Special` entry).
+    - _Requirements: 5.3, 5.4, 7.2, 7.3, 7.4_
+  - [ ] 1.8 Write property test for scope containment
+    - **Property 9: No access outside granted folders, including through symlinks (PROP-9)**
+    - proptest in `crates/dormbit-fs/tests/prop_scope.rs`: generated trees with a sentinel token in a sibling folder; 10,000 cases locally, 512 in CI.
+    - **Validates: Requirements 5.1, 5.3, 5.4, 7.2, 7.4**
+  - [ ] 1.9 Checkpoint: run `cargo test -p dormbit-core -p dormbit-fs` and `cargo clippy --workspace -- -D warnings` through `scripts/evidence/run.sh`; grant a folder in the app with a human click on the native picker and record a screenshot
+
+- [ ] 2. Walker and metadata (P03-T02, Task 16)
+  - Depends on: task 1 (`RelPath`, `ReadVfs`, `MemVfs`, `SourceDir`).
+  - [ ] 2.1 Build the step-based `DiscoveryJob`
+    - `crates/dormbit-core/src/discovery/mod.rs`: `DiscoveryLimits`, `DiscoveryJob::new`, `step(budget)`, `Counts`, `WalkResult`, `Bound`.
+    - Depth-first with an explicit stack; listings sorted by name bytes; entry and time bounds checked before each entry with the injected `Clock`; depth checked when pushing; `bounds_hit` recorded once per bound.
+    - Pick default limits by timing Dockline and a large synthetic tree; record them in the P03 gate note (design Open question 1).
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.6, 9.9, 9.10_
+  - [ ] 2.2 Handle symlinks, special files, and unreadable entries
+    - Symlinks counted with 0 bytes and never descended; special files counted and never opened; `PermissionDenied`, `NotUtf8Name`, and `Other` counted as `unreadable`, with the project marked `size.partial`.
+    - _Requirements: 7.1, 7.3, 7.5, 9.12, 11.5_
+  - [ ] 2.3 Add gitignore matching inside the walker
+    - `crates/dormbit-core/src/discovery/ignore_stack.rs`: one `ignore::gitignore::Gitignore` per directory with a `.gitignore`, plus `.git/info/exclude`; bytes read through `ReadVfs::read_limited` and fed to `GitignoreBuilder::add_line`; never `GitignoreBuilder::add(path)`.
+    - _Requirements: 8.4, 8.5_
+  - [ ] 2.4 Detect project roots and monorepos
+    - Marker check outside projects only; outermost root wins; Grant root with a Marker gives `rel_root` `.`; no root search inside `.git` or unguarded Rebuildable_Table names.
+    - `project_id` in `crates/dormbit-core/src/discovery/assemble.rs`.
+    - _Requirements: 8.1, 8.2, 8.3, 8.6, 8.7_
+  - [ ] 2.5 Classify rebuildable directories and account size
+    - `crates/dormbit-core/src/discovery/rebuildable.rs`: the Rebuildable_Table with guards.
+    - Per-project deferred queue for `.git` and Rebuildable directories; `size.total`, `size.rebuildable`, `size.partial`.
+    - _Requirements: 9.5, 11.1, 11.2, 11.3, 11.4_
+  - [ ] 2.6 Extract names, stacks, docs, manifests, agent artifacts, and activity
+    - `crates/dormbit-core/src/discovery/manifests.rs`: the Manifest_Table, name keys, framework rules for the Dockline stack, stack Findings with rule IDs `stack.<ecosystem>.<name>` and manifest-key evidence; `parsed: false` for oversized or malformed manifests.
+    - Doc and agent-artifact matching by name only; `latest_mtime` excluding `.git/` and Rebuildable directories.
+    - _Requirements: 10.1, 10.2, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9_
+  - [ ] 2.7 Implement `assemble`
+    - Pure function producing `ProjectRecord`s and a `ScanSummary`; copies `marks.dormant` from stored marks (default false) and never computes it; sets `activity.partial` and `size.partial` from the walk.
+    - _Requirements: 8.7, 9.5, 9.11, 12.1, 12.2, 12.4_
+  - [ ] 2.8 Add `dormbit-cli scan`
+    - `crates/dormbit-cli`: `scan <path> [--json]` using `SourceDir::open_for_cli`, compiled only with the `cli` feature of `dormbit-fs`; no grant or state file is created.
+    - _Requirements: 8.1, 9.4, 10.1_
+  - [ ] 2.9 Write property test for walker containment
+    - **Property 13: The walker stays in the grant and never traverses a symlink**
+    - Runs on `MemVfs` and on a real temp folder through `SourceDir`; 10,000 cases locally, 512 in CI.
+    - **Validates: Requirements 7.1, 7.3, 7.5, 8.4**
+  - [ ] 2.10 Write property test for bounded termination
+    - **Property 14: A bounded walk terminates and reports partial truthfully**
+    - Fake `Clock` with generated per-call advances; generated limits including 0 and 1.
+    - **Validates: Requirements 9.1, 9.2, 9.3, 9.4, 9.6, 9.10, 9.11**
+  - [ ] 2.11 Write property test for root detection
+    - **Property 15: Project roots are outermost and unique**
+    - **Validates: Requirements 8.1, 8.2, 8.3**
+  - [ ] 2.12 Write property test for determinism
+    - **Property 16: Discovery is deterministic**
+    - Same `MemVfs` tree with two generated listing orders.
+    - **Validates: Requirements 8.6, 9.11**
+  - [ ] 2.13 Write property test for size accounting
+    - **Property 17: Size accounting is consistent**
+    - **Validates: Requirements 9.5, 11.3, 11.4, 11.5**
+  - [ ] 2.14 Write property test for manual dormancy
+    - **Property 22: Dormancy is only ever set by the user**
+    - Generated mtimes (including dates decades old) and sequences of rescans and mark changes through `assemble`.
+    - **Validates: Requirements 12.1, 12.2, 12.4**
+  - [ ] 2.15 Add the Dockline golden snapshot (non-Git fields)
+    - insta snapshot of `dormbit-cli scan --json` on the Dockline tar extracted to a temp folder, and of `assemble` over `MemVfs` loaded from the same tar; both must match one snapshot. Assert `dist/` and `node_modules/` are rebuildable and `.kiro/` is in `agent_artifacts`.
+    - _Requirements: 10.1, 10.4, 10.6, 10.9, 11.3_
+  - [ ] 2.16 Checkpoint: run `cargo test -p dormbit-core -p dormbit-fs -p dormbit-cli` through `scripts/evidence/run.sh`; run `dormbit-cli scan` on the extracted Dockline fixture and record the project list
+
+- [ ] 3. Git inspection (P03-T03, Task 17)
+  - Depends on: task 1 (`SourceDir`) and task 2 (walker results to attach snapshots to).
+  - [ ] 3.1 Create the `dormbit-git` crate
+    - `crates/dormbit-git/Cargo.toml`: `git2` pinned, `default-features = false`, `features = ["vendored-libgit2"]`.
+    - A test that runs `cargo tree -p dormbit-git -e features` and fails if `https` or `ssh` appears.
+    - clippy `disallowed-methods` for `git2::Repository::open`, `discover`, and `open_from_env`.
+    - _Requirements: 14.1, 14.3_
+  - [ ] 3.2 Implement `GitLocation` in `dormbit-fs`
+    - `crates/dormbit-fs/src/scope/git_location.rs`: symlinked `.git` gives `GitDirIsSymlink`; a `.git` file's `gitdir` and `commondir` must resolve inside the Grant root or give `GitDirOutsideGrant`; sets `worktree_external`.
+    - This is scope code: implemented by rust-security.
+    - _Requirements: 6.4, 15.9, 16.3, 16.4, 16.5_
+  - [ ] 3.3 Read HEAD, status, and stashes
+    - `crates/dormbit-git/src/lib.rs`: `open_ext` with `NO_SEARCH`; `Bare` and `Unreadable` issues; Unborn and detached HEAD; status with the design's flag mapping and no index update; `stash_foreach` count; libgit2 messages never returned.
+    - _Requirements: 14.3, 14.4, 14.6, 15.1, 15.2, 15.3, 16.1, 16.2, 16.6, 16.7_
+  - [ ] 3.4 Read upstream, submodules, and LFS
+    - Upstream name and `graph_ahead_behind` from local refs; `as_of_last_fetch` from `FETCH_HEAD` mtime; empty upstream when the tracking ref is missing; submodules listed without opening them; LFS from `.gitattributes` or `.git/lfs`.
+    - _Requirements: 15.4, 15.5, 15.6, 15.7, 15.8_
+  - [ ] 3.5 Flag risky config keys
+    - `risky_key` matching with Git's case rules over the `Local` and `Worktree` config levels; key names only, never values.
+    - _Requirements: 17.1, 17.2, 17.3, 17.4_
+  - [ ] 3.6 Redact remote URLs
+    - `redact_remote_url` with the four rules in the design; applied inside `inspect` before any URL leaves the crate.
+    - Table tests: HTTPS with token user, HTTPS with user and password, query token, scp-like `git@host:path`, `user:pw@host:path`, local path, unknown format.
+    - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5_
+  - [ ] 3.7 Write the Git edge-case fixtures and tests
+    - Built at test time with `git2` in temp folders: dirty, conflicted, detached, empty (Unborn), Linked worktree inside and outside the grant, initialized and uninitialized submodule, LFS attributes, every Risky config key, truncated `HEAD`, missing `objects/`, bare.
+    - A scan over a folder holding several of these continues past the broken ones.
+    - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8_
+  - [ ] 3.8 Write property test for URL redaction
+    - **Property 18: Remote URL redaction never leaks a credential**
+    - 10,000 cases locally, 512 in CI.
+    - **Validates: Requirements 18.1, 18.2, 18.3, 18.5**
+  - [ ] 3.9 Write property test for read-only Git inspection
+    - **Property 19: Git inspection is read-only and runs nothing**
+    - Generated repositories with every Risky config key set to a test-generated script that writes a sentinel; hash, mode, and mtime of every file compared before and after; 10,000 cases locally, 512 in CI.
+    - **Validates: Requirements 6.5, 14.4, 14.5**
+  - [ ] 3.10 Attach Git snapshots in `dormbit-cli scan` and extend the Dockline golden
+    - `scan` calls `GitLocation` and `inspect` per root; `assemble` sets `git` and `git_issue`.
+    - Golden asserts branch `feature/pdf-export`, 2 modified, 1 untracked, 1 stash.
+    - _Requirements: 15.1, 15.2, 15.3, 16.8_
+  - [ ] 3.11 Checkpoint: run `cargo test -p dormbit-git -p dormbit-fs -p dormbit-cli` through `scripts/evidence/run.sh`; record `dormbit-cli scan` output showing `feature/pdf-export` with dirty counts
+
+- [ ] 4. Shelf wired to the UI (P03-T04, Task 18)
+  - Depends on: task 1, task 2, and task 3.
+  - The Shelf uses design-system components from native-experience task 1 (P08-T01, Task 34) where they already exist; native-experience Task 36 polishes it. The Settings revoke screen is native-experience Task 35.
+  - [ ] 4.1 Implement `StateStore`
+    - `crates/dormbit-fs/src/state.rs`: atomic save (create-new temp, `sync_all`, rename); `schema_version: 1`; set-aside of unparseable files to `<name>.corrupt-<timestamp>`; app data folder from Tauri's path resolver.
+    - Tests with a fault-injecting writer that fails before rename.
+    - _Requirements: 19.1, 19.2, 19.3, 19.6, 19.7, 19.8_
+  - [ ] 4.2 Add the single-instance lock
+    - `InstanceLock::acquire` on `dormbit.lock` with `File::try_lock`; in `main`, a held lock shows "DORMBIT is already running" through the Rust dialog API and exits before any state is read.
+    - _Requirements: 19.4, 19.5_
+  - [ ] 4.3 Persist grants and add `scope_list` and `scope_revoke`
+    - Load `scopes.json` into `ScopeRegistry` at launch; save after each grant and revoke.
+    - `scope_revoke` cancels and waits for a running job on the grant, then removes the grant's records from `scopes.json`, `projects.json`, and `marks.json` before returning.
+    - _Requirements: 2.6, 2.7, 4.1, 4.2, 4.3, 4.4, 4.6_
+  - [ ] 4.4 Add `DiscoveryRunner`, `discovery_start`, and `discovery_cancel`
+    - `apps/desktop/src-tauri/src/commands/discovery.rs`: one background thread per grant, `step(512)`, `Progress` over `tauri::ipc::Channel<DiscoveryEvent>`, cancel flag checked before each step and between Git inspections, one atomic `projects.json` write on finish, nothing written on cancel.
+    - `discovery_start` rejects non-`Read` grants and returns the running job's ID for a busy grant; `discovery_cancel` on unknown jobs returns `Ok(())`.
+    - _Requirements: 3.3, 9.7, 9.8, 9.9, 9.11, 9.13, 9.14, 16.8_
+  - [ ] 4.5 Add `projects_list`, `project_get`, and `project_set_dormant`
+    - Strict `ScopeId`, `ProjectId`, and `JobId` deserialization (malformed gives `SCOPE_DENIED`); marks merged from `marks.json`; all eight commands in `AppManifest::commands` and the capability.
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 12.3_
+  - [ ] 4.6 Write command-layer safety tests
+    - With `test-picker` and a temp home folder: no command takes a path parameter (checked against the generated TS bindings); no error message or log line contains the home prefix; malformed and unknown IDs give `SCOPE_DENIED`; the allowlist and capability tests from foundation task 2 (Task 10) cover the eight new commands.
+    - _Requirements: 1.2, 2.1, 2.3, 2.4, 2.5_
+  - [ ] 4.7 Export types and extend the client
+    - ts-rs export of the new types to `packages/schema/generated`; Zod schemas with type-equality tests; `DormbitClient` methods in `packages/client`, `TauriClient` with Zod parsing of responses and Channel messages, and Dockline-shaped `MockClient` data.
+    - Regenerated by the main agent at the merge point (plan §10).
+    - _Requirements: 2.2_
+  - [ ] 4.8 Build the Shelf screen rows and states
+    - `packages/ui/src/screens/Shelf/`: virtualized rows with name, middle-truncated Display path, stack chips, branch and dirty marks, latest activity as a date, total and rebuildable size, preservation state ("No capsule yet"), dormant label from `marks.dormant` only, "as of last fetch" label, and `git_issue` text.
+    - Loading, empty, scanning, partial, cancelled, and error states; plain-text rendering only; keyboard access, VoiceOver labels, glyph plus label for every status, no motion under reduced motion.
+    - _Requirements: 10.3, 10.10, 12.5, 13.6, 13.7, 13.8, 13.9, 13.10_
+  - [ ] 4.9 Add search, sort, filter, multi-select, and bulk dormant marking
+    - `packages/ui/src/screens/Shelf/shelfQuery.ts`: pure search (case-insensitive, NFC), sort (name, latest activity, total size; ties by project ID), and filters (grant, stack, dormant, uncommitted changes, agent artifacts).
+    - Selection by click, Shift-click, Cmd-click, Cmd-A, and Space; bulk mark and unmark through `projectSetDormant` with `Promise.allSettled` and a list of failures.
+    - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
+  - [ ] 4.10 Write property test for revocation
+    - **Property 20: Revocation removes every trace of the grant**
+    - Model-based proptest over command sequences in `src-tauri` with `test-picker`; 10,000 cases locally, 512 in CI.
+    - **Validates: Requirements 4.1, 4.2, 4.4, 4.5, 4.6**
+  - [ ] 4.11 Write property test for cancellation
+    - **Property 21: Cancelling leaves stored state unchanged**
+    - Cancel and revoke at a generated step index; compare state file bytes before and after.
+    - **Validates: Requirements 4.3, 9.7, 9.8**
+  - [ ] 4.12 Write property test for Shelf queries
+    - **Property 23: Shelf search, sort, and filter are correct**
+    - fast-check in Vitest over `shelfQuery.ts`.
+    - **Validates: Requirements 13.1, 13.2, 13.3**
+  - [ ] 4.13 Write Shelf component tests
+    - Vitest and Testing Library against `MockClient`: each state renders; selection gestures; bulk marking reports a simulated failure; a project name containing HTML renders as text; the "as of last fetch" label is present; no "abandoned", "stale", or "inactive" text appears.
+    - _Requirements: 12.5, 13.4, 13.5, 13.7, 13.8, 13.9_
+  - [ ] 4.14 Checkpoint: run `cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --features test-picker`, `cargo test --workspace`, and `pnpm -r test` through `scripts/evidence/run.sh`; pick a real folder in the app, watch discovery fill the Shelf, and record a screenshot with paths shown as `~`
+
+## Task Dependency Graph
+
+```json
+{
+  "waves": [
+    { "id": 0, "tasks": ["1"] },
+    { "id": 1, "tasks": ["2"] },
+    { "id": 2, "tasks": ["3"] },
+    { "id": 3, "tasks": ["4"] }
+  ]
+}
+```
+
+The waves run in plan order because each task needs the one before it: task 2 walks through task 1's `SourceDir`, task 3 attaches snapshots to task 2's walk results through task 1's `GitLocation`, and task 4 wires all three into commands and the Shelf. Task 1 also needs foundation tasks 1-6 (Tasks 9-14).

@@ -1,0 +1,7 @@
+# Reviewed false positives. Each entry names the exact finding and why it's safe.
+#
+# .kiro/specs/transactional-restore/design.md:512
+# Example "owner_token" hex value in an illustrative journal.json sample inside
+# the design doc. It is documentation of the file format, not a real secret;
+# the real owner token is generated at runtime from IdGen (OS randomness).
+.kiro/specs/transactional-restore/design.md:generic-api-key:512

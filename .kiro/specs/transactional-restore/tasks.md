@@ -1,0 +1,212 @@
+# Implementation Plan
+
+- [ ] 1. Restore pre-checks (P05-T01, Task 23)
+  - Depends on: capsule-and-verification tasks 1-4 (P04-T01..P04-T04, Tasks 19-22): manifest types, the strict capsule reader, `VerificationReport`, and `capsules_list`
+  - Depends on: scope-and-discovery task 1 (P03-T01, Task 15): `ScopeGrant`, `RestoreTarget` grants, `cap-std` handles, the read-only source type
+  - Before starting: get approval for the proposed error codes and the `rustix` dependency (design Open questions 1 and 2)
+  - [ ] 1.1 Add restore types and error codes
+    - `crates/dormbit-core/src/restore/types.rs`: `RestorePlan`, `PlannedFile`, `PrecheckReport`, `PrecheckItem`, `PrecheckId`, `CheckStatus`, `VolumeFacts`, `CaseSensitivity`, `LocationFacts`, `RestoreOptions`, `NotRestored`
+    - Add `RESTORE_NOT_VERIFIED`, `RESTORE_TARGET_FORBIDDEN`, `RESTORE_VERIFY_FAILED`, `RESTORE_IO_FAILED` to `DormbitError` with `retryable` as in the design's error table
+    - ts-rs derives on every type; the main agent regenerates `packages/schema/generated` at the merge point
+    - _Requirements: 1.6, 3.2, 4.1, 8.11, 9.4_
+  - [ ] 1.2 Implement NFC and fold keys
+    - `crates/dormbit-core/src/restore/keys.rs`: `nfc_key`, `fold_key` (NFD → `to_uppercase` → `to_lowercase` → NFC), `path_keys`
+    - Unit tests: `é` NFC vs NFD, `ß`/`SS`, `Σ`/`σ`/`ς`, `İ`/`i`
+    - _Requirements: 2.1, 3.4, 6.1, 6.2_
+  - [ ] 1.3 Implement manifest path rules
+    - `crates/dormbit-core/src/restore/path_rules.rs`: `SafeName`, `RelPath` (private fields), `validate_entry_path`, `PathRule`
+    - Table test with one row per rule and each boundary: 255/256-byte component, 1024/1025-byte path, U+0000, U+001F, U+007F, U+0085, `.`, `..`, empty component, leading `/`
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
+  - [ ] 1.4 Implement target name validation
+    - `validate_target_name` in `path_rules.rs`: empty, `.`, `..`, `/`, NUL, Cc characters, over 255 bytes, `.dormbit-staging-` prefix → `PATH_UNSAFE`; keep the accepted name byte for byte
+    - _Requirements: 1.6, 1.7_
+  - [ ] 1.5 Implement collision detection
+    - `crates/dormbit-core/src/restore/collisions.rs`: equal-key collisions and file-versus-parent-folder collisions; `KeyMode::Nfc` on case-sensitive volumes, `KeyMode::NfcAndFold` otherwise; errors name both entries
+    - _Requirements: 6.1, 6.2, 6.3, 6.4_
+  - [ ] 1.6 Implement the Restore_Planner
+    - `crates/dormbit-core/src/restore/planner.rs`: `plan_restore(&PlanInput) -> PrecheckOutcome` in the order given in the design; all checks reported; `plan` only when nothing blocking failed
+    - Target variants against `parent_entries` with both keys; location checks with fold-key components; volume type allowlist `apfs`, `hfs`; unknown case sensitivity treated as insensitive
+    - Skips: `.git/hooks` by fold key whatever the volume; every symlink as `symlink_not_restored` (P0); manifest `excluded[]` with its capture reason
+    - Directory list (parents first, each once), `final_mode = mode & 0o777`, `stripped_bits`, required bytes
+    - _Requirements: 2.1, 2.2, 3.2, 3.3, 3.4, 3.5, 4.5, 4.6, 4.7, 4.9, 5.6, 5.7, 13.1, 14.4, 17.6_
+  - [ ] 1.7 Implement capsule pre-checks
+    - In `planner.rs`: latest report present and `Verified` (`RESTORE_NOT_VERIFIED`); manifest SHA-256 at pre-check time equals `manifest_sha256` (`CAPSULE_HASH_MISMATCH`); `registry_match` `Mismatch` blocks, `NotInRegistry` warns
+    - _Requirements: 4.1, 4.2, 4.3, 4.4_
+  - [ ] 1.8 Implement the Volume_Probe
+    - `crates/dormbit-fs/src/restore/volume.rs`: `probe_volume` (`fstatfs` through the approved safe API: `f_fstypename`, `f_bsize`, `f_bavail`), read-only case lookup on a case-swapped existing name with same device and inode, `list_names`, `location_facts` with `std::fs::canonicalize`
+    - Test that a pre-check run leaves the destination parent's listing and every entry's metadata unchanged
+    - _Requirements: 3.1, 4.6, 4.7, 4.8, 4.10_
+  - [ ] 1.9 Add `restore_target_pick` and `restore_precheck`
+    - `apps/desktop/src-tauri/src/commands/restore.rs`: picker opened through the Rust API of `tauri-plugin-dialog`, grant of kind `RestoreTarget`, `root_display` with `~`; picker closed → `CANCELLED`
+    - `RestorePrecheckRequest` with `deny_unknown_fields` and no path field; unknown, revoked, or wrong-kind grant → `SCOPE_DENIED`; capsule not registered and not picked this session → `SCOPE_DENIED`; no journal or staging folder is created by a refused pre-check
+    - Rust command tests for each refusal
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 2.3, 4.10_
+  - [ ] 1.10 Add `dormbit-cli restore --check`
+    - `crates/dormbit-cli`: prints the pre-check report for a capsule, a parent folder, and a name (dev and test harness only)
+    - Demo: refuses an existing target and a case variant of it with `RESTORE_DEST_EXISTS`
+    - _Requirements: 2.1, 2.2_
+  - [ ] 1.11 Write property test for collision detection
+    - **Property 8: Normalization and case collisions are rejected** (planner part: generated manifests with NFC, fold, and parent-folder collisions under each `CaseSensitivity`)
+    - `crates/dormbit-core/tests/prop_collisions.rs`
+    - **Validates: Requirements 6.1, 6.2, 6.3, 6.4**
+  - [ ] 1.12 Write property test for target variant refusal
+    - **Property 4: No overwrite** (pre-check part: generated target names and variant entries of every type in a `MemRestoreFs` parent and in a temp folder)
+    - `crates/dormbit-fs/tests/prop_no_overwrite.rs`
+    - **Validates: Requirements 2.1, 2.2, 2.3, 2.6**
+  - [ ] 1.13 Checkpoint: run `cargo test -p dormbit-core -p dormbit-fs` and the `dormbit-cli restore --check` demo with `PROPTEST_CASES=10000` through `scripts/evidence/run.sh`
+
+- [ ] 2. Transactional executor (P05-T02, Task 24)
+  - Owner: rust-security
+  - Depends on: task 1
+  - Depends on: capsule-and-verification task 3 (P04-T03, Task 21): the strict reader used to stream objects by hash
+  - Depends on: scope-and-discovery task 3 (P03-T03, Task 17): `dormbit-git` status and risky-config reading
+  - [ ] 2.1 Define the `RestoreFs` trait and `MemRestoreFs`
+    - `crates/dormbit-core/src/restore/fs.rs`: `RestoreFs`, `FsFault`, `EntryMeta`, `OwnerTokenProof`, `check_owner_token`; no overwrite, truncate, `create_dir_all`, or general delete in the trait
+    - `crates/dormbit-core/src/restore/mem.rs`: in-memory implementation that tracks durable and pending state
+    - _Requirements: 8.1, 8.2, 12.5, 12.12, 13.2, 13.3_
+  - [ ] 2.2 Implement `CapStdRestoreFs`
+    - `crates/dormbit-fs/src/restore/staging.rs`: `Dir::create_dir`, `OpenOptions::create_new(true)`, no-follow opens relative to the parent handle, `File::set_permissions` on the open handle, `sync_all`, `remove_staging` through `Dir::remove_dir_all` with an `OwnerTokenProof`
+    - Map `EEXIST`, `ENOSPC`, `ENOTSUP`, and other errors to `FsFault`
+    - _Requirements: 6.5, 8.1, 8.2, 8.10, 8.11, 8.12, 13.2, 13.3_
+  - [ ] 2.3 Implement `rename_exclusive`, the only unsafe call
+    - `crates/dormbit-fs/src/restore/commit.rs`: one `libc::renameatx_np(.., RENAME_EXCL)` call with the SAFETY comment from the design; `#![deny(unsafe_code)]` on the crate and `#[allow(unsafe_code)]` on this function only
+    - Port the 3 exclusive-rename tests from `spikes/fs-spike` to `crates/dormbit-fs/tests/commit.rs` and add a dangling-symlink target case
+    - Add `crates/dormbit-fs/tests/unsafe_count.rs`: exactly one `unsafe {` block in the workspace, in `restore/commit.rs`
+    - Send the diff through the reviewer loop for the dedicated unsafe review
+    - _Requirements: 2.5, 9.6, 9.7, 13.2_
+  - [ ] 2.4 Implement staging creation and the owner token
+    - `crates/dormbit-fs/src/restore/executor.rs` (Stage phase): `JournalStore` trait in `crates/dormbit-core/src/restore/journal.rs` with an in-memory store for now; journal `Staged` written before the exclusive mkdir of `.dormbit-staging-<op_id>`; existing name → retryable `RESTORE_DEST_EXISTS`
+    - `.dormbit-owner` with create-new, `op_id` and 128-bit token, synced; `.DORMBIT-OWNER` case confirmation and fold-key collision re-run; `tree` created and tree ID recorded
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7_
+  - [ ] 2.5 Implement the streaming file writer
+    - Write phase in `executor.rs`: `CapsuleObjects` over the strict reader; stored hash and `stored_size` cap; gzip decode with `flate2`; content hash and `size` cap; `set_mode(mode & 0o777)`; `sync_file`; `sync_dir` on every staged directory; write log record per mkdir and create
+    - Errors: size overrun → `CAPSULE_MALFORMED`; hash mismatch → `CAPSULE_HASH_MISMATCH` naming the file; `ENOSPC` → `RESTORE_INSUFFICIENT_SPACE`; other → `RESTORE_IO_FAILED`; `EEXIST` → `RESTORE_COLLISION`
+    - Unit tests with one damaged object per error path
+    - _Requirements: 6.5, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 8.10, 8.11, 11.7_
+  - [ ] 2.6 Implement staged verification
+    - Verify phase: new read handles, re-hash and compare SHA-256, size, and mode; no-follow walk of `tree` compared with the plan; failure → `RESTORE_VERIFY_FAILED` naming entries
+    - Tests: a byte flipped in a staged file between Write and Verify, and an extra file dropped into `tree`
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
+  - [ ] 2.7 Implement commit, rollback, and cleanup
+    - Commit phase: target variant re-check, `rename_exclusive(staging/tree → parent/target)`, `sync_dir(parent)`, `Committed`; Clean phase: `check_owner_token`, `remove_staging`, `Cleaned`
+    - Rollback from any pre-commit failure or cancel: token check, `remove_staging`, `Cleaned`, `RolledBack`; nothing deleted if the token check fails
+    - _Requirements: 2.4, 2.5, 2.6, 9.6, 9.7, 9.8, 9.9, 9.10, 12.5, 13.4_
+  - [ ] 2.8 Implement job stepping, cancel, and `restore_start`
+    - `RestoreJob::step(budget)`, `cancel()` returning `Accepted` before the commit rename and `TooLate` after; `CannotCancel` event; `Progress` events with real file and byte counts
+    - `restore_start` in `commands/restore.rs`: re-run every pre-check, build the job, drive it on a background thread, stream `RestoreEvent` over the Channel, return `{op_id, job_id}` for `job_cancel`
+    - _Requirements: 4.11, 9.11, 9.12, 9.13_
+  - [ ] 2.9 Implement the Post_Verifier
+    - `crates/dormbit-core/src/restore/post_verify.rs`: new read-only `Vfs` handle on the target, re-hash against manifest `sha256` and `size`, list missing and mismatched files, status `Failed` on any mismatch; no write or delete API in scope
+    - _Requirements: 10.1, 10.2, 10.3_
+  - [ ] 2.10 Implement the Ref_Reader and ref check
+    - `crates/dormbit-core/src/git/refs.rs`: `read_refs` for `HEAD`, loose refs, and `packed-refs`, with no symlink following and byte limits
+    - `crates/dormbit-core/src/restore/git_check.rs`: `check_refs` → `Match`, `Mismatch{refs}`, `NotApplicable`, or `RefsNotRecorded`; `Mismatch` sets report status `Failed`
+    - Unit tests: detached HEAD, packed-only refs, over-size `packed-refs`, a symlinked ref file
+    - _Requirements: 10.4, 10.5, 10.9_
+  - [ ] 2.11 Add the native working-tree status check
+    - Call `dormbit-git` `status_counts` (git2, `NO_SEARCH`, network off) on the target and compare with the manifest's `git.status`; `Match` or `Differs` with both sets; record "Not checked in the browser" for the web build
+    - _Requirements: 10.6, 10.7, 10.8, 13.5_
+  - [ ]* 2.12 Restore internal relative symlinks (P1)
+    - Planner rules in `planner.rs` behind `RestoreOptions::restore_internal_symlinks`: relative, non-empty, at most 1023 bytes, no NUL or Cc, lexical resolution inside the target, not through another symlink entry, not on or under `.git/hooks`; otherwise `symlink_unsafe_target`
+    - Executor: `RestoreFs::symlink` after all directories and files are synced; staged and post-commit checks compare link targets
+    - Extend the PROP-1 generator with symlink entries (relative, absolute, escaping, chained) and run it with the option on
+    - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5_
+  - [ ] 2.13 Write property test for path safety
+    - **Property 1: No restored path escapes the destination**
+    - `crates/dormbit-fs/tests/prop_path_safety.rs`, on `MemRestoreFs` and on temp folders through `CapStdRestoreFs`
+    - **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 8.12, 13.4**
+  - [ ] 2.14 Write property test for the full round trip
+    - **Property 2: Full round trip** (capture → verify → restore on temp folders, modes including `0o4755`, `0o2755`, `0o1777`, files under `.git/hooks`)
+    - `crates/dormbit-fs/tests/prop_round_trip.rs`
+    - **Validates: Requirements 1.7, 8.2, 8.3, 8.5, 9.2, 10.1, 10.4, 13.1**
+  - [ ] 2.15 Write property test for the commit race
+    - **Property 4: No overwrite** (commit part: a `FaultFs` interleave hook creates a target variant just before the rename)
+    - Add to `crates/dormbit-fs/tests/prop_no_overwrite.rs`; needs the `FaultFs` wrapper from 3.6, so land it with or after that subtask
+    - **Validates: Requirements 2.4, 2.5, 2.6, 7.3, 13.2**
+  - [ ] 2.16 Checkpoint: run `cargo test -p dormbit-core -p dormbit-fs` with `PROPTEST_CASES=10000` and the restored-Dockline demo (HEAD `feature/pdf-export` matches the manifest) through `scripts/evidence/run.sh`
+
+- [ ] 3. Journal and recovery (P05-T03, Task 25)
+  - Owner: rust-security
+  - Depends on: task 2
+  - [ ] 3.1 Implement the durable Journal_Store
+    - `crates/dormbit-fs/src/restore/journal.rs`: `FileJournalStore` under `<app data>/restores/<op_id>/`; `journal.json` written with create-new temp file, `sync_all`, rename, folder sync; `writes.jsonl` append and sync; `report.json`; all files `0600`
+    - `set_state` syncs the write log first
+    - Tests: file modes, a crash between temp write and rename leaves the previous `journal.json` readable
+    - _Requirements: 11.1, 11.2, 11.7, 11.8, 11.9_
+  - [ ] 3.2 Enforce journal ordering in the executor
+    - Replace the in-memory store from 2.4 with `FileJournalStore` in `restore_start`; assert the state order; record each state only after its step is synced
+    - Journal write failure before the rename → roll back, `RESTORE_IO_FAILED`; after the rename → stop, keep staging for recovery, `RESTORE_IO_FAILED`
+    - _Requirements: 7.1, 11.3, 11.4, 11.5, 11.6_
+  - [ ] 3.3 Harden the owner token check
+    - `check_owner_token` in `crates/dormbit-core/src/restore/fs.rs`: staging is a directory and not a symlink, has the journal's name; `.dormbit-owner` is a regular file of at most 4 KiB whose `op_id` and token equal the journal's
+    - Tests: missing token, symlinked token, oversized token, wrong token, staging replaced by a symlink
+    - _Requirements: 12.5, 12.6, 12.12_
+  - [ ] 3.4 Implement the Recovery_Manager
+    - `crates/dormbit-fs/src/restore/recovery.rs`: `list_pending` and `recover` following the evidence table in the design (tree present, tree moved with matching tree ID, staging missing, token mismatch, grant revoked, unreadable journal); never touches the target
+    - _Requirements: 12.1, 12.3, 12.4, 12.6, 12.7, 12.8, 12.9, 12.10_
+  - [ ] 3.5 Add `restore_recover` and launch detection
+    - `commands/restore.rs`: `RecoverRequest::List` and `RecoverRequest::Recover{op_id}`; listing runs at launch only after the single-instance lock is held; recovery actions only through this command
+    - _Requirements: 12.1, 12.11_
+  - [ ] 3.6 Build the fault-injecting Vfs
+    - `crates/dormbit-fs/src/restore/fault.rs` behind the `test-faults` feature: `FaultFs<F: RestoreFs>` and `FaultJournal<J: JournalStore>` sharing one operation counter; fault plan `{at, kind, also_fail_rollback}`; kinds `Exists`, `NoSpace`, `NotSupported`, `Io`, `Crash`; `before(k, f)` interleave hooks
+    - `Crash` over `MemRestoreFs` drops unsynced file bytes, unsynced directory entries and renames, and unsynced journal data
+    - _Requirements: 9.10, 11.4_
+  - [ ] 3.7 Write property test for atomicity
+    - **Property 5: Atomicity under faults and crashes** (every `k` for trees up to 8 entries; proptest-chosen `k` and kind for larger trees; recovery run after each crash; altered `.dormbit-owner` case)
+    - `crates/dormbit-fs/tests/prop_atomicity.rs`
+    - **Validates: Requirements 9.10, 11.3, 11.4, 11.5, 11.6, 12.3, 12.4, 12.5, 12.6, 12.7, 12.10, 12.12**
+  - [ ] 3.8 Add the kill-and-recover integration test
+    - `dormbit-cli restore` built with `test-faults` reads `DORMBIT_TEST_PAUSE_AT=<state>` and waits there; the test sends SIGKILL at `Staged`, `Written`, `Verified`, and `Committed`, then runs recovery and checks the outcome for each
+    - Demo: kill the app mid-restore, relaunch, and recover from the Recovery_Prompt
+    - _Requirements: 12.1, 12.3, 12.4, 12.7_
+  - [ ] 3.9 Checkpoint: run `cargo test -p dormbit-core -p dormbit-fs --features test-faults` with `PROPTEST_CASES=10000` and the kill-and-recover test through `scripts/evidence/run.sh`
+
+- [ ] 4. Restore report and screens (P05-T04, Task 26)
+  - Owner: rust-security for the Rust subtasks (4.1-4.5); frontend for the UI subtasks (4.6-4.10)
+  - Depends on: task 3
+  - Depends on: capsule-and-verification task 4 (P04-T04, Task 22): capsule list and verification status in the UI
+  - Depends on: native-experience task 1 (P08-T01, Task 34): StatusPill, ProgressSteps, Dialog, and Empty/Error states
+  - [ ] 4.1 Implement the Report_Builder
+    - `crates/dormbit-core/src/restore/report.rs`: `build_report` filling every `RestoreReport` field; `writes_outside_destination` counted from write log records with root other than staging or target; status `Failed` if that count is above 0; limits text; paths with `~`
+    - Executor writes `report.json` and sends `Finished{report}` for success, failure, rollback, and recovery
+    - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.6, 14.7, 14.10, 14.11, 14.12, 14.13, 14.14_
+  - [ ] 4.2 Implement the source-unchanged check
+    - `crates/dormbit-fs/src/restore/source_check.rs`: through the read-only `Read` grant, snapshot type, size, mode, mtime, and inode for each manifest entry path at start and end; `Unchanged`, `Changed{paths}`, or `NotChecked{reason}`
+    - _Requirements: 14.8, 14.9_
+  - [ ] 4.3 Report risky Git config
+    - Natively re-read the restored `.git/config` with `dormbit-git` `risky_config`; in the web build use the manifest's `git.risky_config`; hide credentials in values
+    - _Requirements: 14.5_
+  - [ ] 4.4 Add RST-6 malicious fixtures
+    - `fixtures/malicious/`: capsule with `.git/hooks/pre-commit` and `.GIT/Hooks/post-checkout`; capsule whose `.git/config` sets `core.fsmonitor`, `core.hooksPath`, and `filter.x.clean` to a command that creates a marker file
+    - Integration test: hooks are listed as `git_hooks_never_restored`, the marker never appears after restore and the Git check, and the report lists the three keys
+    - _Requirements: 13.1, 13.5, 13.6, 14.5_
+  - [ ] 4.5 Add golden report snapshots
+    - insta snapshots of the Dockline pre-check report and restore report with the fixed demo clock, plus a `RolledBack` report from a damaged-after-verification capsule
+    - _Requirements: 14.1, 14.2, 14.4, 14.13, 14.14_
+  - [ ] 4.6 Add schemas and client methods
+    - Zod schemas in `packages/schema` for `PrecheckReport`, `RestoreReport`, `RestoreEvent`, `RecoverRequest`, `RecoverResponse` with type-equality tests against the ts-rs output
+    - `DormbitClient` methods `restoreTargetPick`, `restorePrecheck`, `restoreStart`, `restoreRecover` in `packages/client`, plus `MockClient` fixtures for every pre-check failure, progress, cancel, `RolledBack`, and `Failed` after commit
+    - _Requirements: 1.3, 15.10_
+  - [ ] 4.7 Build the Restore Wizard screen
+    - `packages/ui/src/screens/RestoreWizard/`: capsule list (only `Verified` selectable, others with glyph, label, and reason), "Choose destination folder…", name field, pre-check list re-run on change, "Start restore" disabled while a blocking check fails, ProgressSteps for the five states with real counts, Cancel until commit then "Can't cancel after commit", error code plus message plus next action
+    - Keyboard-only use, VoiceOver labels, reduced motion, no color-only status
+    - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7, 15.8, 15.9, 15.10_
+  - [ ] 4.8 Build the Recovery Prompt
+    - `packages/ui/src/screens/RecoveryPrompt/`: at launch, `restore_recover({kind: "List"})`; one row per pending restore with destination (`~`), target name, last state, and action; "Not deleted: …", "Unreachable", and "Unreadable journal" rows; blocks new restores until handled
+    - _Requirements: 12.2, 12.6, 12.8, 12.9_
+  - [ ] 4.9 Build the Restoration Result screen
+    - `packages/ui/src/screens/RestoreResult/`: every report field; "Writes outside the destination: <count>" with "from the restore journal"; `RolledBack` banner "The destination folder was not created."; `Failed` after commit banner "DORMBIT did not delete the restored folder." with mismatches; no build, run, or session-resumed claims
+    - Keyboard-only use, VoiceOver labels, reduced motion, no color-only status
+    - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 16.6_
+  - [ ] 4.10 Write component and accessibility tests
+    - Vitest and Testing Library against `MockClient` for the Wizard, Recovery Prompt, and Result screen states; fast-check on the restore Zod schemas; `@axe-core/playwright` on the three screens
+    - _Requirements: 12.2, 15.5, 15.7, 15.8, 15.9, 15.10, 16.2, 16.3, 16.4, 16.5, 16.6_
+  - [ ]* 4.11 Write the brief into the restored project (P1)
+    - Depends on: intelligence-and-brief task 3 (P06-T03, Task 29) for the brief content; build the write path here and wire the content during Task 29
+    - After post-commit status `Verified`, create `RESURRECTION_BRIEF.md` in the target with create-new; existing name → not written, reported; write log record with root `target`; `added_files` entry "Not part of the capsule" with size and SHA-256; left out of files verified and mismatches
+    - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5, 18.6_
+  - [ ] 4.12 Write property test for source immutability
+    - **Property 6: Source files are unchanged by restore** (source copy and capsule file made read-only; restore into a sibling parent; snapshot comparison excluding access times)
+    - `crates/dormbit-fs/tests/prop_source_unchanged.rs`
+    - **Validates: Requirements 13.4, 14.8, 14.9, 14.10, 14.11**
+  - [ ] 4.13 Checkpoint: run `cargo test --workspace`, `pnpm -r test`, and the axe checks through `scripts/evidence/run.sh`, then record the full native restore demo with Result screen screenshots

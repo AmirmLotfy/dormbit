@@ -1,0 +1,193 @@
+# Implementation Plan
+
+- [ ] 1. Capture plan engine (P04-T01, Task 19)
+  - Depends on: foundation task 3 (P02-T03, Task 11) for `DormbitError` and ts-rs/Zod contracts
+  - Depends on: foundation task 4 (P02-T04, Task 12) for the Dockline fixture, proptest, and insta
+  - Depends on: scope-and-discovery task 1 (P03-T01, Task 15) for the read-only `Vfs` and `ScopeGrant`
+  - Depends on: scope-and-discovery task 2 (P03-T02, Task 16) for rebuildable classification and gitignore matching
+  - Depends on: scope-and-discovery task 3 (P03-T03, Task 17) for `.git` detection
+  - [ ] 1.1 Define plan types
+    - `crates/dormbit-core/src/plan/model.rs`: `CapturePlan`, `PlanItem`, `ItemKind`, `Decision`, `ReasonCode` (with `group()`), `Group`, `GitTreatment`, `PlanWarning`, `WarningId`, `GroupSummary`, `PlanTotals`, `ApprovedPlan`, `DecisionOverride`, `PlanEdit`; derive `serde` and `ts-rs`
+    - `crates/dormbit-core/src/capsule/limits.rs`: `CapsuleLimits`, loaded from settings
+    - Add proposed error codes `PLAN_INCOMPLETE`, `PLAN_ITEM_LOCKED`, `CAPSULE_LIMIT_EXCEEDED`, `CAPSULE_EXISTS`, `IO_FAILED` to `DormbitError`
+    - _Requirements: 1.2, 1.4, 7.5, 12.1, 19.1_
+  - [ ] 1.2 Implement the classifier with fixed precedence
+    - `crates/dormbit-core/src/plan/classify.rs`: rules 1-18 from the design table, walking through `Vfs` without following symlinks; rebuildable folders, `.git/hooks/`, and fsmonitor folders become single `Dir` items
+    - Safe-path and NFC-collision checks with `unicode-normalization`
+    - Add the read-only `read_link` method to `ReadVfs`, `MemVfs`, and the `dormbit-fs` implementation (never resolves the link)
+    - _Requirements: 1.1, 1.3, 1.5, 1.6, 1.7, 1.8, 1.10, 6.2, 6.5_
+  - [ ] 1.3 Implement sensitive-file rules
+    - `.env*` except `.env.example`, `.env.sample`, `.env.template`; `*.pem`, `*.p12`; private-key names and first-line PEM `PRIVATE KEY` header; the credential-file list
+    - All non-editable, Decision `Exclude`, applied before rebuildable, data, gitignore, and Git rules
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.9_
+  - [ ] 1.4 Implement gitignored-review, data-file, symlink, and special-file rules
+    - `gitignored_not_rebuildable` and `data_file` go to Needs decision as `Undecided`; `rebuildable` goes to Excluded: rebuildable and is editable
+    - Symlinks Included as `symlink_record_only`, not editable; FIFOs, sockets, and devices Unsupported as `special_file`
+    - _Requirements: 4.1, 4.2, 4.3, 6.1, 6.4_
+  - [ ] 1.5 Implement Git treatment
+    - `Full`: `.git` Included as `git_internal`, except `git_hooks`, `git_lock`, `git_fsmonitor` items in Unsupported
+    - `WorkingTreeOnly`: all `.git` items get `Exclude` with `git_working_tree_only`
+    - `.git` as a regular file: Included plus warning `git_external_dir`
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.9_
+  - [ ] 1.6 Implement the secret scanner
+    - `crates/dormbit-core/src/plan/secrets.rs`: token-prefix, assignment, and URL-userinfo patterns; returns a line number only, never the matched text
+    - Scan `.git/config` and working-tree items with `Include` or `Undecided`; skip `.git/objects/**`, `.git/index`, and binary files; count skips
+    - Tests build secret-like strings at runtime from fragments; run gitleaks on the test sources
+    - _Requirements: 3.1, 3.2, 3.5, 3.6, 3.7_
+  - [ ] 1.7 Implement plan digest and totals
+    - `crates/dormbit-core/src/plan/digest.rs`: canonical compact JSON from the design, items sorted by path bytes, SHA-256
+    - Compute `groups` and `totals` per Group and Decision
+    - _Requirements: 1.9, 7.1, 7.3_
+  - [ ] 1.8 Implement edits and approval
+    - `crates/dormbit-core/src/plan/approve.rs`: `apply_edit` (rejects non-editable items with `PLAN_ITEM_LOCKED`, recomputes digest, drops any stored approval)
+    - `approve`: `PLAN_DIGEST_MISMATCH`, then `PLAN_INCOMPLETE` for `Undecided` items or unacknowledged warnings, then `CAPSULE_LIMIT_EXCEEDED` for entry count; records `approved_at` from `Clock`, `acks`, and `overrides`
+    - _Requirements: 2.7, 3.3, 3.4, 3.8, 4.4, 5.6, 7.2, 7.4, 7.5, 7.6, 7.7, 12.2_
+  - [ ] 1.9 Write property test for the plan digest
+    - `crates/dormbit-core/tests/prop_plan_digest.rs`
+    - **Property 6: The plan digest tracks every decision**
+    - **Validates: Requirements 5.6, 7.1, 7.2, 7.3, 7.4**
+  - [ ] 1.10 Write property test for sensitive-file exclusion (plan side)
+    - `crates/dormbit-core/tests/prop_sensitive.rs`: random trees with sensitive files at any depth, random edit sequences; every include attempt fails with `PLAN_ITEM_LOCKED`. Task 2.11 extends it to the manifest.
+    - **Property 7: Sensitive files never enter a capsule**
+    - **Validates: Requirements 2.1, 2.3, 2.4, 2.5, 2.6, 2.7, 2.9**
+  - [ ] 1.11 Add the golden Dockline plan and unit tests
+    - insta snapshot of the Dockline plan: `.env` in Excluded: sensitive, `.env.example` Included, `data/dev.sqlite` in Needs decision, `dist/` and `node_modules/` in Excluded: rebuildable
+    - Unit tests for every reason code and each precedence conflict
+    - _Requirements: 1.11, 4.5_
+  - [ ] 1.12 Add `dormbit-cli plan`
+    - `crates/dormbit-cli/src/plan.rs`: prints groups, reason codes, warnings, and the digest for a granted folder
+    - _Requirements: 1.1, 7.1_
+  - [ ] 1.13 Checkpoint: run `cargo test -p dormbit-core`, `cargo test -p dormbit-cli`, and `cargo build -p dormbit-core --target wasm32-unknown-unknown`, and record evidence with `scripts/evidence/run.sh`
+
+- [ ] 2. Manifest and capsule writer (P04-T02, Task 20)
+  - Owner: rust-security
+  - Depends on: task 1
+  - Depends on: foundation task 3 (P02-T03, Task 11) for the atomic JSON helper and contracts
+  - Depends on: scope-and-discovery task 1 (P03-T01, Task 15) for `cap-std` scope handles and `CapsuleLibrary` grants
+  - [ ] 2.1 Define the manifest schema and canonical serialization
+    - `crates/dormbit-core/src/capsule/manifest.rs`: `Manifest`, `ManifestProject`, `ManifestGit`, `HeadRef`, `RefEntry`, `Entry` (tagged `file`/`symlink`), `ObjectInfo`, `Excluded`, `ManifestWarning`, `Totals`; `deny_unknown_fields`; fixed field order; v1 limitations list
+    - _Requirements: 6.3, 8.6, 8.7, 11.5, 14.1_
+  - [ ] 2.2 Implement the core Git ref reader
+    - `crates/dormbit-core/src/gitref.rs`: `.git/HEAD`, loose refs, `packed-refs` over `Vfs`; detached and unborn HEAD; no config reads
+    - _Requirements: 5.7, 5.8_
+  - [ ] 2.3 Define writer traits and in-memory implementations
+    - `crates/dormbit-core/src/capsule/writer.rs`: `Job`, `Budget`, `Step`, `JobProgress`, `CaptureWorkspace`, `ObjectWrite`, `StoredObject`, `Registry`, `CapsuleRecord`
+    - `crates/dormbit-core/src/capsule/mem.rs`: `MemWorkspace` (refuses existing names with `CAPSULE_EXISTS`), `MemRegistry`
+    - _Requirements: 10.4, 17.1, 17.2_
+  - [ ] 2.4 Implement the `preparing` phase
+    - Recompute digest (`PLAN_DIGEST_MISMATCH`); re-apply sensitive rules (`PATH_UNSAFE`); re-list the tree and record `appeared_after_approval`; check each approved path still exists with the same kind (`FILE_CHANGED_DURING_CAPTURE`); `SCOPE_DENIED` for a non-library grant
+    - _Requirements: 2.8, 8.1, 8.3, 8.5, 10.9_
+  - [ ] 2.5 Implement step 1 (`hashing`)
+    - Stream each approved file through SHA-256 and `GzBuilder::new().mtime(0)` at `Compression::default()` into `put_object()`; dedupe by content hash; record `mode & 0o777`, `mtime`, sizes, and hashes; read symlink targets
+    - _Requirements: 9.1, 9.2, 11.4_
+  - [ ] 2.6 Implement step 2 (`rechecking`)
+    - Re-read and re-hash every approved file and symlink target; any difference fails with `FILE_CHANGED_DURING_CAPTURE` naming the path, followed by `abort()`
+    - _Requirements: 9.3, 9.4, 9.8_
+  - [ ] 2.7 Implement step 3 (`assembling`)
+    - Build the manifest; write `DORMBIT`, `manifest.json`, objects in ascending hex, `END`, and two zero blocks with `Header::new_ustar()` and every field set per the design table; re-hash stored objects while copying (`CAPSULE_HASH_MISMATCH`); hash the whole output; enforce `max_capsule_size`
+    - _Requirements: 9.5, 9.6, 9.7, 10.7, 11.1, 11.2, 11.3, 11.6, 12.3_
+  - [ ] 2.8 Implement `committing`, `recording`, and cancellation
+    - `commit("<capsule_id>.dormbit")`, then `registry.put`; cancel before commit aborts and returns `CANCELLED`; cancel after commit finishes the record; registry failure returns `IO_FAILED` with the capsule left in place
+    - _Requirements: 10.6, 10.8, 17.3, 17.4, 17.6_
+  - [ ] 2.9 Implement the native sink, exclusive rename, and registry in `dormbit-fs`
+    - `crates/dormbit-fs/src/rename.rs`: `rename_excl` wrapping `renameatx_np(RENAME_EXCL)`, the project's one `unsafe` call, with a `// SAFETY:` comment
+    - `crates/dormbit-fs/src/capsule_sink.rs`: `FsCapsuleSink`, `FsWorkspace` (temp folder with owner token, create-new files, `sync_all`, `rename_excl`, library directory sync, token-checked cleanup)
+    - `crates/dormbit-fs/src/registry.rs`: `FsCapsuleRegistry` on the atomic JSON helper
+    - _Requirements: 9.8, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
+  - [ ] 2.10 Write integration tests for `dormbit-fs`
+    - Existing `<capsule_id>.dormbit` is refused with `CAPSULE_EXISTS` and left byte-identical; temp folder removed after success, failure, and cancel; a folder with a wrong owner token is left in place; source tree unchanged (before/after hashes)
+    - _Requirements: 9.8, 9.9, 10.3, 10.4, 10.8_
+  - [ ] 2.11 Write property test for captured content (writer side)
+    - `crates/dormbit-core/tests/prop_roundtrip_writer.rs`: random trees, modes, empty and duplicate files, symlinks; decompress objects from the output and compare; run `verify_all` once Task 3.6 lands (until then, an extraction helper in the test checks bytes and modes). Also extend `prop_sensitive.rs` to assert no sensitive path in `entries`.
+    - **Property 1: Captured content equals the source (PROP-2, writer side)**
+    - **Validates: Requirements 6.3, 8.2, 9.1, 9.2, 11.1, 11.4, 14.7, 14.8, 16.1**
+  - [ ] 2.12 Write property test for the Approved set
+    - `crates/dormbit-core/tests/prop_approved_set.rs`: random decisions and files added to the `Vfs` after approval
+    - **Property 3: The capsule contains exactly the Approved set (PROP-7)**
+    - **Validates: Requirements 8.2, 8.3, 8.6, 9.2, 14.6**
+  - [ ] 2.13 Write property test and golden test for determinism
+    - `crates/dormbit-core/tests/prop_determinism.rs`: shuffled `read_dir` order and random budget sequences give identical bytes
+    - insta golden: Dockline capsule SHA-256, length, and manifest JSON with the fixed test `Clock` and `IdGen`; record the golden bytes for judge-demo task 1 (P09-T01, Task 38)
+    - **Property 4: Capsule bytes are deterministic (PROP-10)**
+    - **Validates: Requirements 11.2, 11.3, 11.5, 11.6, 11.7, 11.8, 11.9, 17.6**
+  - [ ] 2.14 Write property test for schema round trip
+    - Export `Manifest`, `JobProgress`, `CapsuleRecord`, `CapturePlan`, `ApprovedPlan` with ts-rs; add Zod schemas in `packages/schema`; Rust proptest writes seeded samples, Vitest parses and re-serializes; fast-check for the TS side. ts-rs output is regenerated by the main agent at the merge point.
+    - **Property 5: Capsule types round-trip through Zod (PROP-11)**
+    - **Validates: Requirements 19.1, 19.2, 19.3**
+  - [ ] 2.15 Add `dormbit-cli capture`
+    - Captures the extracted Dockline fixture into a `.scratch/` library folder; a smoke test runs `tar -tvf` on the result and checks the entry order
+    - _Requirements: 11.10_
+  - [ ] 2.16 Checkpoint: run `cargo test -p dormbit-core -p dormbit-fs -p dormbit-cli`, `cargo build -p dormbit-core --target wasm32-unknown-unknown`, and `pnpm --filter ./packages/schema test`, and record evidence with `scripts/evidence/run.sh`
+
+- [ ] 3. Verifier and malicious fixtures (P04-T03, Task 21)
+  - Owner: rust-security
+  - Depends on: task 2
+  - [ ] 3.1 Implement the strict ustar parser
+    - `crates/dormbit-core/src/capsule/verifier/ustar.rs`: no `tar` crate; checksum, strict octal, every field byte-compared with the design table; typeflag `0` only; name allowlist; padding and end-of-archive checks; early end of file → `CAPSULE_TRUNCATED`
+    - _Requirements: 13.2, 13.6, 13.7, 13.8, 13.10, 13.11, 13.13_
+  - [ ] 3.2 Implement container checks V01-V06
+    - Marker exact match, version form → Unsupported; entry order and duplicates; limits checked before the bytes they protect
+    - _Requirements: 12.4, 12.5, 13.3, 13.4, 13.5, 13.9_
+  - [ ] 3.3 Implement manifest checks V07-V09 and V12
+    - Strict parse, `schema_version`, Safe paths, exact and NFC duplicates, file-versus-parent conflicts, symlink entry fields, object-set equality, totals
+    - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.11, 14.12_
+  - [ ] 3.4 Implement object checks V10-V11 with bounded decompression
+    - One pass: stored SHA-256, gzip decoder capped at `size + 1` bytes, content SHA-256; `identity` encoding accepted; continue after a failed object; map failures to every referencing entry
+    - _Requirements: 12.6, 12.7, 14.7, 14.8, 14.9_
+  - [ ] 3.5 Implement trailer and registry checks V13-V14
+    - `END` manifest digest and object count; whole-file SHA-256; `Match`, `Mismatch` (Fail), `NotInRegistry` (Unknown)
+    - _Requirements: 13.12, 15.1, 15.2, 15.3, 15.4, 15.5_
+  - [ ] 3.6 Implement the report and `VerifyJob`
+    - `report.rs`: one `CheckResult` per ID, `NotRun` after a stop, `failed_files` with `unverifiable` after a stop, status rules, fixed limitations text, `file_sha256` and `manifest_sha256`
+    - `job.rs`: `step(budget)` with phases and real counts; cancel → `CANCELLED`; `verify_all`; set `last_verified_at` on Verified for registered capsules
+    - `crates/dormbit-fs/src/capsule_source.rs`: `FsCapsuleSource`, reopened read-only on every `open()`
+    - _Requirements: 13.1, 14.10, 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 17.1, 17.2, 17.5_
+  - [ ] 3.7 Write the malicious fixture generator and fixtures
+    - `crates/dormbit-core/tests/support/malicious.rs` builds raw bytes with valid hashes and trailer except the defect under test, writing `fixtures/malicious/<name>.dormbit` and `<name>.expected.json`
+    - Fixtures: traversal, absolute path, symlink entry, duplicate entry (object and manifest-path variants), truncation, missing trailer, archive bomb (overflow and ratio variants), bad marker (content and name variants), unknown version (marker and `schema_version` variants), manifest/object mismatch (missing and extra variants), corrupt object
+    - `crates/dormbit-core/tests/malicious.rs` asserts each expected status and code, and that the generator output matches the committed files
+    - _Requirements: 12.5, 12.6, 13.3, 13.4, 13.7, 13.9, 13.11, 14.3, 14.4, 14.6, 14.7_
+  - [ ] 3.8 Write property test for corruption detection
+    - `crates/dormbit-core/tests/prop_corruption.rs`: every offset with random non-zero XOR masks, and every truncation length, over generated capsules
+    - **Property 2: Any single-byte flip or truncation fails verification (PROP-3)**
+    - **Validates: Requirements 13.5, 13.6, 13.10, 13.11, 13.12, 14.7, 14.8, 14.9, 16.2**
+  - [ ] 3.9 Write property test for bounded verification
+    - `crates/dormbit-core/tests/prop_verifier_bounds.rs`: random bytes and mutated capsules through a counting `CapsuleSource` and a counting decoder; no panics
+    - **Property 8: Verification work is bounded on hostile input**
+    - **Validates: Requirements 12.4, 12.5, 12.6, 12.7**
+  - [ ] 3.10 Complete the writer round-trip property with the verifier
+    - Switch `prop_roundtrip_writer.rs` to assert `verify_all` reports Verified with `registry_match = Match`
+    - _Requirements: 15.2, 16.1_
+  - [ ] 3.11 Add `dormbit-cli verify`
+    - Prints status, each check, damaged files, registry match, and limitations; smoke test on the Dockline capsule and on `fixtures/malicious/corrupt-object.dormbit` (names the damaged file)
+    - _Requirements: 14.7, 16.2, 16.4, 16.5_
+  - [ ] 3.12 Checkpoint: run `cargo test -p dormbit-core -p dormbit-fs -p dormbit-cli` with `PROPTEST_CASES=10000` locally (512 in CI) and `cargo build -p dormbit-core --target wasm32-unknown-unknown`, and record evidence with `scripts/evidence/run.sh`
+
+- [ ] 4. Plan, Capture, and Verification screens (P04-T04, Task 22)
+  - Depends on: tasks 1, 2, 3
+  - Depends on: foundation task 2 (P02-T02, Task 10) for the command allowlist and Channel streaming
+  - Depends on: scope-and-discovery task 4 (P03-T04, Task 18) for the Shelf and `scope_pick` with `CapsuleLibrary`
+  - Uses components from native-experience task 1 (P08-T01, Task 34: `ProgressSteps`, `StatusPill`, `CapsuleSeal`), which runs in parallel
+  - [ ] 4.1 Add Tauri commands and the job runner
+    - `apps/desktop/src-tauri/src/commands/{plan,capture,verify}.rs`: `plan_create`, `plan_set_decision`, `plan_approve`, `capture_start`, `job_cancel`, `capsule_pick`, `capsules_list`, `verify_start`; add them to `AppManifest::commands` and the capability
+    - Background thread calls `step(budget)` and sends `JobProgress` and the final result over a Channel; job registry keyed by `job_id`
+    - _Requirements: 17.1, 17.2, 17.3, 17.5, 18.5, 18.11_
+  - [ ] 4.2 Write command tests
+    - Valid inputs, unknown IDs, and random inputs return typed `DormbitError` and change no state; allowlist test still fails on any unlisted command
+    - _Requirements: 19.4_
+  - [ ] 4.3 Extend the client
+    - `packages/client`: `planCreate`, `planSetDecision`, `planApprove`, `captureStart`, `jobCancel`, `capsulePick`, `capsulesList`, `verifyStart` on `DormbitClient`, `TauriClient`, and `MockClient`; Zod parsing on every response; export `VerificationReport` schema
+    - _Requirements: 19.1, 19.2, 19.4_
+  - [ ] 4.4 Build the Preservation Plan screen
+    - `packages/ui/src/screens/PreservationPlan.tsx`: six groups with counts and bytes, reason codes in plain words, decision controls only on editable items, Git treatment toggle, warnings with acknowledgment, capsule library choice by grant ID, Approve disabled with a list of what remains
+    - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.11, 18.13_
+  - [ ] 4.5 Build the Capsule Creation screen
+    - `packages/ui/src/screens/CapsuleCreation.tsx`: `ProgressSteps` over capture phases with real file and byte counts, Cancel, error states by code, not-captured list, then start verification
+    - _Requirements: 8.4, 18.5, 18.6, 18.7_
+  - [ ] 4.6 Build the Integrity Verification screen
+    - `packages/ui/src/screens/IntegrityVerification.tsx`: check list with glyph plus label, damaged files with reasons, registry match, stated limitations, Cancel, `CapsuleSeal` pressed only on Verified
+    - _Requirements: 18.6, 18.8, 18.9, 18.10, 18.12, 18.13_
+  - [ ] 4.7 Write component tests
+    - Vitest and Testing Library with `MockClient`: Approve gating; no control on locked items; phase progress from mock events; Cancel calls `jobCancel`; seal state per status; Failed lists damaged files; statuses never rely on color alone; file names render as text
+    - _Requirements: 18.2, 18.3, 18.5, 18.6, 18.8, 18.9, 18.10, 18.13_
+  - [ ] 4.8 Checkpoint: run `cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml`, `pnpm -r test`, `pnpm -r typecheck`, and `pnpm -r lint`, then preserve Dockline end to end in the app, and record evidence with `scripts/evidence/run.sh`
