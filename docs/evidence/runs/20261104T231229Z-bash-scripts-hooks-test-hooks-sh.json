@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "task": "P02-T05",
+  "command": [
+    "bash",
+    "scripts/hooks/test-hooks.sh"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-04T23:12:31Z",
+  "finished_at": "2026-11-04T23:12:38Z",
+  "duration_ms": 6879,
+  "exit_code": 0,
+  "counts": null,
+  "counts_source": "unknown",
+  "env": {},
+  "git": {
+    "sha": "5bb3769feea2ec37d850ba964c192577141aec70",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261104T231229Z-bash-scripts-hooks-test-hooks-sh.log"
+}
