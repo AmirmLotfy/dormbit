@@ -1,0 +1,6 @@
+---
+source: crates/dormbit-core/tests/golden_smoke.rs
+---
+{
+  "kind": "done"
+}

@@ -1,0 +1,8 @@
+---
+source: crates/dormbit-core/tests/golden_smoke.rs
+---
+{
+  "code": "CANCELLED",
+  "message": "window closed",
+  "retryable": false
+}

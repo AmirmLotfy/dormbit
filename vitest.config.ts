@@ -1,13 +1,24 @@
 import { defineConfig } from "vitest/config";
 
-// Minimal for now; foundation Task 12 (4.2) turns this into per-package projects with jsdom.
+// `pnpm test` runs every TypeScript test in apps/ and packages/ (foundation Requirement 16.3).
+// Logic packages run in Node; UI packages and apps run in jsdom for Testing Library.
 export default defineConfig({
   test: {
-    include: [
-      "packages/*/test/**/*.test.ts",
-      "packages/*/test/**/*.test.tsx",
-      "apps/*/test/**/*.test.ts",
-      "apps/*/test/**/*.test.tsx",
+    projects: [
+      {
+        test: {
+          name: "node",
+          environment: "node",
+          include: ["packages/schema/test/**/*.test.ts", "packages/client/test/**/*.test.ts"],
+        },
+      },
+      {
+        test: {
+          name: "dom",
+          environment: "jsdom",
+          include: ["packages/ui/test/**/*.test.{ts,tsx}", "apps/*/test/**/*.test.{ts,tsx}"],
+        },
+      },
     ],
   },
 });
