@@ -1,0 +1,25 @@
+[package]
+name = "dockline-gen"
+description = "Builds the fictional Dockline fixture (foundation Requirements 18 and 19)"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[[bin]]
+name = "dockline-gen"
+path = "src/main.rs"
+
+[dependencies]
+dormbit-core = { path = "../../../crates/dormbit-core" }
+git2.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+tar.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+
+[lints]
+workspace = true

@@ -8,6 +8,7 @@ members = [
   "crates/dormbit-wasm",
   "crates/dormbit-cli",
   "apps/desktop/src-tauri",
+  "fixtures/dockline/generator",
 ]
 
 [workspace.package]
