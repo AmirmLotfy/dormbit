@@ -1,0 +1,46 @@
+# --- DORMBIT .gitignore ---
+# NOTE: .kiro/ is intentionally NOT ignored. The Kiroween rules require the
+# /.kiro directory to be committed. Do not add .kiro (or any sub-folder) here.
+
+# Agent scratch space: raw logs, probe output, local experiments. Never committed.
+.scratch/
+
+# Rust
+/target/
+**/target/
+Cargo.lock.bak
+
+# Node / JS
+node_modules/
+.pnpm-store/
+dist/
+dist-ssr/
+*.local
+.vite/
+coverage/
+.turbo/
+
+# Tauri build output
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/gen/
+
+# Test / tooling artifacts
+playwright-report/
+test-results/
+.playwright/
+*.tsbuildinfo
+
+# Media working files (raw recordings/renders are large; keep final assets only)
+media/raw/
+
+# macOS
+.DS_Store
+*.swp
+
+# Env & secrets (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.key

@@ -1,0 +1,22 @@
+#!/bin/sh
+# DORMBIT pre-commit hook: scan staged changes for secrets before every commit.
+# Enabled with: git config core.hooksPath .githooks
+#
+# The repo is public, so a leaked secret is public the moment it is pushed.
+# This hook blocks the commit if gitleaks finds anything in the staged diff.
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks not found on PATH. Install it or scan manually." >&2
+  echo "pre-commit: refusing to commit without a secret scan." >&2
+  exit 1
+fi
+
+# Scan only what is staged. --staged uses the git index; --redact hides any
+# matched secret value from the output so it does not leak into terminal logs.
+if ! gitleaks protect --staged --redact --no-banner; then
+  echo "pre-commit: gitleaks found a potential secret in the staged changes." >&2
+  echo "pre-commit: remove it (or add a reviewed .gitleaksignore entry) and retry." >&2
+  exit 1
+fi
+
+exit 0
