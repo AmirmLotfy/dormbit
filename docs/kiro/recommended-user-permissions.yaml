@@ -1,0 +1,29 @@
+# DORMBIT: rules for the USER-scope Kiro permissions file.
+#
+# Why a separate file: Kiro skips workspace-scope rules whose patterns point
+# outside the workspace ("Workspace permissions must use workspace-relative
+# patterns"). Rules about paths in your home folder must live in the
+# user-scope file instead: ~/.kiro/settings/permissions.yaml
+#
+# Install: append the rule below to the existing `rules:` list in
+# ~/.kiro/settings/permissions.yaml (do not replace that file; it already
+# holds your other rules). Kiro cannot write that file itself.
+#
+# Your user file already allows reads of the toolchain folders (~/.cargo,
+# ~/.rustup, mise, Playwright cache, /opt/homebrew, CommandLineTools), so
+# only the deny rule is needed. Deny beats allow in every scope, so it also
+# overrides your existing allow on ~/.kiro for chat transcripts.
+
+  # Never read real AI-agent histories or credential stores. DORMBIT is
+  # developed and tested against synthetic fixtures only.
+  - capability: fs_read
+    effect: deny
+    match:
+      - ~/.claude
+      - ~/.codex
+      - ~/.ssh
+      - ~/.aws
+      - ~/.gnupg
+      - ~/.config/gh
+      - ~/.netrc
+      - ~/.kiro/sessions/**/messages.jsonl

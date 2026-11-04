@@ -30,30 +30,11 @@ rules:
     effect: allow
 
   # ---------------------------------------------------------------- reads
-  # Toolchain locations the agent inspects for versions and diagnostics.
-  - capability: fs_read
-    effect: allow
-    match:
-      - ~/.cargo
-      - ~/.rustup
-      - ~/.local/share/mise
-      - ~/Library/Caches/ms-playwright
-      - /opt/homebrew
-      - /Library/Developer/CommandLineTools
-
-  # Never read real AI-agent histories or credential stores. DORMBIT is
-  # developed and tested against synthetic fixtures only.
-  - capability: fs_read
-    effect: deny
-    match:
-      - ~/.claude
-      - ~/.codex
-      - ~/.ssh
-      - ~/.aws
-      - ~/.gnupg
-      - ~/.config/gh
-      - ~/.netrc
-      - ~/.kiro/sessions/**/messages.jsonl
+  # Workspace-scope rules may only use workspace-relative paths; Kiro skips
+  # any rule whose pattern points outside the workspace. Reads outside the
+  # repo (toolchain folders, and the deny list for agent histories and
+  # credentials) live in docs/kiro/recommended-user-permissions.yaml, which
+  # goes in the user-scope file ~/.kiro/settings/permissions.yaml.
 
   # ---------------------------------------------------------------- writes
   # Never write real secret files from the agent's write tools.
