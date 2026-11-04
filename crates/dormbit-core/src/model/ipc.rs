@@ -8,7 +8,35 @@
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
+use super::error::DormbitError;
+use super::id::{AdapterId, CapsuleId, OpId, PlanId, ProjectId, ScopeId};
 use super::num::SafeU64;
+
+// ---- jobs ------------------------------------------------------------------------------------
+
+/// Streamed over a Channel by every job command. A job ends with exactly one of `done`,
+/// `failed`, or `cancelled`. Progress counts are real file and byte counts, never estimates.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+#[ts(export)]
+pub enum JobEvent<R> {
+    State {
+        state: String,
+    },
+    Progress {
+        files_done: SafeU64,
+        files_total: SafeU64,
+        bytes_done: SafeU64,
+        bytes_total: SafeU64,
+    },
+    Done {
+        result: R,
+    },
+    Failed {
+        error: DormbitError,
+    },
+    Cancelled,
+}
 
 // ---- scope -----------------------------------------------------------------------------------
 
@@ -30,7 +58,7 @@ pub enum ScopeVia {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct ScopeGrant {
-    pub id: String,
+    pub id: ScopeId,
     pub kind: ScopeKind,
     pub root_display: String,
     pub granted_at: String,
@@ -142,7 +170,7 @@ pub struct Marks {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct Preservation {
-    pub last_capsule: Option<String>,
+    pub last_capsule: Option<CapsuleId>,
     pub last_verified_at: Option<String>,
     pub last_verified_restore: Option<String>,
 }
@@ -150,8 +178,8 @@ pub struct Preservation {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct ProjectRecord {
-    pub id: String,
-    pub scope_id: String,
+    pub id: ProjectId,
+    pub scope_id: ScopeId,
     /// Path relative to the scope root. Never absolute.
     pub rel_root: String,
     pub name: NamedValue,
@@ -232,7 +260,7 @@ pub struct PlanTotals {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct CapturePlan {
-    pub plan_id: String,
+    pub plan_id: PlanId,
     pub items: Vec<PlanItem>,
     pub groups: Vec<PlanGroup>,
     pub git_treatment: GitTreatment,
@@ -263,7 +291,7 @@ pub struct ApprovedPlan {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct CapsuleRef {
-    pub id: String,
+    pub id: CapsuleId,
     pub project_name: String,
     pub created_at: String,
     pub size: SafeU64,
@@ -304,7 +332,7 @@ pub struct VerificationCheck {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct VerificationReport {
-    pub capsule_id: String,
+    pub capsule_id: CapsuleId,
     pub file_sha256: String,
     pub manifest_sha256: String,
     pub checks: Vec<VerificationCheck>,
@@ -328,7 +356,7 @@ pub enum RestoreState {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct RestoreJournal {
-    pub op_id: String,
+    pub op_id: OpId,
     pub staging: String,
     pub owner_token: String,
     pub state: RestoreState,
@@ -337,8 +365,8 @@ pub struct RestoreJournal {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct RestoreInput {
-    pub capsule_id: String,
-    pub target_scope_id: String,
+    pub capsule_id: CapsuleId,
+    pub target_scope_id: ScopeId,
     /// Name of the new folder to create inside the target. Never a path.
     pub dest_name: String,
 }
@@ -355,8 +383,8 @@ pub struct PrecheckReport {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct RestoreReport {
-    pub op_id: String,
-    pub capsule_id: String,
+    pub op_id: OpId,
+    pub capsule_id: CapsuleId,
     pub destination_display: String,
     pub files_restored: SafeU64,
     pub bytes_restored: SafeU64,
@@ -373,14 +401,14 @@ pub enum RecoverAction {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct RecoverRequest {
-    pub op_id: String,
+    pub op_id: OpId,
     pub action: RecoverAction,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct RecoverResult {
-    pub op_id: String,
+    pub op_id: OpId,
     pub state: RestoreState,
 }
 
@@ -445,7 +473,7 @@ pub struct SettingsPatch {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct ConsentRecord {
-    pub adapter_id: String,
+    pub adapter_id: AdapterId,
     pub granted: bool,
     pub updated_at: String,
 }
@@ -461,7 +489,7 @@ pub enum AdapterSupport {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct AdapterInfo {
-    pub id: String,
+    pub id: AdapterId,
     pub name: String,
     pub support: AdapterSupport,
     pub granted: bool,
@@ -496,7 +524,22 @@ mod tests {
     }
 
     #[test]
-    fn unknown_fields_are_not_silently_dropped_by_a_patch_with_values() {
+    fn job_events_are_tagged_with_kind() {
+        let done: JobEvent<DiscoveryResult> = JobEvent::Done {
+            result: DiscoveryResult {
+                projects_found: SafeU64::new(3).unwrap(),
+                entries_scanned: SafeU64::new(120).unwrap(),
+            },
+        };
+        let v = serde_json::to_value(&done).unwrap();
+        assert_eq!(v["kind"], "done");
+        assert_eq!(v["result"]["projects_found"], 3);
+        let c: JobEvent<DiscoveryResult> = serde_json::from_str(r#"{"kind":"cancelled"}"#).unwrap();
+        assert_eq!(c, JobEvent::Cancelled);
+    }
+
+    #[test]
+    fn a_patch_with_values_keeps_them() {
         let p: SettingsPatch =
             serde_json::from_str(r#"{"reduce_motion":true,"capsule_max_mb":null}"#).unwrap();
         assert_eq!(p.reduce_motion, Some(true));

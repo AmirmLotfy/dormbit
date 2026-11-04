@@ -4,7 +4,13 @@
 export type Activity = { latest_mtime: string | null, scanned: SafeU64, partial: boolean, };
 
 
-export type AdapterInfo = { id: string, name: string, support: AdapterSupport, granted: boolean, };
+/**
+ * An agent adapter, for example `claude-code`.
+ */
+export type AdapterId = string;
+
+
+export type AdapterInfo = { id: AdapterId, name: string, support: AdapterSupport, granted: boolean, };
 
 
 export type AdapterSupport = "supported" | "unsupported";
@@ -57,10 +63,16 @@ body: string, };
 export type BuildProfile = "debug" | "release";
 
 
-export type CapsuleRef = { id: string, project_name: string, created_at: string, size: SafeU64, file_count: SafeU64, };
+/**
+ * A capsule (`CapsuleRef.id`, the manifest's `capsule_id`).
+ */
+export type CapsuleId = string;
 
 
-export type CapturePlan = { plan_id: string, items: Array<PlanItem>, groups: Array<PlanGroup>, git_treatment: GitTreatment, totals: PlanTotals, 
+export type CapsuleRef = { id: CapsuleId, project_name: string, created_at: string, size: SafeU64, file_count: SafeU64, };
+
+
+export type CapturePlan = { plan_id: PlanId, items: Array<PlanItem>, groups: Array<PlanGroup>, git_treatment: GitTreatment, totals: PlanTotals, 
 /**
  * SHA-256 over the included items; approval must present it back.
  */
@@ -73,7 +85,7 @@ export type CaptureResult = { capsule: CapsuleRef, };
 export type CheckStatus = "pass" | "fail" | "skipped";
 
 
-export type ConsentRecord = { adapter_id: string, granted: boolean, updated_at: string, };
+export type ConsentRecord = { adapter_id: AdapterId, granted: boolean, updated_at: string, };
 
 
 export type Decision = "include" | "exclude";
@@ -136,10 +148,29 @@ export type GitTreatment = "metadata_only" | "excluded";
 export type GitUpstream = { ahead: SafeU64, behind: SafeU64, as_of_last_fetch: boolean, };
 
 
+/**
+ * Streamed over a Channel by every job command. A job ends with exactly one of `done`,
+ * `failed`, or `cancelled`. Progress counts are real file and byte counts, never estimates.
+ */
+export type JobEvent<R> = { "kind": "state", state: string, } | { "kind": "progress", files_done: SafeU64, files_total: SafeU64, bytes_done: SafeU64, bytes_total: SafeU64, } | { "kind": "done", result: R, } | { "kind": "failed", error: DormbitError, } | { "kind": "cancelled" };
+
+
+/**
+ * A running job (discovery, capture, verify, restore).
+ */
+export type JobId = string;
+
+
 export type Marks = { dormant: boolean, };
 
 
 export type NamedValue = { value: string, source: string, };
+
+
+/**
+ * A restore operation (`RestoreJournal.op_id`).
+ */
+export type OpId = string;
 
 
 export type Outcome = "preserved" | "partial" | "not_captured";
@@ -149,6 +180,12 @@ export type PlanApproveInput = { digest: string, acks: Array<string>, overrides:
 
 
 export type PlanGroup = { name: string, file_count: SafeU64, bytes: SafeU64, };
+
+
+/**
+ * A capture plan (`CapturePlan.plan_id`).
+ */
+export type PlanId = string;
 
 
 export type PlanItem = { 
@@ -167,10 +204,16 @@ export type PlanTotals = { files: SafeU64, bytes: SafeU64, included_files: SafeU
 export type PrecheckReport = { ok: boolean, issues: Array<string>, required_bytes: SafeU64, available_bytes: SafeU64, };
 
 
-export type Preservation = { last_capsule: string | null, last_verified_at: string | null, last_verified_restore: string | null, };
+export type Preservation = { last_capsule: CapsuleId | null, last_verified_at: string | null, last_verified_restore: string | null, };
 
 
-export type ProjectRecord = { id: string, scope_id: string, 
+/**
+ * A discovered project (`ProjectRecord.id`).
+ */
+export type ProjectId = string;
+
+
+export type ProjectRecord = { id: ProjectId, scope_id: ScopeId, 
 /**
  * Path relative to the scope root. Never absolute.
  */
@@ -180,26 +223,26 @@ rel_root: string, name: NamedValue, stacks: Array<Finding>, git: GitSnapshot | n
 export type RecoverAction = "discard";
 
 
-export type RecoverRequest = { op_id: string, action: RecoverAction, };
+export type RecoverRequest = { op_id: OpId, action: RecoverAction, };
 
 
-export type RecoverResult = { op_id: string, state: RestoreState, };
+export type RecoverResult = { op_id: OpId, state: RestoreState, };
 
 
 export type RegistryMatch = "Match" | "Mismatch" | "NotInRegistry";
 
 
-export type RestoreInput = { capsule_id: string, target_scope_id: string, 
+export type RestoreInput = { capsule_id: CapsuleId, target_scope_id: ScopeId, 
 /**
  * Name of the new folder to create inside the target. Never a path.
  */
 dest_name: string, };
 
 
-export type RestoreJournal = { op_id: string, staging: string, owner_token: string, state: RestoreState, };
+export type RestoreJournal = { op_id: OpId, staging: string, owner_token: string, state: RestoreState, };
 
 
-export type RestoreReport = { op_id: string, capsule_id: string, destination_display: string, files_restored: SafeU64, bytes_restored: SafeU64, verified: boolean, };
+export type RestoreReport = { op_id: OpId, capsule_id: CapsuleId, destination_display: string, files_restored: SafeU64, bytes_restored: SafeU64, verified: boolean, };
 
 
 export type RestoreState = "Staged" | "Written" | "Verified" | "Committed" | "Cleaned";
@@ -217,7 +260,13 @@ export type SafeU64 = number;
 /**
  * A folder the user granted. `root_display` is for humans only (home shown as `~`).
  */
-export type ScopeGrant = { id: string, kind: ScopeKind, root_display: string, granted_at: string, via: ScopeVia, };
+export type ScopeGrant = { id: ScopeId, kind: ScopeKind, root_display: string, granted_at: string, via: ScopeVia, };
+
+
+/**
+ * A folder grant (`ScopeGrant.id`).
+ */
+export type ScopeId = string;
 
 
 export type ScopeKind = "Read" | "CapsuleLibrary" | "RestoreTarget";
@@ -241,4 +290,4 @@ export type SizeInfo = { total: SafeU64, rebuildable: SafeU64, partial: boolean,
 export type VerificationCheck = { id: string, status: CheckStatus, detail: string, };
 
 
-export type VerificationReport = { capsule_id: string, file_sha256: string, manifest_sha256: string, checks: Array<VerificationCheck>, failed_files: Array<string>, registry_match: RegistryMatch, status: CheckStatus, };
+export type VerificationReport = { capsule_id: CapsuleId, file_sha256: string, manifest_sha256: string, checks: Array<VerificationCheck>, failed_files: Array<string>, registry_match: RegistryMatch, status: CheckStatus, };
