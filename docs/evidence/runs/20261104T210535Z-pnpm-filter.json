@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "task": "P02-T04",
+  "command": [
+    "pnpm",
+    "--filter",
+    "e2e",
+    "exec",
+    "playwright",
+    "test"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-04T21:05:35Z",
+  "finished_at": "2026-11-04T21:06:16Z",
+  "duration_ms": 40993,
+  "exit_code": 0,
+  "counts": {
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0
+  },
+  "counts_source": "playwright",
+  "env": {},
+  "git": {
+    "sha": "3983b542a2cb9306ac073afcea727d22e619313a",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261104T210535Z-pnpm-filter.log"
+}
