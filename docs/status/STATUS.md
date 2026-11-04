@@ -26,7 +26,17 @@ Last updated: Nov 4, 2026 (PT), after Task 8 (P01-T03).
 | 7 (P01-T02) | Architecture, threat model, capsule format, ADRs | Implemented | [overview](../architecture/overview.md), [threat-model](../security/threat-model.md), [capsule-format](../architecture/capsule-format.md), ADR-003 to ADR-010 |
 | 8 (P01-T03) | Kiro specs and status ledger                     | In progress | 8 specs in `.kiro/specs/`. Analyze Requirements and Correctness runs on the two security specs are pending (user action)                                      |
 
-## Phases 02 to 18
+## Phase 02: Foundation (`foundation` spec)
+
+| Task         | Title                                             | State       | Evidence                                                                                                                                                                                                                                                   |
+| ------------ | ------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 9 (P02-T01)  | Monorepo scaffold                                 | Done        | `beb01cf`; lint, typecheck, test, build, layout, deps, and pin checks pass                                                                                                                                                                                 |
+| 10 (P02-T02) | Hardened Tauri shell                              | Done        | `3d92331`; Allowlist_Guard 13/13 with self-tests; ad-hoc signed `.app` built and checked with `codesign`                                                                                                                                                   |
+| 11 (P02-T03) | Shared contracts                                  | In progress | Rust models, ID newtypes, `JobEvent<R>`, ts-rs export (byte-stable), 64 strict Zod schemas with compile-time type equality, `DormbitClient` (28 methods), MockClient, Client_Contract (30 tests), desktop mock mode. Remaining: 3.7 PROP-11 parity harness |
+| 12 to 14     | Test setup and Dockline fixture, Kiro config, CI  | Planned     |                                                                                                                                                                                                                                                            |
+| —            | Landing page (judge-demo Requirement 22, ADR-011) | Done early  | `189d7f5`; interactive 3D capsule, gradient, phone and desktop checked in headless Chrome                                                                                                                                                                  |
+
+## Phases 03 to 18
 
 All Planned. Task lists and dependencies live in `.kiro/specs/*/tasks.md`; the master plan is [MASTER_PLAN.md](../MASTER_PLAN.md).
 

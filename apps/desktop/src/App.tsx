@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import type { AppInfo } from "@dormbit/schema";
+import type { DormbitClient } from "@dormbit/client";
 import { loadAppInfo, type AppInfoHost } from "./appInfo";
+import { MockProjects } from "./MockProjects";
 
 type State = { kind: "loading" } | { kind: "ready"; info: AppInfo } | { kind: "error" };
 
 /** Temporary shell screen: shows the name and version that Rust reports. */
-export function App({ host }: { host?: AppInfoHost }) {
+export function App({
+  host,
+  mock,
+}: {
+  host?: AppInfoHost | undefined;
+  mock?: DormbitClient | undefined;
+}) {
   const [state, setState] = useState<State>({ kind: "loading" });
 
   useEffect(() => {
@@ -32,6 +40,7 @@ export function App({ host }: { host?: AppInfoHost }) {
       {state.kind === "error" ? (
         <p role="alert">The app could not read its own version. Restart DORMBIT.</p>
       ) : null}
+      {mock ? <MockProjects client={mock} /> : null}
     </main>
   );
 }

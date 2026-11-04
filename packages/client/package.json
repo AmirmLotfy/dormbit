@@ -10,6 +10,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@dormbit/schema": "workspace:*"
+    "@dormbit/schema": "workspace:*",
+    "zod": "4.6.7"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./contract": "./src/contract.ts"
+  },
+  "devDependencies": {
+    "vitest": "5.1.0"
   }
 }
