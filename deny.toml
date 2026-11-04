@@ -1,0 +1,57 @@
+# cargo-deny config (foundation Requirement 24.7). Run: `cargo deny check`.
+# The CI `security` job runs this; keep it green locally first.
+
+[graph]
+# DORMBIT ships only on macOS (plus the wasm target for the web core). The GTK/WebKit Linux
+# backend of Tauri's deps never builds for us, so we don't audit those target-only crates.
+targets = [
+  "aarch64-apple-darwin",
+  "x86_64-apple-darwin",
+  "wasm32-unknown-unknown",
+]
+all-features = false
+
+[advisories]
+version = 2
+yanked = "deny"
+# No advisories are open for the audited targets. proc-macro-error (RUSTSEC-2024-0370,
+# unmaintained) appears only in ts-rs's build-time macro chain on other targets.
+ignore = []
+
+[licenses]
+version = 2
+# Permissive licenses only. MPL-2.0 (cssparser, selectors) and Unicode-3.0 are file-level
+# copyleft or data licenses that are fine to depend on; no strong copyleft (GPL/LGPL/AGPL)
+# is allowed, so a crate under one fails the check.
+allow = [
+  "MIT",
+  "Apache-2.0",
+  "Apache-2.0 WITH LLVM-exception",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "ISC",
+  "Zlib",
+  "0BSD",
+  "CC0-1.0",
+  "Unicode-3.0",
+  "Unlicense",
+  "MPL-2.0",
+]
+confidence-threshold = 0.9
+
+[[licenses.exceptions]]
+# ring bundles OpenSSL/BoringSSL-derived code under several permissive terms; it is a common,
+# audited crypto crate. Scope the exception to ring only.
+name = "ring"
+allow = ["OpenSSL", "ISC", "MIT", "Apache-2.0"]
+
+[bans]
+multiple-versions = "allow"
+# Internal workspace crates use `path = "..."`, which reads as a wildcard version; that's fine.
+wildcards = "deny"
+allow-wildcard-paths = true
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

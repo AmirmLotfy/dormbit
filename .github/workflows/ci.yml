@@ -1,0 +1,129 @@
+name: ci
+
+on:
+  push: {}
+  pull_request: {}
+
+# Least privilege: no job may write to the repo (foundation Requirement 24.10).
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: "true"
+  PROPTEST_CASES: "512"
+  FC_NUM_RUNS: "512"
+  INSTA_UPDATE: "no"
+
+jobs:
+  rust:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - name: Rust toolchain (from rust-toolchain.toml)
+        run: |
+          rustup show active-toolchain || rustup toolchain install
+          rustc --version
+      - uses: Swatinem/rust-cache@98c8021b550208e191a6a3145459bfc9fb29c4c0 # v2.8.0
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - run: cargo test --workspace --locked
+
+  ts:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+
+  wasm:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - name: Rust toolchain with wasm target
+        run: |
+          rustup show active-toolchain || rustup toolchain install
+          rustup target add wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@98c8021b550208e191a6a3145459bfc9fb29c4c0 # v2.8.0
+      - name: Install wasm-bindgen-cli 0.2.130
+        run: cargo install wasm-bindgen-cli --version 0.2.130 --locked
+      - run: cargo build -p dormbit-wasm --target wasm32-unknown-unknown --release --locked
+      - name: Run wasm-bindgen on the output
+        run: |
+          wasm-bindgen --version
+          wasm-bindgen --target web --out-dir "$RUNNER_TEMP/wasm-out" \
+            target/wasm32-unknown-unknown/release/dormbit_wasm.wasm
+          ls -la "$RUNNER_TEMP/wasm-out"
+
+  contracts:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - name: Rust toolchain (from rust-toolchain.toml)
+        run: rustup show active-toolchain || rustup toolchain install
+      - uses: Swatinem/rust-cache@98c8021b550208e191a6a3145459bfc9fb29c4c0 # v2.8.0
+      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
+      - run: pnpm install --frozen-lockfile
+      - name: Schema is up to date
+        run: |
+          sh scripts/gen-schema.sh
+          git diff --exit-code packages/schema/generated
+      - name: Schema parity (PROP-11)
+        run: sh scripts/schema-parity.sh
+      - name: Dockline fixture check
+        run: cargo test -p dockline-gen --locked
+
+  e2e:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
+      - run: pnpm install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: pnpm --filter e2e exec playwright install --with-deps chromium webkit firefox
+      - run: pnpm --filter e2e exec playwright test
+
+  security:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          fetch-depth: 0
+      - name: gitleaks (full history, pinned release, checksum verified)
+        run: bash scripts/ci/gitleaks.sh
+      - name: Rust toolchain (for cargo-deny)
+        run: rustup show active-toolchain || rustup toolchain install
+      - uses: Swatinem/rust-cache@98c8021b550208e191a6a3145459bfc9fb29c4c0 # v2.8.0
+      - name: cargo-deny 0.20.2
+        run: |
+          cargo install cargo-deny --version 0.20.2 --locked
+          cargo deny check
+      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --audit-level high
+
+  meta:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - name: Rust toolchain (for cargo tree in check-deps)
+        run: rustup show active-toolchain || rustup toolchain install
+      - uses: Swatinem/rust-cache@98c8021b550208e191a6a3145459bfc9fb29c4c0 # v2.8.0
+      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
+      - run: pnpm install --frozen-lockfile
+      - run: sh scripts/check-layout.sh
+      - run: sh scripts/check-deps.sh
+      - run: node scripts/check-pins.mjs
+      - run: node scripts/kiro/check-config.mjs
+      - name: actionlint
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash) 1.7.7
+          ./actionlint
+      - name: shellcheck
+        run: shellcheck scripts/**/*.sh .githooks/*

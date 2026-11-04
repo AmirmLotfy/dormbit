@@ -402,13 +402,27 @@ else {
   if (Object.keys(servers).some((k) => /github/i.test(k)))
     fail("mcp: no GitHub MCP server is allowed");
 }
-if (!has(".kiroignore")) fail(".kiroignore is missing");
-else {
-  const lines = read(".kiroignore")
+// The agent cannot write .kiroignore (Kiro denies that path), so the user pastes
+// docs/kiro/kiroignore.txt to the repo root. If only the source exists, note it and pass;
+// if neither exists, fail.
+const kiroignoreRel = has(".kiroignore")
+  ? ".kiroignore"
+  : has("docs/kiro/kiroignore.txt")
+    ? "docs/kiro/kiroignore.txt"
+    : null;
+if (kiroignoreRel === null) {
+  fail(".kiroignore is missing and docs/kiro/kiroignore.txt (its source) is missing too");
+} else {
+  const lines = read(kiroignoreRel)
     .split("\n")
     .map((l) => l.trim());
   for (const e of ["target/", "node_modules/", "media/raw/", ".scratch/"])
-    if (!lines.includes(e)) fail(`.kiroignore lacks ${e}`);
+    if (!lines.includes(e)) fail(`${kiroignoreRel} lacks ${e}`);
+  if (kiroignoreRel !== ".kiroignore") {
+    console.log(
+      "NOTE  .kiroignore is not at the repo root yet; paste docs/kiro/kiroignore.txt there (the agent cannot write it).",
+    );
+  }
 }
 
 if (failures.length === 0) {
