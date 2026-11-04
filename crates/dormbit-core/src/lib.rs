@@ -11,6 +11,8 @@
     deny(clippy::unwrap_used, clippy::expect_used, clippy::panic)
 )]
 
+pub mod model;
+
 /// The crate version, reported by `app_info` and written into capsule manifests.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 

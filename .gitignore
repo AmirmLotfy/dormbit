@@ -44,3 +44,6 @@ media/raw/
 *.pem
 *.p12
 *.key
+
+# ts-rs default export dir (real output goes to packages/schema/generated)
+crates/*/bindings/
