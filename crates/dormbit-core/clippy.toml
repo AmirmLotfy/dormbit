@@ -1,0 +1,29 @@
+# Core uses the Vfs trait only (security.md, ADR-003). Direct filesystem,
+# process, and network access is banned here; scope-and-discovery extends this file.
+disallowed-types = [
+  { path = "std::fs::File", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::OpenOptions", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::DirEntry", reason = "core uses Vfs only (security.md)" },
+  { path = "std::process::Command", reason = "core never runs processes (security.md)" },
+  { path = "std::net::TcpStream", reason = "core never uses the network (security.md)" },
+  { path = "std::net::TcpListener", reason = "core never uses the network (security.md)" },
+  { path = "std::net::UdpSocket", reason = "core never uses the network (security.md)" },
+]
+disallowed-methods = [
+  { path = "std::fs::read", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::read_to_string", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::write", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::create_dir", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::create_dir_all", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::remove_file", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::remove_dir", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::remove_dir_all", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::rename", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::copy", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::metadata", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::symlink_metadata", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::read_dir", reason = "core uses Vfs only (security.md)" },
+  { path = "std::fs::canonicalize", reason = "core uses Vfs only (security.md)" },
+  { path = "std::time::SystemTime::now", reason = "time is injected through Clock (ADR-003)" },
+  { path = "std::time::Instant::now", reason = "time is injected through Clock (ADR-003)" },
+]

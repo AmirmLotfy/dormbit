@@ -27,25 +27,26 @@ The question DORMBIT answers: "Can I shelve this project now and resume later, k
 
 The plan does not define personas. These are derived from §1–2 of the plan (see Open questions).
 
-| User | Need | Main path |
-|---|---|---|
-| Developer on macOS (13 or later) who pauses side projects and uses AI coding agents | Shelve a project with the files that matter, and get an honest handoff when they return | Native app |
-| Hackathon judge | Test the safety claims without installing anything or exposing local files | Web judge demo, then optionally the DMG |
+| User                                                                                | Need                                                                                    | Main path                               |
+| ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------- |
+| Developer on macOS (13 or later) who pauses side projects and uses AI coding agents | Shelve a project with the files that matter, and get an honest handoff when they return | Native app                              |
+| Hackathon judge                                                                     | Test the safety claims without installing anything or exposing local files              | Web judge demo, then optionally the DMG |
 
 ## 4. Positioning
 
 Every individual capability exists somewhere. DORMBIT doesn't claim to be the first tool to archive projects, inspect Git, or browse agent histories. It claims the combination. Sources: [research.md §1](research.md#1-competitors-and-adjacent-tools) and plan §2.
 
-| Tool | What it does well | What it doesn't do (DORMBIT's gap) |
-|---|---|---|
-| [Agent Sessions](https://github.com/jazzyalex/agent-sessions) (macOS, open source) | Searches local conversations from 16 coding agents; resumes supported CLI sessions | No project preservation, capsule, or restore proof |
-| [Claude Code History Viewer](https://github.com/jhlee0409/claude-code-history-viewer) (Tauri, open source) | Browses conversations from 31 assistants offline | Same gap |
-| [SpecStory](https://specstory.com/) | Saves agent conversations as you work | Forward-only; doesn't shelve a dormant project or verify a restore |
-| Git clients, `git bundle` | Repository state and history | Miss gitignored files that matter; no handoff; no restore verification |
-| Time Machine, Arq, restic, Borg | Verified backups | Not project-aware; no capture plan or development context |
-| [kondo](https://github.com/tbillington/kondo), npkill, disk cleaners | Reclaim space from `node_modules`, `target`, build output | Destructive by design. DORMBIT only reads, and uses similar classification to keep rebuildable output out of the capsule |
+| Tool                                                                                                       | What it does well                                                                  | What it doesn't do (DORMBIT's gap)                                                                                       |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [Agent Sessions](https://github.com/jazzyalex/agent-sessions) (macOS, open source)                         | Searches local conversations from 16 coding agents; resumes supported CLI sessions | No project preservation, capsule, or restore proof                                                                       |
+| [Claude Code History Viewer](https://github.com/jhlee0409/claude-code-history-viewer) (Tauri, open source) | Browses conversations from 31 assistants offline                                   | Same gap                                                                                                                 |
+| [SpecStory](https://specstory.com/)                                                                        | Saves agent conversations as you work                                              | Forward-only; doesn't shelve a dormant project or verify a restore                                                       |
+| Git clients, `git bundle`                                                                                  | Repository state and history                                                       | Miss gitignored files that matter; no handoff; no restore verification                                                   |
+| Time Machine, Arq, restic, Borg                                                                            | Verified backups                                                                   | Not project-aware; no capture plan or development context                                                                |
+| [kondo](https://github.com/tbillington/kondo), npkill, disk cleaners                                       | Reclaim space from `node_modules`, `target`, build output                          | Destructive by design. DORMBIT only reads, and uses similar classification to keep rebuildable output out of the capsule |
 
 DORMBIT combines four things no single tool found in research does together:
+
 1. an evidence-graded reconstruction of the project's state;
 2. an approved capture into a verifiable capsule;
 3. a transactional, independently verified restore;
@@ -56,6 +57,7 @@ DORMBIT combines four things no single tool found in research does together:
 ## 5. Scope
 
 ### P0 (must ship)
+
 - Discovery limited to folders the user picks, plus Git snapshot and project metadata.
 - Evidence View with the four statuses, including in-repo agent files.
 - An editable capture plan with explicit approval.
@@ -66,6 +68,7 @@ DORMBIT combines four things no single tool found in research does together:
 - CI, the public repo, the deployed demo, the ad-hoc-signed DMG release, the video, and the Devpost submission.
 
 ### P1 (ship if feasible; cut in this order when behind)
+
 1. Claude Code, Codex, and Kiro-export metadata adapters, including the "context at risk" warning.
 2. Writing the brief into the restored project as `RESURRECTION_BRIEF.md`, optionally also as a Kiro steering file.
 3. Safe restore of internal relative symlinks.
@@ -75,6 +78,7 @@ DORMBIT combines four things no single tool found in research does together:
 7. Accuracy validation on public repos (Task 48).
 
 ### P2 (future, not in v1)
+
 - Encrypted capture (age plus Keychain).
 - Deeper session analysis and opt-in local AI summaries.
 - Cursor and Gemini adapters, and reading Kiro's local session store if it gets documented.
@@ -91,6 +95,7 @@ DORMBIT combines four things no single tool found in research does together:
 One line per plan requirement. The full EARS text is in plan §4. Each link points to the Kiro spec that formalizes it (the specs are written in Task 8, P01-T03). Spec folder: `.kiro/specs/`.
 
 ### Scope and discovery
+
 - **SCP-1:** Folder access comes only from native pickers opened by Rust; the UI uses grant IDs, never raw paths. → [scope-and-discovery](../../.kiro/specs/scope-and-discovery/requirements.md)
 - **SCP-2:** All filesystem access goes through `cap-std` handles; discovery never follows symlinks; source folders are read-only at the type level. → [scope-and-discovery](../../.kiro/specs/scope-and-discovery/requirements.md)
 - **DSC-1:** Project roots are detected by markers (`.git`, package manifests, `.kiro`, `AGENTS.md`); a monorepo is one project. → [scope-and-discovery](../../.kiro/specs/scope-and-discovery/requirements.md)
@@ -101,15 +106,18 @@ One line per plan requirement. The full EARS text is in plan §4. Each link poin
 - **GIT-1:** Git is read with `git2` (no network), the git CLI is never run, command-running config keys are flagged, and remote URL credentials are hidden. → [scope-and-discovery](../../.kiro/specs/scope-and-discovery/requirements.md)
 
 ### Project intelligence
+
 - **INT-1:** Every finding has a status (Confirmed, Inferred, Unknown, Unsupported), a rule ID, and at least one evidence reference. → [intelligence-and-brief](../../.kiro/specs/intelligence-and-brief/requirements.md)
 - **INT-2:** Rules cover manifests, documented commands (never run), toolchain files, `.env.example` key names, TODO/FIXME, Git work in progress, Kiro tasks, agent files, `.specstory/` metadata, and standing Unknowns. → [intelligence-and-brief](../../.kiro/specs/intelligence-and-brief/requirements.md)
 - **INT-3:** The system never states intent or history it has no evidence for. → [intelligence-and-brief](../../.kiro/specs/intelligence-and-brief/requirements.md)
 
 ### Agent adapters (P1)
+
 - **AGT-1 (P1):** Each adapter needs consent and its own folder grant, stays read-only, extracts metadata only, never opens credential files, and reports Supported or Unsupported per format. → [intelligence-and-brief](../../.kiro/specs/intelligence-and-brief/requirements.md)
 - **AGT-2 (P1):** Session references are labeled "not resumed by DORMBIT". → [intelligence-and-brief](../../.kiro/specs/intelligence-and-brief/requirements.md)
 
 ### Capture plan
+
 - **CAP-1:** The plan sorts files into Included, Excluded: rebuildable, Excluded: sensitive, Needs decision, Unreadable, and Unsupported, each with a reason code and an editable flag. → [capsule-and-verification](../../.kiro/specs/capsule-and-verification/requirements.md)
 - **CAP-2:** Sensitive files are excluded with no override in v1. → [capsule-and-verification](../../.kiro/specs/capsule-and-verification/requirements.md)
 - **CAP-3:** Secret-like content triggers a warning that must be acknowledged; test strings are generated at runtime and never committed. → [capsule-and-verification](../../.kiro/specs/capsule-and-verification/requirements.md)
@@ -119,12 +127,14 @@ One line per plan requirement. The full EARS text is in plan §4. Each link poin
 - **CAP-7:** The plan has a digest; approval records it with acknowledgments; capture includes only approved paths and reports files that appeared later as not captured. → [capsule-and-verification](../../.kiro/specs/capsule-and-verification/requirements.md)
 
 ### Capsule and verification
+
 - **CPS-1:** Capture runs in three steps (hash and compress, re-hash sources, assemble with the manifest first) and fails with `FILE_CHANGED_DURING_CAPTURE` on any change. → [capsule-and-verification](../../.kiro/specs/capsule-and-verification/requirements.md)
 - **CPS-2:** The capsule is written to a temp file, synced, renamed into place only if the name is free, and recorded in the registry with its file and manifest SHA-256. → [capsule-and-verification](../../.kiro/specs/capsule-and-verification/requirements.md)
 - **VER-1:** A separate verifier reopens and strictly parses the capsule, checking marker, headers, padding, hashes, manifest/object match, paths, trailer, and registry. → [capsule-and-verification](../../.kiro/specs/capsule-and-verification/requirements.md)
 - **VER-2:** The verifier reports Verified, Failed (naming damaged files), or Unsupported, and states its limits. → [capsule-and-verification](../../.kiro/specs/capsule-and-verification/requirements.md)
 
 ### Restore
+
 - **RST-1:** The user picks a capsule, a destination parent, and a new folder name; restore is refused if the target exists in any case or normalization variant, or is inside the source project or capsule library. → [transactional-restore](../../.kiro/specs/transactional-restore/requirements.md)
 - **RST-2:** Pre-checks cover verification, free space, exclusive-rename support (`RESTORE_VOLUME_UNSUPPORTED`), case sensitivity, path rules, and normalization collisions. → [transactional-restore](../../.kiro/specs/transactional-restore/requirements.md)
 - **RST-3:** Restore writes into a fresh staging folder with an owner token, using create-new writes, re-hashing, and sync, then commits with `renameatx_np(RENAME_EXCL)`. → [transactional-restore](../../.kiro/specs/transactional-restore/requirements.md)
@@ -134,21 +144,25 @@ One line per plan requirement. The full EARS text is in plan §4. Each link poin
 - **RST-7:** The restore report lists files written and verified, mismatches, what wasn't restored and why, risky Git config, executables, the source-unchanged check, and writes outside the destination (must be 0). → [transactional-restore](../../.kiro/specs/transactional-restore/requirements.md)
 
 ### Resurrection Brief
+
 - **BRF-1:** The brief is structured JSON rendered to Markdown with fixed sections, and every line cites a finding ID. → [intelligence-and-brief](../../.kiro/specs/intelligence-and-brief/requirements.md)
 - **BRF-2:** The brief reports the four outcomes separately (see §10). → [intelligence-and-brief](../../.kiro/specs/intelligence-and-brief/requirements.md)
 - **BRF-3 (P1):** `RESURRECTION_BRIEF.md` is written into the restored project only after verification, as a separate reported write that the restore report lists as an added file. → [intelligence-and-brief](../../.kiro/specs/intelligence-and-brief/requirements.md)
 
 ### Native app and UX
+
 - **NAT-1:** No `fs` or `shell` plugin in the WebView, allowlisted commands, strict CSP, devtools off in release. → [foundation](../../.kiro/specs/foundation/requirements.md) (Task 10)
 - **NAT-2:** Untrusted project text is rendered without raw HTML, logs hide sensitive details, and there is no telemetry. → [native-experience](../../.kiro/specs/native-experience/requirements.md)
 - **UX-1:** All 13 screens (12 native plus the Judge Demo) support keyboard access, VoiceOver labels, and reduced motion, and never use color as the only signal. → [native-experience](../../.kiro/specs/native-experience/requirements.md)
 
 ### Judge demo
+
 - **DEM-1:** The demo always shows "Synthetic Demo — No Local Files Accessed", runs the real Rust core in WebAssembly over an in-memory filesystem, and implements the 12 steps with corruption tests, a collision test, reset, and downloads. → [judge-demo](../../.kiro/specs/judge-demo/requirements.md)
 - **DEM-2:** The folder picker is a labeled mock, hashes are real, the independent re-hash uses WebCrypto, and any pacing is labeled with the real elapsed time. → [judge-demo](../../.kiro/specs/judge-demo/requirements.md)
 - **DEM-3:** The Dockline Invoices fixture is a fictional invoicing app committed once as `fixtures/dockline/dockline-invoices.tar`, the single source for golden tests natively and in the browser. → [foundation](../../.kiro/specs/foundation/requirements.md) (generator, Task 12) and [judge-demo](../../.kiro/specs/judge-demo/requirements.md) (use)
 
 ### Delivery (no plan requirement IDs)
+
 The plan gives the release and submission work task IDs, not requirement IDs. It is formalized in [release-and-submission](../../.kiro/specs/release-and-submission/requirements.md) (P10, P12–P18). Hackathon requirements it covers: a working app URL that stays free through Jan 29, 2027; an English description; a public YouTube video under 3:00 showing the app on its target device; a public GitHub repo with an MIT license visible in About and `/.kiro` at the root; a Kiro usage write-up; exactly one category (Frankenstein).
 
 ## 7. User journeys
@@ -193,11 +207,13 @@ The plan gives the release and submission work task IDs, not requirement IDs. It
 ## 9. Success and validation metrics
 
 **Accuracy and safety (plan §2):**
+
 - On 5 public open-source repos with different stacks, at least 90% of Confirmed findings are judged correct against the source, and every Inferred finding cites evidence (Task 48, P1).
 - 100% of restores in the test corpus are byte-verified, and no malicious fixture is accepted.
 - A first-time user completes all 12 demo steps without help, checked by a Playwright run plus one manual walkthrough by the user.
 
 **Engineering gates (plan §13–15):**
+
 - PROP-1 to PROP-12 pass, run at 10,000 cases locally and 512 in CI.
 - At least 25 attack fixtures, each rejected with its expected error code (Task 42).
 - The 12-step demo passes on Chromium, WebKit, and Firefox (Task 41).
@@ -205,6 +221,7 @@ The plan gives the release and submission work task IDs, not requirement IDs. It
 - A result counts only if it was recorded through `scripts/evidence/run.sh` or CI.
 
 **Delivery:**
+
 - Submission targeted for Wed Dec 2, 2026, 12:00 PM PT; hard deadline Fri Dec 4, 2026, 2:00 PM PT.
 - Video under 3:00 (target 2:35–2:45), public on YouTube.
 - Demo URL available through Jan 29, 2027, watched by a daily smoke test.

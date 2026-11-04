@@ -3,11 +3,13 @@
 Source: https://kiroween.devpost.com/rules and /details/faqs (read Nov 3, 2026). Deadline: Fri Dec 4, 2026, 2:00 PM PT. Target submit: Wed Dec 2, 12:00 PM PT. No edits are possible after the deadline.
 
 ## Before building further (user actions)
+
 - [ ] Register for Kiroween 2026 on Devpost
 - [ ] Request the 4,000 free Kiro credits (by Dec 1, 12:00 PM PT) and redeem them (by Dec 4)
 - [ ] Decide team members and which bonus prizes apply (blog post, social post, student, startup)
 
 ## Required content
+
 - [ ] Working app URL (web demo), free and open through Jan 29, 2027
 - [ ] English description of features and functionality
 - [ ] Public GitHub repo (not GitLab/Bitbucket) with all source, assets, instructions
@@ -20,10 +22,12 @@ Source: https://kiroween.devpost.com/rules and /details/faqs (read Nov 3, 2026).
 - [ ] Pre-existing code and templates disclosed (docs/submission/disclosures.md)
 
 ## Optional bonus prizes
+
 - [ ] Social Blitz: post starting with #KiroweenHackathon26, URL in the form
 - [ ] Bonus Blog: public blog post that mentions Kiroween 2026, URL in the form
 
 ## Final steps (each needs explicit user approval)
+
 - [ ] Show every Devpost field to the user
 - [ ] User approves; submit
 - [ ] Verify the public submission page and every link in it

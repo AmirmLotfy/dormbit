@@ -1,0 +1,1 @@
+Shell and Node scripts referenced by the specs: layout/dependency/pin checks (`foundation` Task 9), the evidence runner (`foundation` Task 12), Kiro config checks (`foundation` Task 13), the media pipeline and release scripts (`release-and-submission`).

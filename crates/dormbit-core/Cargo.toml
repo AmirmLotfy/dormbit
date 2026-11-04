@@ -1,0 +1,16 @@
+[package]
+name = "dormbit-core"
+description = "DORMBIT core: pure logic over a Vfs. No direct I/O, no unsafe."
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true

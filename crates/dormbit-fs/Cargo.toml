@@ -1,0 +1,14 @@
+[package]
+name = "dormbit-fs"
+description = "DORMBIT native filesystem layer: scope grants, cap-std handles, staging, journal."
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+dormbit-core = { path = "../dormbit-core" }

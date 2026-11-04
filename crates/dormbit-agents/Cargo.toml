@@ -1,0 +1,20 @@
+[package]
+name = "dormbit-agents"
+description = "DORMBIT in-repo agent-file parsers and (P1) metadata-only adapters."
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[features]
+default = ["inrepo"]
+inrepo = []
+# P1: consent-gated, metadata-only readers. Native only; never linked into the wasm demo.
+adapters = []
+
+[dependencies]
+dormbit-core = { path = "../dormbit-core" }

@@ -1,0 +1,14 @@
+[package]
+name = "dormbit-git"
+description = "DORMBIT Git inspection: git2 only, read-only, never the git CLI."
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+dormbit-core = { path = "../dormbit-core" }

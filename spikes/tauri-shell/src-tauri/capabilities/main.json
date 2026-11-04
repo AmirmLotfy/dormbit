@@ -1,7 +1,0 @@
-{
-  "$schema": "../gen/schemas/desktop-schema.json",
-  "identifier": "main",
-  "description": "Spike: the main window may call only the two app commands. No dialog, fs, or shell permissions.",
-  "windows": ["main"],
-  "permissions": ["core:default", "allow-app-info", "allow-pick-folder"]
-}

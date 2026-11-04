@@ -6,6 +6,7 @@ Approved in Kiro Plan mode on Tue Nov 3 17:10:29 PST 2026 (Pacific Time).
 **Built for:** Kiroween 2026, Frankenstein category. Deadline Fri Dec 4, 2026, 2:00 PM PT.
 
 ## Decisions recorded at approval
+
 - **Signing:** ad-hoc signature (`signingIdentity: "-"`) with no notarization. The web demo is the main path for judges. The README and Devpost testing notes give the Gatekeeper steps (System Settings → Privacy & Security → Open Anyway) and build-from-source instructions.
 - **GitHub:** the repo is public from its first push. The owner comes from `gh` and is confirmed with the user before the repo is created. License: MIT.
 - **Research:** proceed as researched. Accuracy is validated on public open-source repos. Running DORMBIT on the user's own projects stays optional and needs their consent at that time.
@@ -14,6 +15,7 @@ Approved in Kiro Plan mode on Tue Nov 3 17:10:29 PST 2026 (Pacific Time).
 ## 0. What was verified during planning
 
 **Environment**
+
 - macOS 26.6.2, Homebrew under `/opt/homebrew` (Apple Silicon).
 - Xcode Command Line Tools are installed; Xcode.app is not. Tauri's docs say the Command Line Tools are enough for desktop builds.
 - **Rust is not installed.** Installing it is Task 2.
@@ -23,6 +25,7 @@ Approved in Kiro Plan mode on Tue Nov 3 17:10:29 PST 2026 (Pacific Time).
 - Plan mode couldn't read today's date; Task 1 checks it.
 
 **Hackathon rules** (kiroween.devpost.com, /rules, /details/faqs)
+
 - Submission Period: Oct 30, 2026 9:00 AM PT to Dec 4, 2026 2:00 PM PT. No late entries and no edits after the deadline.
 - Judging: Dec 16, 2026 to Jan 29, 2027. The app must stay available and free for the whole judging period.
 - Only new work built during the Submission Period counts. Any pre-existing code or work must be disclosed.
@@ -38,6 +41,7 @@ Approved in Kiro Plan mode on Tue Nov 3 17:10:29 PST 2026 (Pacific Time).
 - Judging has two stages. Stage One is pass/fail on fit and Kiro use. Stage Two scores five criteria at 20% each. "Technological Implementation" measures how well Kiro was used.
 
 **Kiro** (kiro.dev/docs)
+
 - **Specs:** `.kiro/specs/<name>/{requirements.md,design.md,tasks.md}`. Also available: Quick Spec, Analyze Requirements (IDE/CLI), and property-based "Correctness" (IDE only). Independent tasks run in parallel waves.
 - **Steering:** `.kiro/steering/*.md` with `inclusion: always | fileMatch | manual | auto`, plus `#[[file:...]]` references. Custom agents only load steering files listed in their `resources`.
 - **Hooks:** `.kiro/hooks/*.json` with `version: "v1"`. Triggers include `PostFileSave`, `PreToolUse`, `PostTaskExec`, `PreTaskExec`, and `Stop`.
@@ -52,11 +56,13 @@ Approved in Kiro Plan mode on Tue Nov 3 17:10:29 PST 2026 (Pacific Time).
 - Export Chat writes a zip containing `session.json` and `messages.jsonl`.
 
 **AI agent storage**
+
 - **Claude Code** (official docs): plaintext transcripts at `~/.claude/projects/<project>/<session>.jsonl`. They contain file contents and command output and are deleted after `cleanupPeriodDays` (default 30 days). Credentials (`.credentials.json`) are in the same tree.
 - **Codex** (official docs): state under `CODEX_HOME` (default `~/.codex`). `history.jsonl` exists when history persistence is on, and `auth.json` when file-based credential storage is used. The docs don't confirm the per-session file layout.
 - **Kiro:** the Export Chat format is documented. Its local session storage isn't documented, so v1 doesn't read it.
 
 **Tauri 2**
+
 - Capabilities and `AppManifest::commands` limit what the UI can call. Tauri's docs say capabilities don't protect against incorrect scope checks in Rust, so DORMBIT's Rust scope layer is the real security boundary.
 - macOS WebDriver tests run through `@wdio/tauri-service` with the embedded driver plugin.
 - Ad-hoc signing uses `signingIdentity: "-"`. Apple Silicon requires a signature on downloaded apps.
@@ -66,6 +72,7 @@ Approved in Kiro Plan mode on Tue Nov 3 17:10:29 PST 2026 (Pacific Time).
 DORMBIT is worth building if it's positioned as **verified project shelving with an evidence-graded handoff**. It shouldn't be positioned as an agent-history viewer or a disk cleaner, because good tools already cover both.
 
 **Strengths:**
+
 1. Judges can test the safety claims themselves: corrupt a capsule in the browser and watch DORMBIT reject it.
 2. Every finding is labeled Confirmed, Inferred, Unknown, or Unsupported, and cites its source.
 3. The need is concrete. Claude Code deletes local transcripts after 30 days by default, and `git push` leaves behind gitignored files that matter, such as local notes and data files.
@@ -73,33 +80,34 @@ DORMBIT is worth building if it's positioned as **verified project shelving with
 
 **Main risks:** a broad scope for about five weeks, a first-time Rust setup, WebAssembly integration, Gatekeeper friction from ad-hoc signing, and account automation.
 
-| Assumption in the brief | Decision |
-|---|---|
-| "Switch to Spec/Default after approval" | The handoff is automatic. Pick Auto in the model dropdown. |
-| "Kiro can play the video to verify it" | The agent checks duration and streams (ffprobe), samples frames, measures loudness, and transcribes (whisper-cli). The user watches the final cut. |
-| "Browser automation does YouTube and Devpost" | Only through Playwright MCP's Chrome extension in the user's signed-in Chrome, with approval. We don't use the YouTube API, because uploads from unverified API projects are locked to private. Manual steps are the fallback. |
-| "Encrypt sensitive data" | Not in v1. Sensitive files and external transcripts are never captured, and the app says so. Encryption is P2. |
-| "Kiro and Cursor history adapters" | Kiro: user-exported chat zips, metadata only. Cursor history: Unsupported. In-repo `.kiro/`, `AGENTS.md`, `CLAUDE.md`, `.cursor/rules`, and `.specstory/` are read as ordinary project files. |
-| "Track Tested/Verified/Released/Submitted in Kiro tasks" | Kiro checkboxes can't represent those states, so `docs/status/STATUS.md` is the ledger. |
-| "Notarized app" | Decided: ad-hoc signing. The web demo is the main path for judges. |
-| Third-party names in the video | No third-party logos. Product names appear only as plain text. |
-| "Restored project resumes or builds" | Never claimed. The four outcomes are reported separately (BRF-2). |
-| "Validate the product hypothesis" | We validate accuracy and the workflow (public repos, demo testing). Adoption can't be validated in five weeks, and the final report says so. |
+| Assumption in the brief                                  | Decision                                                                                                                                                                                                                       |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| "Switch to Spec/Default after approval"                  | The handoff is automatic. Pick Auto in the model dropdown.                                                                                                                                                                     |
+| "Kiro can play the video to verify it"                   | The agent checks duration and streams (ffprobe), samples frames, measures loudness, and transcribes (whisper-cli). The user watches the final cut.                                                                             |
+| "Browser automation does YouTube and Devpost"            | Only through Playwright MCP's Chrome extension in the user's signed-in Chrome, with approval. We don't use the YouTube API, because uploads from unverified API projects are locked to private. Manual steps are the fallback. |
+| "Encrypt sensitive data"                                 | Not in v1. Sensitive files and external transcripts are never captured, and the app says so. Encryption is P2.                                                                                                                 |
+| "Kiro and Cursor history adapters"                       | Kiro: user-exported chat zips, metadata only. Cursor history: Unsupported. In-repo `.kiro/`, `AGENTS.md`, `CLAUDE.md`, `.cursor/rules`, and `.specstory/` are read as ordinary project files.                                  |
+| "Track Tested/Verified/Released/Submitted in Kiro tasks" | Kiro checkboxes can't represent those states, so `docs/status/STATUS.md` is the ledger.                                                                                                                                        |
+| "Notarized app"                                          | Decided: ad-hoc signing. The web demo is the main path for judges.                                                                                                                                                             |
+| Third-party names in the video                           | No third-party logos. Product names appear only as plain text.                                                                                                                                                                 |
+| "Restored project resumes or builds"                     | Never claimed. The four outcomes are reported separately (BRF-2).                                                                                                                                                              |
+| "Validate the product hypothesis"                        | We validate accuracy and the workflow (public repos, demo testing). Adoption can't be validated in five weeks, and the final report says so.                                                                                   |
 
 ## 2. Competitive positioning
 
-| Tool | What it does well | What it doesn't do (DORMBIT's gap) |
-|---|---|---|
-| Agent Sessions (macOS, open source) | Searches 16 agents' local histories; resumes supported CLI sessions | Doesn't preserve projects or prove restores |
-| Claude Code History Viewer (Tauri, open source) | Browses 31 assistants' histories offline | Same |
-| SpecStory | Saves agent conversations as you work | Doesn't shelve a dormant project or prove a restore |
-| Git clients, `git bundle` | Repo state and history | Miss gitignored files that matter; no handoff; no restore proof |
-| Time Machine, Arq, restic, Borg | Verified backups | Not project-aware; no capture plan or context |
-| kondo, npkill, disk cleaners | Reclaim space (kondo's README calls itself "essentially `rm -rf` with a prompt") | Destructive. DORMBIT only reads, and uses similar classification to shape the capture plan. |
+| Tool                                            | What it does well                                                                | What it doesn't do (DORMBIT's gap)                                                          |
+| ----------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Agent Sessions (macOS, open source)             | Searches 16 agents' local histories; resumes supported CLI sessions              | Doesn't preserve projects or prove restores                                                 |
+| Claude Code History Viewer (Tauri, open source) | Browses 31 assistants' histories offline                                         | Same                                                                                        |
+| SpecStory                                       | Saves agent conversations as you work                                            | Doesn't shelve a dormant project or prove a restore                                         |
+| Git clients, `git bundle`                       | Repo state and history                                                           | Miss gitignored files that matter; no handoff; no restore proof                             |
+| Time Machine, Arq, restic, Borg                 | Verified backups                                                                 | Not project-aware; no capture plan or context                                               |
+| kondo, npkill, disk cleaners                    | Reclaim space (kondo's README calls itself "essentially `rm -rf` with a prompt") | Destructive. DORMBIT only reads, and uses similar classification to shape the capture plan. |
 
 **The unmet need:** "Can I shelve this project now and resume later, knowing exactly what I'll get back?" DORMBIT doesn't claim to be the first tool to archive projects, inspect Git, or browse histories. Its claim is that it combines them: it understands the project's state, preserves the approved content, independently proves the restore, and writes an accurate handoff.
 
 **Frankenstein rationale:** DORMBIT stitches together several parts:
+
 - local developer intelligence (filesystem, Git, manifests)
 - AI-agent context awareness
 - a cryptographic capsule format
@@ -109,6 +117,7 @@ DORMBIT is worth building if it's positioned as **verified project shelving with
 The parts depend on each other. The evidence engine shapes what the capsule must contain, and the verifier backs the brief's "files restored" claim.
 
 **Validation metrics:**
+
 - On 5 public open-source repos with different stacks, at least 90% of Confirmed findings are judged correct against the source, and every Inferred finding cites evidence.
 - 100% of restores in the test corpus are byte-verified, and no malicious fixture is accepted.
 - A first-time user completes all 12 demo steps without help. This is checked by a Playwright run plus one manual walkthrough by the user.
@@ -116,6 +125,7 @@ The parts depend on each other. The evidence engine shapes what the capsule must
 ## 3. Scope
 
 **P0 (must ship):**
+
 - Discovery limited to folders the user picks, plus Git snapshot and project metadata.
 - Evidence View with the four statuses, including in-repo agent files.
 - An editable capture plan with explicit approval.
@@ -126,6 +136,7 @@ The parts depend on each other. The evidence engine shapes what the capsule must
 - CI, the public repo, the deployed demo, the ad-hoc-signed DMG release, the video, and the Devpost submission.
 
 **P1 (ship if feasible; cut in this order when behind):**
+
 1. Claude Code, Codex, and Kiro-export metadata adapters, including the "context at risk" warning.
 2. Writing the brief into the restored project as `RESURRECTION_BRIEF.md`, optionally also as a Kiro steering file.
 3. Safe restore of internal relative symlinks.
@@ -135,6 +146,7 @@ The parts depend on each other. The evidence engine shapes what the capsule must
 7. Accuracy validation on public repos (Task 48).
 
 **P2 (future):**
+
 - Encrypted capture (age plus Keychain).
 - Deeper session analysis and opt-in local AI summaries.
 - Cursor and Gemini adapters, and reading Kiro's local session store if it gets documented.
@@ -149,6 +161,7 @@ The parts depend on each other. The evidence engine shapes what the capsule must
 ## 4. Feature requirements (EARS style; these seed the Kiro specs)
 
 **Scope and discovery**
+
 - **SCP-1:** Folder access SHALL come only from native folder pickers opened by Rust. The UI SHALL refer to folders by grant ID, never by raw path.
 - **SCP-2:** All filesystem access SHALL go through `cap-std` directory handles for granted folders, and discovery SHALL never follow symlinks. Source folders SHALL be read-only at the type level, meaning no write API exists for them.
 - **DSC-1:** WHEN a scan runs, the system SHALL detect project roots by markers (`.git`, package manifests, `.kiro`, `AGENTS.md`) and SHALL treat a monorepo as one project.
@@ -168,6 +181,7 @@ The parts depend on each other. The evidence engine shapes what the capsule must
 - **GIT-1:** Git SHALL be read with libgit2 (`git2`, network features off), and the git CLI SHALL never be run. Config keys that can run commands (`core.fsmonitor`, `core.hooksPath`, `filter.*`, `core.sshCommand`, `credential.helper`) SHALL be flagged, and credentials in remote URLs SHALL be hidden.
 
 **Project intelligence**
+
 - **INT-1:** Every finding SHALL have a status, a rule ID, and at least one evidence reference (a file and line range, a Git object, a manifest key, or a file stat). The statuses are:
   - Confirmed: read directly from a cited source.
   - Inferred: derived by a named rule from confirmed facts.
@@ -187,10 +201,12 @@ The parts depend on each other. The evidence engine shapes what the capsule must
 - **INT-3:** The system SHALL NOT state intent or history that it has no evidence for.
 
 **Agent adapters (P1)**
+
 - **AGT-1:** Each adapter SHALL require explicit consent and its own folder grant. It SHALL stay read-only, extract metadata only (session ID, working directory, timestamps, branch, tool version), discard message content, never open credential files, and report Supported or Unsupported for each file format.
 - **AGT-2:** Session references SHALL be labeled "not resumed by DORMBIT".
 
 **Capture plan**
+
 - **CAP-1:** The plan SHALL sort files into these groups: Included, Excluded: rebuildable, Excluded: sensitive, Needs decision, Unreadable, Unsupported. Each item SHALL have a reason code and an editable flag.
 - **CAP-2:** Sensitive files (`.env*` except example files, private keys, `.pem`, `.p12`, credential files) SHALL be excluded, with no override in v1.
 - **CAP-3:** WHEN file contents look like secrets, the system SHALL warn and require acknowledgment before capture. Test strings for this check SHALL be generated at runtime and never committed.
@@ -200,6 +216,7 @@ The parts depend on each other. The evidence engine shapes what the capsule must
 - **CAP-7:** The plan SHALL have a digest. Approval SHALL record the digest and the user's acknowledgments. Capture SHALL include only approved paths, and files that appeared after approval SHALL be reported as not captured.
 
 **Capsule and verification**
+
 - **CPS-1:** Capture SHALL run in three steps:
   1. Hash and compress each approved file into a temporary object store.
   2. Re-read and re-hash every source file. Any mismatch fails the capture with `FILE_CHANGED_DURING_CAPTURE`.
@@ -216,6 +233,7 @@ The parts depend on each other. The evidence engine shapes what the capsule must
 - **VER-2:** The verifier SHALL report Verified, Failed (naming the damaged files), or Unsupported. It SHALL state its limits: SHA-256 shows integrity, not authorship, and the OS cache may serve the bytes it reads.
 
 **Restore**
+
 - **RST-1:** The user SHALL choose a capsule, a destination parent folder, and a new folder name. Restore SHALL be refused if the target already exists in any case or Unicode-normalization variant, or if it's inside the source project or the capsule library.
 - **RST-2:** Pre-checks SHALL cover:
   - the capsule is verified
@@ -238,6 +256,7 @@ The parts depend on each other. The evidence engine shapes what the capsule must
   - writes outside the destination, which must be 0 (taken from the journal)
 
 **Resurrection Brief**
+
 - **BRF-1:** The brief SHALL be structured JSON rendered to Markdown, with these sections: identity, technologies, repo state, docs, verified content, unfinished work, evidence-backed next steps, context references, missing information, first steps, and pre-run checks (lifecycle scripts, editor auto-run configs, risky Git config). Every line SHALL cite a finding ID.
 - **BRF-2:** The brief SHALL report four outcomes separately:
   - Files restored and verified.
@@ -247,11 +266,13 @@ The parts depend on each other. The evidence engine shapes what the capsule must
 - **BRF-3 (P1):** Writing `RESURRECTION_BRIEF.md` into the restored project SHALL happen after verification, as a separate, reported write. The restore report SHALL list it as an added file that isn't part of the capsule.
 
 **Native app and UX**
+
 - **NAT-1:** The WebView SHALL have no `fs` or `shell` plugin. Commands SHALL be allowlisted, the CSP SHALL be strict, and devtools SHALL be off in release builds.
 - **NAT-2:** Untrusted project text SHALL be rendered without raw HTML. Logs SHALL hide sensitive details. There SHALL be no telemetry.
 - **UX-1:** All 13 screens SHALL support keyboard access, VoiceOver labels, and reduced motion, and SHALL never use color as the only signal.
 
 **Judge demo**
+
 - **DEM-1:** The demo SHALL always show "Synthetic Demo — No Local Files Accessed". It SHALL run the real Rust core, compiled to WebAssembly, over an in-memory filesystem and implement the 12 steps in §5. It SHALL include corruption tests, a destination-collision test, reset, and downloads of the capsule and the brief.
 - **DEM-2:** The folder picker SHALL be a labeled mock. The hashes shown SHALL be real, and the independent re-hash SHALL use WebCrypto, a different SHA-256 implementation from the one the writer uses. Any pacing added for readability SHALL be labeled with the real elapsed time.
 - **DEM-3 (Dockline Invoices fixture):** a fictional invoicing app: React + Vite + TypeScript frontend, a Fastify API, and SQLite via Drizzle (manifests only, nothing installed). It contains:
@@ -338,24 +359,24 @@ flowchart LR
 
 **Trust boundaries:** the WebView (it renders untrusted project text), the IPC layer, Rust (trusted), file contents and capsules (untrusted input), and agent stores (sensitive).
 
-| Threat | Mitigation | Proven by |
-|---|---|---|
-| Path traversal or absolute paths in a capsule | Tar entry names are never used as output paths; manifest paths are validated | PROP-1, malicious fixtures |
-| Escape through symlinks | `cap-std`, no link following, staging created fresh | PROP-9, escape fixtures |
-| Overwriting an existing project, or a race for it | Existence and normalized-collision checks, create-new writes, `RENAME_EXCL` | PROP-4, PROP-8 |
-| Archive bombs or malformed tar | Allowlists for entry types and names, manifest sizes enforced, limits on entry count and expansion ratio | Malicious fixtures |
-| Tampering | Hashes plus registry match; limits stated honestly | PROP-3 |
-| Partial restore after a crash | Journal, verify before commit, atomic commit, recovery | PROP-5, fault-injecting `Vfs` |
-| Changes to source files | Read-only source access by type; before/after snapshots | PROP-6, read-only copies |
-| Secret leakage | Sensitive files excluded, content scanning, hidden in logs, no telemetry | Unit tests, gitleaks |
-| XSS from READMEs or commit messages | React escaping, no raw HTML, CSP, lint rule | CSP and lint tests |
-| IPC abuse | Allowlist, ID-based inputs, typed errors | Random-input IPC tests |
-| Code running through Git config or hooks | No git CLI; hooks never captured or restored; risky keys flagged in the report and brief | Unit tests |
-| A restored repo runs commands later (`core.fsmonitor`, `core.hooksPath`) | Flagged with exact keys in the restore report and brief pre-run checks | Unit tests |
-| Agent-store privacy | Consent, separate grant, metadata only, credential files never opened | Adapter tests |
-| Supply chain | Lockfiles, pinned versions, cargo-deny, pnpm audit, a small dependency set | CI |
-| Public repo leaks private data | gitleaks pre-commit, `~` redaction, raw logs kept in `.scratch/` | Pre-commit and CI gitleaks |
-| Dev agent reads real transcripts | Kiro permissions deny `~/.claude/**`, `~/.codex/**`, and credential folders; tests use synthetic fixtures only | Permissions file |
+| Threat                                                                   | Mitigation                                                                                                     | Proven by                     |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| Path traversal or absolute paths in a capsule                            | Tar entry names are never used as output paths; manifest paths are validated                                   | PROP-1, malicious fixtures    |
+| Escape through symlinks                                                  | `cap-std`, no link following, staging created fresh                                                            | PROP-9, escape fixtures       |
+| Overwriting an existing project, or a race for it                        | Existence and normalized-collision checks, create-new writes, `RENAME_EXCL`                                    | PROP-4, PROP-8                |
+| Archive bombs or malformed tar                                           | Allowlists for entry types and names, manifest sizes enforced, limits on entry count and expansion ratio       | Malicious fixtures            |
+| Tampering                                                                | Hashes plus registry match; limits stated honestly                                                             | PROP-3                        |
+| Partial restore after a crash                                            | Journal, verify before commit, atomic commit, recovery                                                         | PROP-5, fault-injecting `Vfs` |
+| Changes to source files                                                  | Read-only source access by type; before/after snapshots                                                        | PROP-6, read-only copies      |
+| Secret leakage                                                           | Sensitive files excluded, content scanning, hidden in logs, no telemetry                                       | Unit tests, gitleaks          |
+| XSS from READMEs or commit messages                                      | React escaping, no raw HTML, CSP, lint rule                                                                    | CSP and lint tests            |
+| IPC abuse                                                                | Allowlist, ID-based inputs, typed errors                                                                       | Random-input IPC tests        |
+| Code running through Git config or hooks                                 | No git CLI; hooks never captured or restored; risky keys flagged in the report and brief                       | Unit tests                    |
+| A restored repo runs commands later (`core.fsmonitor`, `core.hooksPath`) | Flagged with exact keys in the restore report and brief pre-run checks                                         | Unit tests                    |
+| Agent-store privacy                                                      | Consent, separate grant, metadata only, credential files never opened                                          | Adapter tests                 |
+| Supply chain                                                             | Lockfiles, pinned versions, cargo-deny, pnpm audit, a small dependency set                                     | CI                            |
+| Public repo leaks private data                                           | gitleaks pre-commit, `~` redaction, raw logs kept in `.scratch/`                                               | Pre-commit and CI gitleaks    |
+| Dev agent reads real transcripts                                         | Kiro permissions deny `~/.claude/**`, `~/.codex/**`, and credential folders; tests use synthetic fixtures only | Permissions file              |
 
 **Stated limits:** scope enforcement happens inside the app; there's no OS sandbox in v1. There's no encryption in v1. Reading files can update their access times.
 
@@ -374,6 +395,7 @@ flowchart LR
 - `DormbitError` `{code, message, retryable}`. Stable codes include `SCOPE_DENIED`, `PATH_UNSAFE`, `PLAN_DIGEST_MISMATCH`, `FILE_CHANGED_DURING_CAPTURE`, `CAPSULE_MALFORMED`, `CAPSULE_TRUNCATED`, `CAPSULE_HASH_MISMATCH`, `CAPSULE_VERSION_UNSUPPORTED`, `RESTORE_DEST_EXISTS`, `RESTORE_COLLISION`, `RESTORE_VOLUME_UNSUPPORTED`, `RESTORE_INSUFFICIENT_SPACE`, `CANCELLED`.
 
 **Capsule (`.dormbit`):** an uncompressed tar file with fixed headers (mtime taken from the manifest, uid/gid 0, mode 0644 or 0755). Entries, in this order:
+
 1. `DORMBIT`: a marker line, `dormbit-capsule/1`.
 2. `manifest.json`: `schema_version`, `capsule_id`, `created_at`, app version, project, `plan_digest`, `git`, `entries[]`, `excluded[]`, `warnings[]`, `limitations[]`, `agent_refs[]`, `totals`.
    - File entries: `{path, size, mode, mtime, sha256, object{encoding: gzip|identity, stored_size, stored_sha256}}`.
@@ -402,23 +424,24 @@ Default limits (per-file size, entry count, capsule size) are configurable and d
   13. Judge Demo: guided rail, "what's real" panel, reset
 - **Color tokens:** the brief's palette, with text colors adjusted for contrast. Contrast ratios on Paper `#F4F1E9`, computed with the WCAG formula and re-checked by automated tests in Task 34:
 
-  | Color | Ratio | Use |
-  |---|---|---|
-  | Ink `#222B29` | 12.9:1 | Body text |
-  | Evergreen `#315C4F` | 6.7:1 | Primary actions and Verified status |
-  | Slate `#75817D` | 3.6:1 | Input borders and icons only; fails as body text |
-  | Copper `#B77F55` | 3.0:1 | Fills only |
-  | Error `#B35C50` | 4.1:1 | Large text and icons only |
-  | Sage `#8DA99A` | 2.2:1 | Fills only, with Ink text on top (5.7:1) |
-  | Border `#DDDCD3` | — | Dividers and cards only |
+  | Color               | Ratio  | Use                                              |
+  | ------------------- | ------ | ------------------------------------------------ |
+  | Ink `#222B29`       | 12.9:1 | Body text                                        |
+  | Evergreen `#315C4F` | 6.7:1  | Primary actions and Verified status              |
+  | Slate `#75817D`     | 3.6:1  | Input borders and icons only; fails as body text |
+  | Copper `#B77F55`    | 3.0:1  | Fills only                                       |
+  | Error `#B35C50`     | 4.1:1  | Large text and icons only                        |
+  | Sage `#8DA99A`      | 2.2:1  | Fills only, with Ink text on top (5.7:1)         |
+  | Border `#DDDCD3`    | —      | Dividers and cards only                          |
 
   New text tokens:
 
-  | Token | Ratio |
-  |---|---|
-  | `--text-muted #5E6A66` | 5.0:1 |
+  | Token                   | Ratio |
+  | ----------------------- | ----- |
+  | `--text-muted #5E6A66`  | 5.0:1 |
   | `--copper-text #8E5A33` | 5.1:1 |
-  | `--error-text #9A4639` | 5.6:1 |
+  | `--error-text #9A4639`  | 5.6:1 |
+
 - **Type:** system UI font with Inter as the fallback, Newsreader for headings and the brief, JetBrains Mono for paths and hashes. All are OFL fonts, bundled with their licenses, and loaded with no web-font requests.
 - **Spacing and motion:** 4px grid, corner radius 6/10/14, three elevation levels, motion of 120–200 ms ease-out, and no motion under reduced-motion settings.
 - **Status markers:** each status pairs a glyph with a label:
@@ -433,6 +456,7 @@ Default limits (per-file size, entry count, capsule size) are configurable and d
 ## 10. Kiro steering and custom agents
 
 **Steering** (`.kiro/steering/`):
+
 - **Always loaded:**
   - `product.md`: truthfulness, the four outcomes, no deletion, no code execution, local-first.
   - `tech.md`: stack, pinned versions, commands.
@@ -444,19 +468,20 @@ Default limits (per-file size, entry count, capsule size) are configurable and d
 - **Manual (slash commands):** `hackathon.md` (rules checklist and approval gates), `release.md`.
 
 **Custom agents** (`.kiro/agents/*.md`):
+
 - Each agent lists the steering files it needs under `resources`.
 - No agent has a `model` field, so they use the session's model (Auto).
 - No agent has a `hooks` field, because the IDE ignores agents that have one.
 - Write limits are set with an `fs_write` deny on `**` that excludes the agent's allowed paths.
 
-| Agent | Can write | Shell | Purpose |
-|---|---|---|---|
-| `architect` | `docs/adr/**`, `docs/architecture/**`, `.kiro/specs/**` | none | Design decisions and consistency across crates |
-| `rust-security` | `crates/**`, `fixtures/malicious/**`, `docs/security/**` | `cargo *` | The only writer for scope, capsule, verify, and restore code |
-| `frontend` | `apps/**`, `packages/**` (not `schema/generated`) | `pnpm *` | UI, plus visual checks through Playwright MCP |
-| `qa` | test folders, `e2e/**`, `docs/evidence/**` | test commands | Writes and runs tests; records evidence |
-| `release` | `.github/**`, `docs/release/**`, `docs/submission/**`, `media/**`, `README.md` | build commands, and `gh` (ask first) | Packaging and submission |
-| `reviewer` | read-only | test commands | Returns `APPROVED` or `NEEDS_CHANGES` |
+| Agent           | Can write                                                                      | Shell                                | Purpose                                                      |
+| --------------- | ------------------------------------------------------------------------------ | ------------------------------------ | ------------------------------------------------------------ |
+| `architect`     | `docs/adr/**`, `docs/architecture/**`, `.kiro/specs/**`                        | none                                 | Design decisions and consistency across crates               |
+| `rust-security` | `crates/**`, `fixtures/malicious/**`, `docs/security/**`                       | `cargo *`                            | The only writer for scope, capsule, verify, and restore code |
+| `frontend`      | `apps/**`, `packages/**` (not `schema/generated`)                              | `pnpm *`                             | UI, plus visual checks through Playwright MCP                |
+| `qa`            | test folders, `e2e/**`, `docs/evidence/**`                                     | test commands                        | Writes and runs tests; records evidence                      |
+| `release`       | `.github/**`, `docs/release/**`, `docs/submission/**`, `media/**`, `README.md` | build commands, and `gh` (ask first) | Packaging and submission                                     |
+| `reviewer`      | read-only                                                                      | test commands                        | Returns `APPROVED` or `NEEDS_CHANGES`                        |
 
 - **Single-writer rule:** permissions enforce it in the other custom agents. For the main agent it's a steering rule: delegate security modules to `rust-security`.
 - **Review loops:** implementer → reviewer → back to the implementer on `NEEDS_CHANGES`, with `max_iterations: 3`.
@@ -471,15 +496,15 @@ Default limits (per-file size, entry count, capsule size) are configurable and d
 
 ## 11. Hooks, MCP, Powers, skills, and permissions
 
-| Hook (`.kiro/hooks/*.json`) | Trigger | Action |
-|---|---|---|
-| `format` | `PostFileSave`, matcher `\.(rs\|ts\|tsx\|css\|json\|md)$` | `scripts/hooks/format.sh` reads the path from the stdin JSON, checks it's inside the repo, then runs rustfmt or prettier on that file. No path is interpolated into a shell string. |
-| `stop-gate` | `Stop` | `scripts/hooks/stop-gate.sh` runs `cargo check --workspace` and the TypeScript typecheck. Exit 1 sends errors back to the agent. It gives up after 3 failures in a row (counter in `.scratch/`) and exits 0 when the toolchain or workspace isn't set up yet. |
-| `secret-scan` | `PreToolUse`, matcher `write` | `scripts/hooks/secret-scan.sh` pipes the content being written to gitleaks; exit 2 blocks the write. |
-| `security-tests` | `PostFileSave` on security-module paths | Runs the fast security test subset and reports failures. |
-| `task-tests` | `PostTaskExec` | Runs the task's spec tests through the evidence runner. |
-| `review-reminder` | `PostTaskExec` (agent prompt) | "Run the reviewer sub-agent on this task's diff and record the verdict in STATUS.md." |
-| `release-gate` | `PreTaskExec` | Exit 2 blocks release tasks (P12 and later) unless the latest evidence is green, gitleaks is clean, LICENSE exists, and `.kiro` isn't ignored. |
+| Hook (`.kiro/hooks/*.json`) | Trigger                                                   | Action                                                                                                                                                                                                                                                        |
+| --------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `format`                    | `PostFileSave`, matcher `\.(rs\|ts\|tsx\|css\|json\|md)$` | `scripts/hooks/format.sh` reads the path from the stdin JSON, checks it's inside the repo, then runs rustfmt or prettier on that file. No path is interpolated into a shell string.                                                                           |
+| `stop-gate`                 | `Stop`                                                    | `scripts/hooks/stop-gate.sh` runs `cargo check --workspace` and the TypeScript typecheck. Exit 1 sends errors back to the agent. It gives up after 3 failures in a row (counter in `.scratch/`) and exits 0 when the toolchain or workspace isn't set up yet. |
+| `secret-scan`               | `PreToolUse`, matcher `write`                             | `scripts/hooks/secret-scan.sh` pipes the content being written to gitleaks; exit 2 blocks the write.                                                                                                                                                          |
+| `security-tests`            | `PostFileSave` on security-module paths                   | Runs the fast security test subset and reports failures.                                                                                                                                                                                                      |
+| `task-tests`                | `PostTaskExec`                                            | Runs the task's spec tests through the evidence runner.                                                                                                                                                                                                       |
+| `review-reminder`           | `PostTaskExec` (agent prompt)                             | "Run the reviewer sub-agent on this task's diff and record the verdict in STATUS.md."                                                                                                                                                                         |
+| `release-gate`              | `PreTaskExec`                                             | Exit 2 blocks release tasks (P12 and later) unless the latest evidence is green, gitleaks is clean, LICENSE exists, and `.kiro` isn't ignored.                                                                                                                |
 
 - **Payload check:** hook payload fields are confirmed in Task 4 before any hook relies on them. If the `PreTaskExec` and `PostTaskExec` payloads don't identify the task, `release-gate` and `task-tests` become skills that the release and QA agents run explicitly. No hook ever touches folders the user picks inside DORMBIT.
 - **Git pre-commit:** separate from the Kiro hooks, `.githooks/pre-commit` runs gitleaks on staged changes. It's enabled locally with `core.hooksPath=.githooks`.
@@ -498,16 +523,16 @@ Default limits (per-file size, entry count, capsule size) are configurable and d
 
 ## 12. Kiro specs and dependencies
 
-| Spec (`.kiro/specs/`) | Phases | Property tests |
-|---|---|---|
-| `foundation` | P02 | none |
-| `scope-and-discovery` | P03 | PROP-9 |
-| `capsule-and-verification` | P04 | PROP-2, 3, 7, 10, 11 |
-| `transactional-restore` | P05 | PROP-1, 4, 5, 6, 8 |
-| `intelligence-and-brief` (includes agent adapters) | P06, P07 | PROP-12 |
-| `native-experience` | P08, P11 | none (UI) |
-| `judge-demo` | P09 | PROP-10 (native/WebAssembly parity) |
-| `release-and-submission` | P10, P12–P18 | none |
+| Spec (`.kiro/specs/`)                              | Phases       | Property tests                      |
+| -------------------------------------------------- | ------------ | ----------------------------------- |
+| `foundation`                                       | P02          | none                                |
+| `scope-and-discovery`                              | P03          | PROP-9                              |
+| `capsule-and-verification`                         | P04          | PROP-2, 3, 7, 10, 11                |
+| `transactional-restore`                            | P05          | PROP-1, 4, 5, 6, 8                  |
+| `intelligence-and-brief` (includes agent adapters) | P06, P07     | PROP-12                             |
+| `native-experience`                                | P08, P11     | none (UI)                           |
+| `judge-demo`                                       | P09          | PROP-10 (native/WebAssembly parity) |
+| `release-and-submission`                           | P10, P12–P18 | none                                |
 
 The two security specs are `capsule-and-verification` and `transactional-restore`. At the P01 gate, the user runs Analyze Requirements on both, then the design-phase Correctness step.
 
@@ -536,23 +561,25 @@ flowchart LR
 
 **Status ledger** (`docs/status/STATUS.md`):
 
-| Status | Meaning |
-|---|---|
-| Planned | Not started |
-| In progress | Being worked on |
-| Implemented | Merged and builds |
-| Tested | Its tests pass in a recorded run |
-| Verified | Reviewer approved, and demonstrated with a log or screenshot |
-| Released | In a tag or deployment |
-| Submitted | Part of the final submission |
+| Status      | Meaning                                                      |
+| ----------- | ------------------------------------------------------------ |
+| Planned     | Not started                                                  |
+| In progress | Being worked on                                              |
+| Implemented | Merged and builds                                            |
+| Tested      | Its tests pass in a recorded run                             |
+| Verified    | Reviewer approved, and demonstrated with a log or screenshot |
+| Released    | In a tag or deployment                                       |
+| Submitted   | Part of the final submission                                 |
 
 **Recording rules:**
+
 - `scripts/evidence/run.sh` records the command, exit code, counts, git SHA, and time, with the home path written as `~`.
 - Every commit message names its task ID.
 - Each phase gate writes `docs/status/gates/PXX.md` (what works, what's missing, what's next) and updates `HANDOFF.md`.
 - Notable Kiro usage goes into `docs/kiro/usage-log.md` with links. That covers specs, hook catches, property-test counterexamples, and review verdicts.
 
 ### Phase 00: Feasibility and research
+
 - **Depends on:** nothing.
 - **Exit:** the date is inside the Submission Period, the toolchain works, both spikes have a recorded go/no-go, Kiro formats are confirmed, and the public repo exists.
 - **Risks:** Rust or WebAssembly setup.
@@ -560,6 +587,7 @@ flowchart LR
 - **Evidence:** `docs/status/environment.md`, ADRs, `docs/kiro/feature-probe.md`, gate note.
 
 **Task 1: P00-T01 · Eligibility, environment, local repo (P0)**
+
 - Objective: confirm the date is inside the Submission Period, record the environment, and start the local Git repo.
 - Guidance:
   - If the Pacific Time date is before Oct 30, 2026 9:00 AM, stop and tell the user.
@@ -572,6 +600,7 @@ flowchart LR
 - Demo: the environment report and the first commit.
 
 **Task 2: P00-T02 · Toolchain install (P0, needs approval)**
+
 - Objective: install what the build needs.
 - Guidance:
   - rustup stable with the `aarch64-apple-darwin`, `x86_64-apple-darwin`, and `wasm32-unknown-unknown` targets
@@ -582,6 +611,7 @@ flowchart LR
 - Demo: every tool reports its version.
 
 **Task 3: P00-T03 · Feasibility spikes (P0)**
+
 - Objective: prove the two riskiest pieces work before building on them.
 - Guidance: work in `spikes/`, removed in Task 9 with a commit that records the result.
   - (a) A Tauri 2 + React app built with only the Command Line Tools, with a folder picker opened from Rust, and `cap-std` plus `renameatx_np(RENAME_EXCL)` working on a temp folder.
@@ -590,6 +620,7 @@ flowchart LR
 - Demo: the picker returns a folder; the browser shows a SHA-256 computed in WebAssembly. Record ADR-001 (WebAssembly core go/no-go) and ADR-002 (capsule container).
 
 **Task 4: P00-T04 · Kiro feature probe and research record (P0)**
+
 - Objective: confirm Kiro's formats work as documented and save the research.
 - Guidance:
   - Add a temporary hook per trigger type that logs its stdin payload to `.scratch/`. Commit only a field summary, as `docs/kiro/feature-probe.md`.
@@ -600,6 +631,7 @@ flowchart LR
 - Demo: the probe summary.
 
 **Task 5: P00-T05 · Public GitHub repo (P0, confirm the target first)**
+
 - Objective: publish the repo on day one.
 - Guidance:
   - Run `gh auth status`. If signed out, the user runs `gh auth login` themselves.
@@ -612,17 +644,20 @@ flowchart LR
 - Demo: the repo URL.
 
 ### Phase 01: Requirements and design
+
 - **Depends on:** P00.
 - **Exit:** the PRD, architecture, threat model, capsule format spec, ADRs, and 8 specs exist. The user has reviewed the specs and run Analyze Requirements and Correctness on the two security specs.
 - **Approvals:** spec review.
 - **Evidence:** the documents and the gate note.
 
 **Task 6: P01-T01 · PRD and user journeys**
+
 - Objective: write `docs/product/PRD.md` from §1–5.
 - Tests: n/a.
 - Demo: the document.
 
 **Task 7: P01-T02 · Architecture, threat model, capsule format, ADRs**
+
 - Objective: write `docs/architecture/overview.md`, `docs/security/threat-model.md`, `docs/architecture/capsule-format.md`, and ADR-003 to ADR-010:
   - Vfs-based core
   - git2 without the git CLI
@@ -636,12 +671,14 @@ flowchart LR
 - Demo: the documents.
 
 **Task 8: P01-T03 · Kiro specs and status ledger**
+
 - Objective: create the 8 specs in Kiro's format, plus `docs/status/STATUS.md`, `docs/status/HANDOFF.md`, `docs/release/checklist.md`, `docs/submission/checklist.md`, and `docs/kiro/usage-log.md`.
 - Guidance: requirements in EARS style come from §4, design from §6–9, and tasks from this section (keep the task IDs and dependencies). Check Kiro's feature-spec docs for the exact `tasks.md` format first. Ask the user to open the two security specs in the Specs panel, run Analyze Requirements, then run the design-phase Correctness step. Apply the results.
 - Tests: the specs appear in the Specs panel and their tasks can be started.
 - Demo: the Specs panel.
 
 ### Phase 02: Engineering foundation
+
 - **Depends on:** P01.
 - **Exit:** CI is green on macOS, a command round-trips from the UI to Rust, the Dockline tar exists, and the steering, agents, hooks, and MCP all work.
 - **Risks:** hook payloads differing from the docs.
@@ -649,6 +686,7 @@ flowchart LR
 - **Evidence:** CI run link, hook summary, gate note.
 
 **Task 9: P02-T01 · Monorepo scaffold**
+
 - Objective: pnpm and Cargo workspaces with pinned versions.
 - Guidance:
   - TypeScript `strict`, `noUncheckedIndexedAccess`, and `exactOptionalPropertyTypes`.
@@ -659,6 +697,7 @@ flowchart LR
 - Demo: `pnpm -r build` and `cargo build --workspace` both succeed.
 
 **Task 10: P02-T02 · Hardened Tauri shell**
+
 - Objective: the desktop app, with NAT-1 in place from the start.
 - Guidance:
   - CSP, minimal capabilities, the `AppManifest` command allowlist, no fs or shell plugins, devtools off in release.
@@ -668,12 +707,14 @@ flowchart LR
 - Demo: the window opens and shows the version reported by Rust.
 
 **Task 11: P02-T03 · Shared contracts**
+
 - Objective: one definition of every type, shared by Rust and TypeScript.
 - Guidance: ts-rs exports into `packages/schema/generated`; Zod schemas with type-equality tests; the `DormbitClient` interface plus `MockClient`; `DormbitError` codes.
 - Tests: schema parity tests (PROP-11 setup).
 - Demo: the UI shows mock data validated by Zod.
 
 **Task 12: P02-T04 · Test setup and the Dockline fixture**
+
 - Objective: test tooling and the synthetic project.
 - Guidance:
   - proptest, insta, Vitest, Testing Library, fast-check, Playwright (install its browsers, with approval), and `@axe-core/playwright`.
@@ -683,12 +724,14 @@ flowchart LR
 - Demo: the fixture extracted under `.scratch/`.
 
 **Task 13: P02-T05 · Kiro setup**
+
 - Objective: put §10–11 in place: steering, agents, hooks, skills, MCP config, `.kiroignore`, and the recommended permissions file.
 - Guidance: use the formats confirmed in Task 4. Ask before applying the workspace permissions file. Test a deliberately denied write.
 - Tests: each hook fires once with the expected result, and secret-scan blocks a generated fake secret.
 - Demo: format-on-save runs, and secret-scan blocks the fake secret.
 
 **Task 14: P02-T06 · CI and Devpost draft**
+
 - Objective: CI on every push, and an early submission draft.
 - Guidance:
   - `.github/workflows/ci.yml` on `macos-15`: Rust (fmt, clippy, tests), TypeScript (lint, typecheck, tests), WebAssembly build, Playwright, gitleaks, cargo-deny, and pnpm audit.
@@ -698,62 +741,73 @@ flowchart LR
 - Demo: the CI badge and the draft.
 
 ### Phase 03: Discovery engine
+
 - **Depends on:** P02.
 - **Exit:** picking a real folder shows Dockline and other projects with grounded data.
 - **Risks:** slow scans on big trees.
 - **Evidence:** test logs and a screenshot.
 
 **Task 15: P03-T01 · Scope enforcement (rust-security)**
+
 - Objective: implement SCP-1 and SCP-2.
 - Guidance: the `ScopeGrant` registry, folder pickers opened from Rust, `cap-std` handles, and a read-only source type.
 - Tests: PROP-9; fixtures for symlink escape and `..` paths.
 - Demo: grant a folder in the app.
 
 **Task 16: P03-T02 · Walker and metadata**
+
 - Objective: implement DSC-1 to DSC-3 (the non-Git parts).
 - Guidance: a walker in core over `Vfs` that honors gitignore, is bounded and cancellable, and detects roots, monorepos, stack, docs, activity, and size (with rebuildable classification).
 - Tests: synthetic trees and golden Dockline output.
 - Demo: `dormbit-cli scan` lists the projects.
 
 **Task 17: P03-T03 · Git inspection**
+
 - Objective: implement GIT-1 and `GitSnapshot`.
 - Tests: synthetic repos that are dirty, detached, empty, a linked worktree, or have submodules, LFS, or risky config.
 - Demo: the CLI shows `feature/pdf-export` with dirty counts.
 
 **Task 18: P03-T04 · Shelf wired to the UI**
+
 - Objective: implement DSC-4 and DSC-5 in the UI.
 - Guidance: the scope, discovery-job, projects, and dormant-mark commands; persistence; a working Shelf.
 - Tests: Vitest and Rust command tests.
 - Demo: pick a folder and watch discovery fill the Shelf.
 
 ### Phase 04: Capsule system
+
 - **Depends on:** P03.
 - **Exit:** Dockline is preserved natively and confirmed by the separate verifier. Every malicious capsule fixture is rejected.
 - **Risks:** changes to the capsule format.
 - **Evidence:** test logs and a capsule listing.
 
 **Task 19: P04-T01 · Capture plan engine**
+
 - Objective: implement CAP-1 to CAP-7.
 - Tests: the golden Dockline plan (`.env` excluded, `data/dev.sqlite` needs a decision); the digest changes when a decision changes.
 - Demo: `dormbit-cli plan`.
 
 **Task 20: P04-T02 · Manifest and writer (rust-security)**
+
 - Objective: implement CPS-1 and CPS-2.
 - Tests: PROP-2 (writing side), PROP-7, PROP-10 (native golden bytes), PROP-11.
 - Demo: a capsule on disk that `tar -tvf` can list.
 
 **Task 21: P04-T03 · Verifier and malicious fixtures (rust-security)**
+
 - Objective: implement VER-1 and VER-2.
 - Tests: PROP-3, plus fixtures for each of these: traversal, absolute path, symlink entry, duplicate entry, truncation, missing trailer, archive bomb, bad marker, unknown version, manifest/object mismatch.
 - Demo: the CLI verifies a good capsule and names the damaged file in a bad one.
 
 **Task 22: P04-T04 · Plan, Capture, and Verification screens**
+
 - Objective: connect the capsule system to the UI.
 - Guidance: decision editing, acknowledgments, approval, the capture state machine over a Channel, cancel, the verification report, and the capsule seal.
 - Tests: component and command tests.
 - Demo: preserve Dockline end to end in the app.
 
 ### Phase 05: Safe restoration
+
 - **Depends on:** P04.
 - **Exit:**
   - A verified restore works.
@@ -764,60 +818,72 @@ flowchart LR
 - **Evidence:** property-test logs and report screenshots.
 
 **Task 23: P05-T01 · Restore pre-checks**
+
 - Objective: implement RST-1 and RST-2.
 - Tests: PROP-4, PROP-8.
 - Demo: the CLI refuses an existing target and a case-variant of it.
 
 **Task 24: P05-T02 · Transactional executor (rust-security)**
+
 - Objective: implement RST-3 and RST-4.
 - Tests: PROP-1 and PROP-2 (full round trip).
 - Demo: a restored Dockline whose HEAD matches the manifest.
 
 **Task 25: P05-T03 · Journal and recovery**
+
 - Objective: implement RST-5.
 - Tests: PROP-5, with a fault-injecting `Vfs` failing at every step.
 - Demo: kill the app mid-restore, relaunch it, and recover.
 
 **Task 26: P05-T04 · Restore report and screens**
+
 - Objective: implement RST-6 and RST-7, plus the Restore Wizard and Result screens.
 - Tests: PROP-6 on read-only copies.
 - Demo: a full native restore.
 
 ### Phase 06: Project intelligence
+
 - **Depends on:** P03 (rules) and P05 (verified content for the brief).
 - **Exit:** Dockline's Evidence View shows the unfinished PDF export with line references, and the brief exports.
 - **Evidence:** golden files and screenshots.
 
 **Task 27: P06-T01 · Evidence model and rules**
+
 - Objective: implement INT-1 to INT-3.
 - Tests: PROP-12 and golden findings.
 - Demo: `dormbit-cli evidence`.
 
 **Task 28: P06-T02 · In-repo agent files**
+
 - Objective: parse `.kiro/specs/*/tasks.md`, steering files, `AGENTS.md`, `CLAUDE.md`, `.cursor/rules`, and `.specstory/` metadata.
 - Tests: fixture parsing.
 - Demo: Dockline shows "3 of 7 tasks complete".
 
 **Task 29: P06-T03 · Brief generator**
+
 - Objective: implement BRF-1 and BRF-2, with export through a save dialog opened by Rust. Implement BRF-3 if P1 allows.
 - Tests: golden Markdown.
 - Demo: open the exported brief.
 
 **Task 30: P06-T04 · Evidence View and Brief screens**
+
 - Objective: connect intelligence to the UI.
 - Tests: component tests.
 - Demo: both screens show real data.
 
 ### Phase 07: Agent adapters (P1, cut first)
+
 - **Depends on:** P06.
 - **Exit:** the adapters work on synthetic stores only. The dev agent never reads the user's real stores.
 
 **Task 31: P07-T01 · Adapter framework**
+
 - Objective: implement AGT-1 and AGT-2: consent records, separate grants, the credential deny-list, and Supported/Unsupported reporting.
 - Tests: the deny-list and discarding of message content.
 - Demo: the consent screen in Settings.
 
 **Task 32: P07-T02 · Claude Code and Codex adapters**
+
 - Objective: read session metadata from both tools.
 - Guidance:
   - Claude Code: use the documented path and match sessions by working directory. Show a retention-risk note based on the documented 30-day default; the user's own setting shows as Unknown.
@@ -827,15 +893,19 @@ flowchart LR
 - Demo: session metadata in the Evidence View.
 
 **Task 33: P07-T03 · Kiro export adapter and wiring**
+
 - Objective: read `session.json` metadata from exported zips and add references to the brief.
 - Tests: a fixture zip.
 - Demo: a session reference in the brief.
 
 ### Phase 08: Complete native UI
+
 This phase runs in parallel from P02, against `MockClient`.
+
 - **Exit:** all 12 native screens work, every state is covered, and axe reports no critical issues.
 
 **Task 34: P08-T01 · Design system**
+
 - Objective: tokens, fonts, and these components, all shown on `/gallery`:
   - Button, Field, Checkbox, Tabs
   - virtualized List and Table, Tree
@@ -847,36 +917,43 @@ This phase runs in parallel from P02, against `MockClient`.
 - Demo: the gallery.
 
 **Task 35: P08-T02 · App shell, onboarding, Settings**
+
 - Objective: Welcome, Privacy, Folder Selection, Settings, native menus, and keyboard shortcuts.
 - Tests: component tests.
 - Demo: the first-launch flow.
 
 **Task 36: P08-T03 · Polish Shelf, Evidence, Plan, Capture, Verification**
+
 - Objective: density, keyboard support, and real progress and error states.
 - Tests: component tests.
 - Demo: the polished preservation flow.
 
 **Task 37: P08-T04 · Polish Restore, Result, Brief**
+
 - Objective: empty, loading, error, partial, and cancelled states on every screen.
 - Tests: component tests.
 - Demo: the full native journey.
 
 ### Phase 09: Public judge demo
+
 - **Depends on:** P05, P06, P08.
 - **Exit:** the 12-step flow passes on Chromium, WebKit, and Firefox, and a preview is live on Pages.
 
 **Task 38: P09-T01 · WebAssembly bindings**
+
 - Objective: `dormbit-wasm` with an in-memory filesystem, step jobs, and the WebCrypto re-hash.
 - Guidance: the CSP needs `'wasm-unsafe-eval'`. Verify WebKit with it.
 - Tests: PROP-10: the capsule bytes built in WebAssembly equal the native golden bytes.
 - Demo: a capsule built in the browser.
 
 **Task 39: P09-T02 · Dataset and demo shell**
+
 - Objective: load the Dockline tar and sidecar (Git snapshot, synthetic agent metadata, fixed demo clock). Add the banner, guided rail, "what's real" panel, and labeled mock picker.
 - Tests: Vitest.
 - Demo: demo steps 1–5.
 
 **Task 40: P09-T03 · Corruption tests, collision, reset, downloads**
+
 - Objective: complete the destructive-path demos and downloads.
 - Guidance:
   - Three corruption controls: damage a stored file, damage the capsule bytes, and damage after verification (the restore rolls back).
@@ -888,85 +965,102 @@ This phase runs in parallel from P02, against `MockClient`.
 - Demo: demo steps 6–12.
 
 **Task 41: P09-T04 · E2E tests and Pages preview**
+
 - Objective: Playwright tests for all 12 steps, responsive layouts, and axe; `pages.yml` with Vite `base: '/dormbit/'`.
 - Tests: the E2E suite.
 - Demo: the live URL.
 
 ### Phase 10: Security and engineering tests
+
 - **Depends on:** P05, P09.
 - **Exit:** every suite is green on the final CI run, the security review is approved, and evidence is linked.
 
 **Task 42: P10-T01 · Malicious fixtures and property-test campaign**
+
 - Objective: at least 25 attack fixtures, each with an expected error code. Property tests run at 10,000 cases locally and 512 in CI.
 - Guidance: record real counterexamples in the Kiro usage log.
 - Tests: the full security suite.
 - Demo: the report.
 
 **Task 43: P10-T02 · Integration tests**
+
 - Objective: CLI smoke tests on 6 project types, crash and recovery, read-only source checks, and (P1) native E2E with WebdriverIO's embedded driver behind a test-only feature flag.
 - Tests: these suites.
 - Demo: the evidence logs.
 
 **Task 44: P10-T03 · Supply chain and IPC**
+
 - Objective: cargo-deny, pnpm audit, a full-history gitleaks scan, a CSP test, random-input IPC tests, and a check that release builds contain no test features.
 - Tests: CI.
 - Demo: green CI.
 
 **Task 45: P10-T04 · Security review**
+
 - Objective: write `docs/security/review.md`, iterating through the reviewer loop until it returns `APPROVED`.
 - Tests: n/a.
 - Demo: the document.
 
 ### Phase 11: UX refinement
+
 - **Depends on:** P08, P09.
 - **Exit:** the defect log is closed, accessibility meets WCAG AA, and the copy audit passes.
 
 **Task 46: P11-T01 · Visual QA**
+
 - Objective: screenshot every screen and state natively (`screencapture` plus a small Swift window-ID helper) and on the web (Playwright MCP), at 1x and 2x. Fix the defect log.
 - Tests: screenshot comparisons.
 - Demo: before and after images.
 
 **Task 47: P11-T02 · Accessibility**
+
 - Objective: axe, a keyboard-only walkthrough, a VoiceOver spot check, and reduced motion.
 - Tests: axe in CI.
 - Demo: the accessibility report.
 
 **Task 48: P11-T03 · Copy audit and accuracy validation (validation is P1)**
+
 - Objective: check all wording against the four outcomes so nothing is overclaimed. Validate accuracy on 5 public open-source repos with different stacks.
 - Guidance: use shallow clones with LFS smudge skipped, into `.scratch/validation/`, and never run their code. Score Confirmed findings, target at least 90% correct. Write `docs/product/validation.md`. Running DORMBIT on the user's own projects is optional, with consent.
 - Tests: the scoring sheet.
 - Demo: the validation report.
 
 ### Phase 12: Packaging and deployment
+
 - **Depends on:** P10, P11.
 - **Exit:** a browser-downloaded DMG opens through the Gatekeeper steps, and the full flow works with fresh app data. The production demo passes its smoke test.
 
 **Task 49: P12-T01 · Release build**
+
 - Objective: icon, ad-hoc signature, universal binary (P1, otherwise Apple Silicon only, stated clearly), and DMG. Build with a tag-triggered `release.yml` and also locally.
 - Tests: `codesign -dv` shows the ad-hoc signature.
 - Demo: the DMG.
 
 **Task 50: P12-T02 · Clean-install run**
+
 - Objective: download the DMG through a browser (so quarantine is set), install it, follow the documented Open Anyway steps, and run the whole workflow with DORMBIT's app data reset. Testing on a separate macOS user account is optional and done by the user.
 - Tests: the manual checklist.
 - Demo: the evidence log.
 
 **Task 51: P12-T03 · Production web deploy**
+
 - Objective: deploy to Pages production, smoke-test production, and add a daily scheduled smoke test through Jan 29, 2027 that opens an issue on failure.
 - Tests: the smoke test.
 - Demo: the live URL.
 
 ### Phase 13: GitHub release
+
 - **Exit:** a fresh clone builds and tests by following the README, and the license shows in About.
 - **Approvals:** publishing the release.
 
 **Task 52: P13-T01 · Repository audit and fresh clone**
+
 - Objective: confirm everything a judge needs is in the repo and works from a clean clone.
 - Guidance: `.kiro` is present; the README covers the demo URL, DMG and Gatekeeper steps, build from source, architecture, security, and Kiro usage; third-party notices and font licenses are included; disclosures are written (planning date, templates used). Then clone fresh and follow the README.
 - Tests: the fresh-clone run.
 - Demo: the evidence log.
 
 **Task 53: P13-T02 · Release v1.0.0**
+
 - Objective: tag the release, publish the DMG with `SHA256SUMS`, and set the repo topics and website (with approval).
 - Tests: checksum verification.
 - Demo: the release page.
@@ -974,15 +1068,18 @@ This phase runs in parallel from P02, against `MockClient`.
 ### Phase 14: Screenshots
 
 **Task 54: P14-T01 · Capture and select**
+
 - Objective: capture real-state shots with paths shown as `~`. Pick the best 6–8 for the Devpost gallery, README hero image, and thumbnail base.
 - Tests: none (it's a review step). Each image is checked against the live app.
 - Demo: `docs/media/`.
 
 ### Phase 15: Demonstration video
+
 - **Exit:** under 3:00 (target 2:35–2:45), verified, and approved by the user.
 - **Approvals:** Screen Recording permission; voiceover choice (the user's own voice, Kokoro-82M (Apache-2.0, installed with approval), or captions only). macOS `say` voices are excluded because their license limits them to personal, non-commercial use.
 
 **Task 55: P15-T01 · Script and shot list**
+
 - Objective: write the script and a timed shot list:
   - 0:00–0:15: the problem
   - native discovery and Evidence View
@@ -997,6 +1094,7 @@ This phase runs in parallel from P02, against `MockClient`.
 - Demo: the approved script.
 
 **Task 56: P15-T02 · Recording and editing**
+
 - Objective: produce the final MP4, thumbnail, and captions.
 - Guidance:
   - Native takes: the user drives while the agent runs the recorder and resets fixtures.
@@ -1009,6 +1107,7 @@ This phase runs in parallel from P02, against `MockClient`.
 - Demo: the MP4, thumbnail, and SRT file.
 
 **Task 57: P15-T03 · Video verification**
+
 - Objective: check the finished video before it goes to YouTube.
 - Guidance: ffprobe for duration and resolution, sampled frames, a loudness check, and a transcript-versus-script comparison. Then the user watches it and approves.
 - Tests: the automated checks above.
@@ -1017,6 +1116,7 @@ This phase runs in parallel from P02, against `MockClient`.
 ### Phase 16: YouTube
 
 **Task 58: P16-T01 · Upload and verify**
+
 - Objective: publish the video.
 - Guidance:
   - Metadata: title, description, chapters, captions, thumbnail. Custom thumbnails need a phone-verified YouTube account.
@@ -1028,12 +1128,14 @@ This phase runs in parallel from P02, against `MockClient`.
 ### Phase 17: Devpost
 
 **Task 59: P17-T01 · Final content**
+
 - Objective: write the submission content.
 - Guidance: the story sections, a Kiro write-up that cites repo paths and measured numbers only, judge testing instructions (web demo first, then the DMG with Gatekeeper steps), the Frankenstein rationale, built-with tags, and the gallery.
 - Tests: the copy audit.
 - Demo: the draft.
 
 **Task 60: P17-T02 · Fill in, approve, submit, verify**
+
 - Objective: fill in the form through the user's signed-in Chrome, with approval, or give the user exact manual steps. Show the user every field. Submit only after their approval, targeting Wed Dec 2, 12:00 PM PT. Then check the public submission page.
 - Tests: the public page shows the submission.
 - Demo: the submission URL.
@@ -1041,6 +1143,7 @@ This phase runs in parallel from P02, against `MockClient`.
 ### Phase 18: Final audit
 
 **Task 61: P18-T01 · Delivery audit**
+
 - Objective: check every deliverable and write `docs/status/FINAL_REPORT.md`, covering what works, its limits, and what's next.
 - Guidance: check every URL, the license in About, `.kiro`, demo uptime, the DMG checksum, video length and visibility, the Devpost category and links, green tests on the final commit, and that the README matches actual behavior.
 - Tests: the audit checklist.
@@ -1050,22 +1153,23 @@ This phase runs in parallel from P02, against `MockClient`.
 
 **Properties:**
 
-| ID | Property |
-|---|---|
-| PROP-1 | Path safety: no restored path escapes the destination, and every unsafe path is rejected. |
-| PROP-2 | Round trip: capture → verify → restore gives byte-identical files and modes for every approved entry. |
-| PROP-3 | Any single-byte flip or truncation fails verification. |
-| PROP-4 | No overwrite: restore never succeeds when the target or a variant of it exists, and existing files are unchanged. |
-| PROP-5 | Atomicity: a failure at any step leaves no final folder, and staging is cleaned up or recoverable. |
-| PROP-6 | Source files are unchanged after capture and after restore. |
-| PROP-7 | The capsule contains exactly the approved set. |
-| PROP-8 | Paths that collide after normalization or case-folding are rejected. |
-| PROP-9 | No access outside granted folders, including through symlinks. |
-| PROP-10 | Byte-identical capsules natively and in WebAssembly. |
-| PROP-11 | Schema round trip: Rust values parse in Zod and serialize back to the same value. |
-| PROP-12 | Every finding has evidence that resolves, and every line of the brief cites an existing finding. |
+| ID      | Property                                                                                                          |
+| ------- | ----------------------------------------------------------------------------------------------------------------- |
+| PROP-1  | Path safety: no restored path escapes the destination, and every unsafe path is rejected.                         |
+| PROP-2  | Round trip: capture → verify → restore gives byte-identical files and modes for every approved entry.             |
+| PROP-3  | Any single-byte flip or truncation fails verification.                                                            |
+| PROP-4  | No overwrite: restore never succeeds when the target or a variant of it exists, and existing files are unchanged. |
+| PROP-5  | Atomicity: a failure at any step leaves no final folder, and staging is cleaned up or recoverable.                |
+| PROP-6  | Source files are unchanged after capture and after restore.                                                       |
+| PROP-7  | The capsule contains exactly the approved set.                                                                    |
+| PROP-8  | Paths that collide after normalization or case-folding are rejected.                                              |
+| PROP-9  | No access outside granted folders, including through symlinks.                                                    |
+| PROP-10 | Byte-identical capsules natively and in WebAssembly.                                                              |
+| PROP-11 | Schema round trip: Rust values parse in Zod and serialize back to the same value.                                 |
+| PROP-12 | Every finding has evidence that resolves, and every line of the brief cites an existing finding.                  |
 
 **Test layers:**
+
 - Rust unit and integration tests on temporary synthetic repos
 - golden snapshots (insta)
 - TypeScript unit and component tests (Vitest, Testing Library, fast-check)
@@ -1091,41 +1195,41 @@ A result counts only if it was recorded through the evidence runner or CI.
 
 ## 20. Risk register
 
-| Risk | Likelihood / impact | Mitigation | Trigger |
-|---|---|---|---|
-| Schedule overrun | High / High | Cut P1 in the §3 order; daily gate notes | Any phase more than a day late |
-| WebAssembly core fails | Medium / High | Spike in Task 3, then a TypeScript port held to the golden fixtures | Spike fails, or bindings slip past Nov 18 |
-| Rust setup problems | Medium / Medium | Install on day 1, then the spike | Build errors |
-| Gatekeeper friction (ad-hoc signing) | High / Medium | Web demo as the main path, clear Open Anyway steps, build-from-source instructions | n/a |
-| Agent storage formats change | Medium / Low | Tolerant parsers, an Unsupported state, synthetic fixtures | Parse failures |
-| Security bug in restore | Medium / High | Single writer, property tests, malicious fixtures, review loop | Any failing property |
-| Stop hook loops | Medium / Medium | Hook gives up after 3 failures in a row | Repeated turns |
-| Public repo leaks something private | Low / High | gitleaks pre-commit, `~` redaction, `.scratch/` for raw logs | A gitleaks finding |
-| Account automation blocked | High / Low | Manual steps prepared | Login blocked |
-| Trademark rule in the video | Medium / Medium | No third-party logos | Review in Phase 15 |
-| Kiro credits run out | Medium / Medium | Request on day 1; use the Auto model | Usage over 70% |
-| Video quality | Medium / High | Scripted takes; user approval | Phase 15 verification |
-| Demo goes down during judging | Low / High | Static hosting plus a daily smoke test | Smoke test fails |
-| Claims in the submission go beyond reality | Low / High | Steering rules, an evidence-only write-up, a copy audit | The audit |
+| Risk                                       | Likelihood / impact | Mitigation                                                                         | Trigger                                   |
+| ------------------------------------------ | ------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------- |
+| Schedule overrun                           | High / High         | Cut P1 in the §3 order; daily gate notes                                           | Any phase more than a day late            |
+| WebAssembly core fails                     | Medium / High       | Spike in Task 3, then a TypeScript port held to the golden fixtures                | Spike fails, or bindings slip past Nov 18 |
+| Rust setup problems                        | Medium / Medium     | Install on day 1, then the spike                                                   | Build errors                              |
+| Gatekeeper friction (ad-hoc signing)       | High / Medium       | Web demo as the main path, clear Open Anyway steps, build-from-source instructions | n/a                                       |
+| Agent storage formats change               | Medium / Low        | Tolerant parsers, an Unsupported state, synthetic fixtures                         | Parse failures                            |
+| Security bug in restore                    | Medium / High       | Single writer, property tests, malicious fixtures, review loop                     | Any failing property                      |
+| Stop hook loops                            | Medium / Medium     | Hook gives up after 3 failures in a row                                            | Repeated turns                            |
+| Public repo leaks something private        | Low / High          | gitleaks pre-commit, `~` redaction, `.scratch/` for raw logs                       | A gitleaks finding                        |
+| Account automation blocked                 | High / Low          | Manual steps prepared                                                              | Login blocked                             |
+| Trademark rule in the video                | Medium / Medium     | No third-party logos                                                               | Review in Phase 15                        |
+| Kiro credits run out                       | Medium / Medium     | Request on day 1; use the Auto model                                               | Usage over 70%                            |
+| Video quality                              | Medium / High       | Scripted takes; user approval                                                      | Phase 15 verification                     |
+| Demo goes down during judging              | Low / High          | Static hosting plus a daily smoke test                                             | Smoke test fails                          |
+| Claims in the submission go beyond reality | Low / High          | Steering rules, an evidence-only write-up, a copy audit                            | The audit                                 |
 
 ## 21. Timeline (working back from Fri Dec 4, 2:00 PM PT)
 
-| Dates (2026) | Work |
-|---|---|
-| Fri Oct 30 – Tue Nov 3 | P00 (public repo by Task 5), P01; request credits; register on Devpost |
-| Wed Nov 4 – Sat Nov 7 | P02, Devpost draft |
-| Sun Nov 8 – Wed Nov 11 | P03 (P08 design system in parallel) |
-| Thu Nov 12 – Sun Nov 15 | P04 (P06 rules start in lane B) |
-| Mon Nov 16 – Wed Nov 18 | P05; WebAssembly bindings start Nov 18 |
-| Thu Nov 19 – Sun Nov 22 | P06 done, P09, P07 if on track, P08 done |
-| Mon Nov 23 – Wed Nov 25 | P10, P11 |
-| Thu Nov 26 | Thanksgiving buffer |
-| Fri Nov 27 – Sat Nov 28 | P12, P13, P14 |
-| Sun Nov 29 – Mon Nov 30 | P15 |
-| Tue Dec 1 | P16; final Devpost review; credit request deadline at noon |
-| Wed Dec 2 | Submit by 12:00 PM PT; first audit |
-| Thu Dec 3 | Second audit; freeze at 6:00 PM PT |
-| Fri Dec 4 | Deadline at 2:00 PM PT; critical fixes only |
+| Dates (2026)            | Work                                                                   |
+| ----------------------- | ---------------------------------------------------------------------- |
+| Fri Oct 30 – Tue Nov 3  | P00 (public repo by Task 5), P01; request credits; register on Devpost |
+| Wed Nov 4 – Sat Nov 7   | P02, Devpost draft                                                     |
+| Sun Nov 8 – Wed Nov 11  | P03 (P08 design system in parallel)                                    |
+| Thu Nov 12 – Sun Nov 15 | P04 (P06 rules start in lane B)                                        |
+| Mon Nov 16 – Wed Nov 18 | P05; WebAssembly bindings start Nov 18                                 |
+| Thu Nov 19 – Sun Nov 22 | P06 done, P09, P07 if on track, P08 done                               |
+| Mon Nov 23 – Wed Nov 25 | P10, P11                                                               |
+| Thu Nov 26              | Thanksgiving buffer                                                    |
+| Fri Nov 27 – Sat Nov 28 | P12, P13, P14                                                          |
+| Sun Nov 29 – Mon Nov 30 | P15                                                                    |
+| Tue Dec 1               | P16; final Devpost review; credit request deadline at noon             |
+| Wed Dec 2               | Submit by 12:00 PM PT; first audit                                     |
+| Thu Dec 3               | Second audit; freeze at 6:00 PM PT                                     |
+| Fri Dec 4               | Deadline at 2:00 PM PT; critical fixes only                            |
 
 If work starts after Nov 2, spend the buffer days first, then cut P1 in the §3 order.
 

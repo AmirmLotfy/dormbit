@@ -1,0 +1,17 @@
+[package]
+name = "dormbit-cli"
+description = "DORMBIT development and test harness. Not shipped in the DMG."
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+dormbit-core = { path = "../dormbit-core" }
+dormbit-fs = { path = "../dormbit-fs" }
+dormbit-git = { path = "../dormbit-git" }
+dormbit-agents = { path = "../dormbit-agents" }

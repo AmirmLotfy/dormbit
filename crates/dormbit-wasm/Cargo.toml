@@ -1,0 +1,20 @@
+[package]
+name = "dormbit-wasm"
+description = "DORMBIT browser demo core: dormbit-core compiled to WebAssembly over an in-memory filesystem."
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[lints]
+workspace = true
+
+[dependencies]
+dormbit-core = { path = "../dormbit-core" }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen.workspace = true

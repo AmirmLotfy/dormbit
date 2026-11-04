@@ -1,0 +1,42 @@
+[workspace]
+resolver = "3"
+members = [
+  "crates/dormbit-core",
+  "crates/dormbit-fs",
+  "crates/dormbit-git",
+  "crates/dormbit-agents",
+  "crates/dormbit-wasm",
+  "crates/dormbit-cli",
+]
+
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+license = "MIT"
+repository = "https://github.com/AmirmLotfy/dormbit"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+
+# Exact versions only (Requirement 3.x). Bump deliberately, one at a time.
+[workspace.dependencies]
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.154"
+thiserror = "=2.0.21"
+uuid = { version = "=1.29.0", default-features = false, features = ["std", "serde"] }
+sha2 = "=0.11.1"
+tar = { version = "=0.4.46", default-features = false }
+flate2 = { version = "=1.1.10", default-features = false, features = ["rust_backend"] }
+git2 = { version = "=0.21.0", default-features = false, features = ["vendored-libgit2"] }
+cap-std = "=4.0.3"
+ignore = "=0.4.34"
+unicode-normalization = "=0.1.26"
+ts-rs = "=12.0.1"
+wasm-bindgen = "=0.2.130"
+tauri = "=2.12.5"
+tauri-build = "=2.7.4"
+proptest = "=1.12.0"
+insta = "=1.49.0"

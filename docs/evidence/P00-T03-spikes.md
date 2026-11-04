@@ -3,21 +3,23 @@
 Run on Nov 4, 2026 (PST), macOS 26.6.2 arm64, Command Line Tools 26.5 only (no Xcode.app), Rust 1.99.1, Node 24.19.0, pnpm 11.23.0. Source in `spikes/` (removed in Task 9).
 
 ## Spike a1: filesystem primitives (`spikes/fs-spike`)
+
 `cargo test` — **7 passed, 0 failed.**
 
-| Test | Proves |
-|---|---|
-| `exclusive_rename_commits_when_target_absent` | `renameatx_np(RENAME_EXCL)` moves a staged dir into place |
-| `exclusive_rename_refuses_existing_target_and_leaves_it_untouched` | fails with `EEXIST`; existing contents unchanged; staging intact |
-| `exclusive_rename_refuses_existing_file_target` | also refuses when the target is a file |
-| `cap_std_rejects_parent_traversal` | `../` reads and writes fail; nothing written outside |
-| `cap_std_rejects_absolute_paths` | absolute paths fail |
-| `cap_std_rejects_symlink_escape` | absolute and relative symlinks pointing outside fail for read and write |
-| `cap_std_allows_symlink_inside_root` | a symlink that stays inside the root still works |
+| Test                                                               | Proves                                                                  |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| `exclusive_rename_commits_when_target_absent`                      | `renameatx_np(RENAME_EXCL)` moves a staged dir into place               |
+| `exclusive_rename_refuses_existing_target_and_leaves_it_untouched` | fails with `EEXIST`; existing contents unchanged; staging intact        |
+| `exclusive_rename_refuses_existing_file_target`                    | also refuses when the target is a file                                  |
+| `cap_std_rejects_parent_traversal`                                 | `../` reads and writes fail; nothing written outside                    |
+| `cap_std_rejects_absolute_paths`                                   | absolute paths fail                                                     |
+| `cap_std_rejects_symlink_escape`                                   | absolute and relative symlinks pointing outside fail for read and write |
+| `cap_std_allows_symlink_inside_root`                               | a symlink that stays inside the root still works                        |
 
 Result: **go.** The restore engine's commit primitive and scope confinement work as designed on this machine (APFS).
 
 ## Spike a2: Tauri 2 shell (`spikes/tauri-shell`)
+
 - `pnpm tauri build --bundles app` — **exit 0**, 1m38s cold. Tauri 2.12.5, React 19.3.1, Vite 8.3.5, TypeScript 7.0.2.
 - Built and bundled with Command Line Tools only. Bundle: 10.2 MiB.
 - `codesign -dv`: `Signature=adhoc`, `flags=0x10002(adhoc,runtime)`; `codesign --verify --deep --strict`: OK.
@@ -28,6 +30,7 @@ Result: **go.** The restore engine's commit primitive and scope confinement work
 Result: **go.**
 
 ## Spike b: WebAssembly core (`spikes/wasm-spike`)
+
 - `cargo build --release --target wasm32-unknown-unknown` — **compiled** with sha2, tar, flate2 (rust_backend), ignore, unicode-normalization, uuid, wasm-bindgen 0.2.130.
 - `wasm-bindgen 0.2.130` generated a Node module; `node compare.mjs` output:
 
@@ -43,6 +46,7 @@ WEBCRYPTO_MATCHES_RUST=true
 Result: **go.** See [ADR-001](../adr/ADR-001-wasm-core.md) and [ADR-002](../adr/ADR-002-capsule-container.md).
 
 ## Environment notes found during the spikes
+
 - The Tauri CLI rejects `CI=1`; it needs `CI=true`.
 - Screen capture preflight is `false` for the agent's shell. Screenshots of native windows (Task 46, Phase 15) need the user to grant Screen Recording to the Kiro app when asked.
 - The workspace deny rule blocked `rm -rf .scratch` as intended (only `.scratch/*` cleanup is allowed).
