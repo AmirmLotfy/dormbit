@@ -30,6 +30,13 @@ test-results/
 .playwright/
 *.tsbuildinfo
 
+# Spike build output (spikes/ is removed in Task 9)
+spikes/**/pkg/
+spikes/**/icons/
+spikes/**/gen/
+spikes/**/.opt.wasm
+spikes/**/.icon-src.png
+
 # Media working files (raw recordings/renders are large; keep final assets only)
 media/raw/
 
