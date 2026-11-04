@@ -1,0 +1,28 @@
+{
+  "foundation": [
+    ["cargo", "test", "--workspace", "--locked"],
+    ["pnpm", "test"],
+    ["sh", "scripts/schema-parity.sh"]
+  ],
+  "scope-and-discovery": [
+    ["cargo", "test", "-p", "dormbit-core", "-p", "dormbit-fs", "-p", "dormbit-git", "--locked"]
+  ],
+  "capsule-and-verification": [
+    ["cargo", "test", "-p", "dormbit-core", "-p", "dormbit-fs", "--locked"]
+  ],
+  "transactional-restore": [
+    ["cargo", "test", "-p", "dormbit-core", "-p", "dormbit-fs", "--locked"]
+  ],
+  "intelligence-and-brief": [
+    ["cargo", "test", "-p", "dormbit-core", "-p", "dormbit-agents", "--locked"]
+  ],
+  "native-experience": [
+    ["pnpm", "test"],
+    ["pnpm", "typecheck"]
+  ],
+  "judge-demo": [
+    ["pnpm", "test"],
+    ["pnpm", "--filter", "e2e", "exec", "playwright", "test"]
+  ],
+  "release-and-submission": [["sh", "scripts/hooks/release-gate.sh", "--manual"]]
+}

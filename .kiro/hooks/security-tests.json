@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "security-tests",
+      "trigger": "PostFileSave",
+      "description": "After a security module is saved, runs the fast security test subset with 64 property cases (foundation Requirement 22.11).",
+      "matcher": "crates/dormbit-(core|fs)/src/(path|scope|capsule|verify|restore|rename)",
+      "action": {
+        "type": "command",
+        "command": "bash scripts/hooks/security-tests.sh",
+        "timeout": 300
+      }
+    }
+  ]
+}

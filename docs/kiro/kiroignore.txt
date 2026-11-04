@@ -1,0 +1,7 @@
+# Source for the root .kiroignore (foundation Requirement 23.5). Kiro never lets the agent
+# write .kiroignore, so the user copies this file to the repo root as .kiroignore.
+# Then add ".kiroignore" to the IDE setting kiroAgent.agentIgnoreFiles ("Agent Ignore Files").
+target/
+node_modules/
+media/raw/
+.scratch/

@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "stop-gate",
+      "trigger": "Stop",
+      "description": "When a turn ends, runs cargo check and pnpm typecheck; hands errors back for up to 3 turns, then gives up (foundation Requirements 22.6 to 22.8).",
+      "action": {
+        "type": "command",
+        "command": "bash scripts/hooks/stop-gate.sh",
+        "timeout": 300
+      }
+    }
+  ]
+}

@@ -8,3 +8,6 @@ fixtures/
 
 # Evidence records are machine-written proof; never reformat them.
 docs/evidence/runs/
+
+# User-pastable Kiro config files; keep their exact indentation.
+docs/kiro/*.yaml

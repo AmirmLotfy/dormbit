@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@0.0.84",
+        "--isolated",
+        "--output-dir",
+        ".scratch/playwright",
+        "--allowed-origins",
+        "http://localhost:*;https://amirmlotfy.github.io"
+      ]
+    },
+    "playwright-chrome": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@0.0.84", "--extension"],
+      "disabled": true
+    }
+  }
+}

@@ -1,29 +1,32 @@
 # Handoff
 
-Read this first in a fresh session. It is loaded into every Kiro session through the `project-status.md` steering file once that exists (Task 13).
+Read this first in a fresh session. It is loaded into every Kiro session through `.kiro/steering/project-status.md`.
 
 ## What DORMBIT is
 
-Local-first macOS app (Tauri 2 + Rust + React) that shelves dormant developer projects: discover, understand, preserve into a verified capsule, restore transactionally, and write an evidence-graded handoff brief. A browser demo runs the same Rust core compiled to WebAssembly on a synthetic project. Built for Kiroween 2026, Frankenstein category. Deadline Fri Dec 4, 2026, 2:00 PM PT; target submit Wed Dec 2, 12:00 PM PT.
+Local-first macOS app (Tauri 2 + Rust + React) that shelves dormant developer projects: discover, understand, preserve into a verified capsule, restore transactionally, and write an evidence-graded resurrection brief. A browser demo runs the same Rust core compiled to WebAssembly on a synthetic project. Built for Kiroween 2026, Frankenstein category. Deadline Fri Dec 4, 2026, 2:00 PM PT; target submit Wed Dec 2, 12:00 PM PT.
 
 ## Where things are
 
-- Plan: `docs/MASTER_PLAN.md` (source of truth; do not contradict it).
+- Plan: `docs/MASTER_PLAN.md` (source of truth; ADR-011 replaced its §9 visual tokens).
 - Specs: `.kiro/specs/{foundation,scope-and-discovery,capsule-and-verification,transactional-restore,intelligence-and-brief,native-experience,judge-demo,release-and-submission}/`.
-- Status ledger: `docs/status/STATUS.md`. Deviations from the plan are listed there.
+- Status ledger and deviations: `docs/status/STATUS.md`. Evidence records: `docs/evidence/runs/`.
 - Repo: https://github.com/AmirmLotfy/dormbit (public, MIT). Git identity is the GitHub noreply address.
 
-## Current position
+## Current position (Nov 4, 2026)
 
-Phase 01 (design) is complete except two user actions: run Analyze Requirements, then the design-phase Correctness step, on the `capsule-and-verification` and `transactional-restore` specs in the Kiro Specs panel. Next: Phase 02, Task 9 (monorepo scaffold).
+- Phase 02 (`foundation`): Tasks 9-12 done (scaffold, hardened Tauri shell, shared contracts with PROP-11 parity, test tooling, Evidence_Runner, Playwright + axe, Dockline fixture). Task 13 (Kiro setup) in progress; Task 14 (CI, Pages deploy) next.
+- Landing page with the interactive 3D capsule is built early in `apps/demo` (ADR-011, judge-demo Requirement 22).
+- Then Phase 03 (`scope-and-discovery`) and Phase 08 (design system) in parallel.
+- User actions still open: Analyze Requirements and Correctness on the two security specs.
 
 ## Environment facts that matter
 
-- Agent shells need `. "$HOME/.cargo/env"` before cargo; `.scratch/run.sh <name> <cmd>` does this and logs to `.scratch/logs/`.
-- Inline terminal output is unreliable in the IDE; write command output to `.scratch/` and read the file.
-- `CI` must be `true` (not `1`) for the Tauri CLI.
-- Kiro always asks before writing `.kiro/agents`, `.kiro/hooks`, and `.git` paths. Workspace permissions live outside the repo at `~/.kiro/workspace-roots/<hash>/permissions.yaml`; the recommended contents are in `docs/kiro/`.
-- Deny rules block `rm -rf` except for `.scratch/`, `target`, `node_modules`, `dist`, `spikes`.
+- Agent shells need `. "$HOME/.cargo/env"` before cargo; `.scratch/run.sh <name> <cmd>` does this, sets `CI=true`, and logs to `.scratch/logs/`.
+- Inline terminal output is unreliable in the IDE; write command output to a file and read it back.
+- Background processes need the mise shims on `PATH`, or corepack prompts and hangs.
+- Kiro always asks before writing `.kiro/agents` and `.kiro/hooks`; it always denies agent writes to `.kiro/settings/` and `.kiroignore`.
+- Disk space is tight on this Mac; free space has dipped below 500 MB when other apps install runtimes.
 - gitleaks runs as a pre-commit hook (`core.hooksPath=.githooks`). Reviewed false positives go in `.gitleaksignore`.
 
 ## Rules that must not be weakened

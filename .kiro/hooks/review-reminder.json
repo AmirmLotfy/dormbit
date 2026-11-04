@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "review-reminder",
+      "trigger": "PostTaskExec",
+      "description": "After a spec task finishes, reminds the agent to run its tests and the reviewer (foundation Requirement 22.13).",
+      "action": {
+        "type": "agent",
+        "prompt": "Run the reviewer sub-agent on this task's diff and record the verdict in STATUS.md. Before that, run the task-tests skill (bash scripts/hooks/task-tests.sh <spec> <task-id>) so the task's tests leave Evidence records."
+      }
+    }
+  ]
+}

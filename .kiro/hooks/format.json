@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "format",
+      "trigger": "PostFileSave",
+      "description": "Formats a saved Rust, TypeScript, CSS, JSON, or Markdown file inside the repo with rustfmt or Prettier (foundation Requirement 22.4).",
+      "matcher": "\\.(rs|ts|tsx|css|json|md)$",
+      "action": {
+        "type": "command",
+        "command": "bash scripts/hooks/format.sh",
+        "timeout": 60
+      }
+    }
+  ]
+}
