@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "task": "P02-T03",
+  "command": [
+    "sh",
+    "scripts/schema-parity.sh"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-04T20:47:17Z",
+  "finished_at": "2026-11-04T20:47:39Z",
+  "duration_ms": 22197,
+  "exit_code": 0,
+  "counts": {
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0
+  },
+  "counts_source": "cargo+vitest",
+  "env": {
+    "PROPTEST_CASES": "512",
+    "FC_NUM_RUNS": "512"
+  },
+  "git": {
+    "sha": "03a8cc677d65a72aeff120f8e67150c610f7cc56",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261104T204715Z-sh-scripts-schema-parity-sh.log"
+}

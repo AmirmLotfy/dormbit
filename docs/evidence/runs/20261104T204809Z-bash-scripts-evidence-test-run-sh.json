@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "task": "P02-T04",
+  "command": [
+    "bash",
+    "scripts/evidence/test-run.sh"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-04T20:48:10Z",
+  "finished_at": "2026-11-04T20:48:22Z",
+  "duration_ms": 11937,
+  "exit_code": 0,
+  "counts": null,
+  "counts_source": "unknown",
+  "env": {},
+  "git": {
+    "sha": "03a8cc677d65a72aeff120f8e67150c610f7cc56",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261104T204809Z-bash-scripts-evidence-test-run-sh.log"
+}
