@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "probe: Stop payload",
+      "trigger": "Stop",
+      "description": "Temporary (Task 4): records the Stop stdin payload.",
+      "action": {
+        "type": "command",
+        "command": "sh scripts/hooks/probe.sh Stop",
+        "timeout": 10
+      }
+    }
+  ]
+}

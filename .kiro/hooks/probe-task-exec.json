@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "probe: PostTaskExec payload",
+      "trigger": "PostTaskExec",
+      "description": "Temporary (Task 4): records the PostTaskExec stdin payload, to learn whether it identifies the task.",
+      "action": {
+        "type": "command",
+        "command": "sh scripts/hooks/probe.sh PostTaskExec",
+        "timeout": 10
+      }
+    }
+  ]
+}

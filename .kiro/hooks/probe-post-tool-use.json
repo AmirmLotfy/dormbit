@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "probe: PostToolUse payload",
+      "trigger": "PostToolUse",
+      "description": "Temporary (Task 4): records the PostToolUse stdin payload for shell tools.",
+      "matcher": "shell",
+      "action": {
+        "type": "command",
+        "command": "sh scripts/hooks/probe.sh PostToolUse",
+        "timeout": 10
+      }
+    }
+  ]
+}
