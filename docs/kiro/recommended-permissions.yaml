@@ -1,0 +1,230 @@
+# DORMBIT recommended workspace permissions for Kiro.
+#
+# Install (run yourself; Kiro cannot write this location):
+#   cp docs/kiro/recommended-permissions.yaml \
+#      ~/.kiro/workspace-roots/8ef6d613d58aa9a2/permissions.yaml
+#
+# Format: https://kiro.dev/docs/permissions
+# Evaluation is deny > ask > allow > evaluate, across all scopes.
+# Anything not matched below falls back to Kiro's default, which is "ask".
+#
+# Goal: routine build/test/edit/commit work inside this repo runs without
+# prompts. Destructive git operations, privilege escalation, and reads of
+# private agent histories and credentials are denied outright. A few
+# high-impact actions (installs, repo creation, releases, downloads) still ask.
+
+policies:
+  # Built-in presets (see "Available presets" in the permissions docs):
+  # - edit-workspace: fs_read + fs_write within ./** only
+  # - dev-shell: read-only shell set, git write commands, cargo/npm/bun/yarn,
+  #   mkdir/touch/mv/cp, ls/cat/grep/echo
+  - edit-workspace
+  - dev-shell
+
+rules:
+  # ---------------------------------------------------------------- web
+  # The plan requires checking current official docs before writing config.
+  - capability: web_fetch
+    effect: allow
+  - capability: web_search
+    effect: allow
+
+  # ---------------------------------------------------------------- reads
+  # Toolchain locations the agent inspects for versions and diagnostics.
+  - capability: fs_read
+    effect: allow
+    match:
+      - ~/.cargo
+      - ~/.rustup
+      - ~/.local/share/mise
+      - ~/Library/Caches/ms-playwright
+      - /opt/homebrew
+      - /Library/Developer/CommandLineTools
+
+  # Never read real AI-agent histories or credential stores. DORMBIT is
+  # developed and tested against synthetic fixtures only.
+  - capability: fs_read
+    effect: deny
+    match:
+      - ~/.claude
+      - ~/.codex
+      - ~/.ssh
+      - ~/.aws
+      - ~/.gnupg
+      - ~/.config/gh
+      - ~/.netrc
+      - ~/.kiro/sessions/**/messages.jsonl
+
+  # ---------------------------------------------------------------- writes
+  # Never write real secret files from the agent's write tools.
+  - capability: fs_write
+    effect: deny
+    match:
+      - "**/.env"
+      - "**/.env.*"
+      - "**/*.pem"
+      - "**/*.p12"
+      - "**/*.key"
+    exclude:
+      - "**/.env.example"
+
+  # ---------------------------------------------------------------- shell: allow
+  - capability: shell
+    effect: allow
+    match:
+      # JS toolchain
+      - "pnpm *"
+      - "pnpx *"
+      - "node *"
+      - "mise *"
+      - "corepack *"
+      # Rust toolchain
+      - "cargo *"
+      - "rustc *"
+      - "rustup show*"
+      - "rustup target *"
+      - "rustup component *"
+      - "rustup update*"
+      - "wasm-bindgen *"
+      - "wasm-opt *"
+      # Repo scripts (hooks, evidence runner, fixture generator)
+      - "sh scripts/*"
+      - "bash scripts/*"
+      - "./scripts/*"
+      - "sh .githooks/*"
+      # Security / quality
+      - "gitleaks *"
+      - "shellcheck *"
+      - "actionlint *"
+      # GitHub CLI: reads and CI inspection (see exclude below)
+      - "gh *"
+      # Inspection and file utilities used for verification
+      - "head *"
+      - "tail *"
+      - "wc *"
+      - "find *"
+      - "rg *"
+      - "sort *"
+      - "uniq *"
+      - "awk *"
+      - "sed *"
+      - "cut *"
+      - "tr *"
+      - "diff *"
+      - "cmp *"
+      - "jq *"
+      - "xxd *"
+      - "file *"
+      - "du *"
+      - "df *"
+      - "stat *"
+      - "shasum *"
+      - "printf *"
+      - "test *"
+      - "chmod *"
+      - "ln *"
+      - "tar *"
+      - "unzip *"
+      - "zip *"
+      - "gzip *"
+      - "date*"
+      - "which *"
+      - "command *"
+      - "readlink *"
+      - "sw_vers*"
+      - "uname*"
+      - "sleep *"
+      - "true"
+      - "cd *"
+      # Build / packaging verification (Phase 12)
+      - "codesign *"
+      - "spctl *"
+      - "hdiutil *"
+      - "plutil *"
+      - "xcrun *"
+      # Media pipeline (Phases 14-15)
+      - "ffmpeg *"
+      - "ffprobe *"
+      - "magick *"
+      - "whisper-cli *"
+      - "exiftool *"
+      # Cleanup of agent scratch space and build output this project creates
+      - "rm -rf .scratch/*"
+      - "rm -f .scratch/*"
+      - "rm -rf target*"
+      - "rm -rf node_modules*"
+      - "rm -rf dist*"
+      - "rm -rf spikes*"
+    exclude:
+      # These gh commands publish or change account state: keep asking.
+      - "gh repo create*"
+      - "gh repo delete*"
+      - "gh repo edit*"
+      - "gh repo rename*"
+      - "gh release create*"
+      - "gh release delete*"
+      - "gh release edit*"
+      - "gh auth *"
+      - "gh secret *"
+      - "gh api -X *"
+      - "gh api --method *"
+      # gh api switches to POST when fields or an input body are passed.
+      - "gh api * -f *"
+      - "gh api * -F *"
+      - "gh api * --field*"
+      - "gh api * --raw-field*"
+      - "gh api * --input*"
+
+  # ---------------------------------------------------------------- shell: deny
+  - capability: shell
+    effect: deny
+    match:
+      - "sudo *"
+      - "su *"
+      # History rewriting and destructive git
+      - "git push --force*"
+      - "git push -f*"
+      - "git push * --force*"
+      - "git push * -f*"
+      - "git push --delete*"
+      - "git reset --hard*"
+      - "git clean -f*"
+      - "git clean -d*"
+      - "git filter-repo*"
+      - "git filter-branch*"
+      - "git rebase*"
+      - "git update-ref -d*"
+      - "git config --global*"
+      - "git config --system*"
+      # Broad deletes outside build/scratch output
+      - "rm -rf /*"
+      - "rm -rf ~*"
+      - "rm -rf ..*"
+      - "rm -rf ."
+      - "rm -rf *"
+      - "rm -fr *"
+      - "find * -delete*"
+    exclude:
+      - "rm -rf .scratch/*"
+      - "rm -rf target*"
+      - "rm -rf node_modules*"
+      - "rm -rf dist*"
+      - "rm -rf spikes*"
+
+  # ---------------------------------------------------------------- MCP / sub-agents
+  - capability: mcp
+    effect: allow
+    match:
+      - "playwright/*"
+
+  - capability: subagent
+    effect: allow
+    match:
+      - context-gatherer
+      - general-task-execution
+      - architect
+      - rust-security
+      - frontend
+      - qa
+      - release
+      - reviewer
