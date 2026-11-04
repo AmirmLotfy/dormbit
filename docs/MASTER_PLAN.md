@@ -422,34 +422,32 @@ Default limits (per-file size, entry count, capsule size) are configurable and d
   11. Resurrection Brief
   12. Settings: scopes, consent, defaults, data and privacy, about and licenses
   13. Judge Demo: guided rail, "what's real" panel, reset
-- **Color tokens:** the brief's palette, with text colors adjusted for contrast. Contrast ratios on Paper `#F4F1E9`, computed with the WCAG formula and re-checked by automated tests in Task 34:
+- **Visual direction (ADR-011, "Flight Recorder"):** flight recorders are painted international orange so they can be found and read; capsules borrow that. Light surfaces are cool aluminum, dark surfaces graphite, and status colors follow cockpit annunciators (green normal, amber caution, red warning). Orange is the brand color and never a status. This replaces the original cream-and-serif palette, which current catalogs of AI design tells list as the default look.
+- **Color tokens:** WCAG ratios, computed with the formula and re-checked by automated tests in Task 34:
 
-  | Color               | Ratio  | Use                                              |
-  | ------------------- | ------ | ------------------------------------------------ |
-  | Ink `#222B29`       | 12.9:1 | Body text                                        |
-  | Evergreen `#315C4F` | 6.7:1  | Primary actions and Verified status              |
-  | Slate `#75817D`     | 3.6:1  | Input borders and icons only; fails as body text |
-  | Copper `#B77F55`    | 3.0:1  | Fills only                                       |
-  | Error `#B35C50`     | 4.1:1  | Large text and icons only                        |
-  | Sage `#8DA99A`      | 2.2:1  | Fills only, with Ink text on top (5.7:1)         |
-  | Border `#DDDCD3`    | —      | Dividers and cards only                          |
+  | Token                                  | Hex                   | Use                                         | Ratio                              |
+  | -------------------------------------- | --------------------- | ------------------------------------------- | ---------------------------------- |
+  | Plate / Panel                          | `#F6F7F5` / `#ECEEEA` | light surfaces                              | —                                  |
+  | Ink                                    | `#1A1E1C`             | body text                                   | 15.7:1 on Plate                    |
+  | Steel                                  | `#59625D`             | secondary text                              | 5.9:1 on Plate                     |
+  | Edge                                   | `#737B76`             | control borders, icons                      | 4.1:1 on Plate                     |
+  | Graphite / Graphite-2                  | `#0F1211` / `#181C1A` | dark surfaces                               | —                                  |
+  | On-dark / On-dark-muted                | `#E8EBE7` / `#9AA29D` | text on Graphite                            | 15.7:1 / 7.2:1                     |
+  | Signal                                 | `#FF4F00`             | fills, focus rings, Large text              | 3.1:1 on Plate, 5.7:1 on Graphite  |
+  | `--signal-text` / `--signal-text-dark` | `#B83A00` / `#FF5F1A` | orange text                                 | 5.4:1 on Plate / 6.2:1 on Graphite |
+  | Ok / Ok-dark                           | `#1B6E45` / `#3DBE7E` | Verified                                    | 5.8:1 / 8.0:1                      |
+  | Warn / `--warn-text`                   | `#F2B200` / `#8A5A00` | Needs decision (fill with Ink text / label) | Ink on Warn 8.9:1 / 5.5:1          |
+  | Fail / Fail-dark                       | `#C21F1A` / `#FF6B5E` | Failed                                      | 5.6:1 / 6.7:1                      |
 
-  New text tokens:
-
-  | Token                   | Ratio |
-  | ----------------------- | ----- |
-  | `--text-muted #5E6A66`  | 5.0:1 |
-  | `--copper-text #8E5A33` | 5.1:1 |
-  | `--error-text #9A4639`  | 5.6:1 |
-
-- **Type:** system UI font with Inter as the fallback, Newsreader for headings and the brief, JetBrains Mono for paths and hashes. All are OFL fonts, bundled with their licenses, and loaded with no web-font requests.
+- **Type:** Archivo (variable width 62–125%) for headings, Atkinson Hyperlegible Next for interface and brief text, Atkinson Hyperlegible Mono for paths and hashes. All are OFL fonts, bundled with their licenses, and loaded with no web-font requests.
 - **Spacing and motion:** 4px grid, corner radius 6/10/14, three elevation levels, motion of 120–200 ms ease-out, and no motion under reduced-motion settings.
+- **Landing page and web motion:** `/dormbit/` hosts a landing page and `/dormbit/demo/` the judge demo. The hero capsule is an interactive three.js model, loaded after the text renders, over a pointer-reactive gradient, with an SVG fallback when WebGL is missing. Sections reveal with CSS scroll-driven animations inside `@supports`. Content is visible by default, scrolling stays native, and nothing animates under reduced motion. The native app has no WebGL.
 - **Status markers:** each status pairs a glyph with a label:
-  - Verified ✓ (Evergreen)
-  - Needs decision ◆ (Copper)
-  - Failed ✕ (Error)
-  - Unknown ? (Slate)
-  - Unsupported ⊘ (Slate)
+  - Verified ✓ (Ok)
+  - Needs decision ◆ (Warn fill, `--warn-text` label)
+  - Failed ✕ (Fail)
+  - Unknown ? (Steel)
+  - Unsupported ⊘ (Steel)
 - **Capsule seal:** a fingerprint pattern drawn from the real capsule ID. It's shown "pressed" only after verification passes.
 - **States and gallery:** every screen has loading, empty, error, partial, and cancelled states. Components are documented on a dev-only `/gallery` route that has screenshot tests.
 

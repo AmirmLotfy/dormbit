@@ -21,7 +21,7 @@ flowchart TB
   end
   subgraph UI["packages/ui"]
     TOK[tokens: colors, text, spacing, radius, elevation, motion]
-    FONT[fonts: Inter, Newsreader, JetBrains Mono + OFL files]
+    FONT[fonts: Archivo, Atkinson Hyperlegible Next and Mono + OFL files]
     CMP[components on React Aria Components]
     SCR[screens 1-12 + Judge Demo building blocks]
     DATA[data hooks: TanStack Query + useJob]
@@ -213,8 +213,8 @@ Components from master plan Task 34 are built on React Aria Components (RAC) whe
 
 | Component | Built on | Notes |
 |---|---|---|
-| Button | RAC `Button` | Primary uses Evergreen fill with Paper text (6.7:1). |
-| Field | RAC `TextField`, `Label`, `Input`, `FieldError` | Slate border; error text in `--error-text`. |
+| Button | RAC `Button` | Primary uses Signal fill with Graphite text (5.7:1). |
+| Field | RAC `TextField`, `Label`, `Input`, `FieldError` | Edge border; error text in Fail. |
 | Checkbox | RAC `Checkbox` | Checked state shows a check glyph, not only a fill. |
 | Tabs | RAC `Tabs`, `TabList`, `Tab`, `TabPanel` | Arrow-key navigation. |
 | List | RAC `GridList` + TanStack Virtual | `aria-rowcount` and `aria-rowindex` kept correct while virtualized. |
@@ -229,8 +229,8 @@ Components from master plan Task 34 are built on React Aria Components (RAC) whe
 | EmptyState, ErrorState, Skeleton | plain components | ErrorState renders through Error_Presenter. |
 | CapsuleSeal | inline SVG | See below. |
 | SafeMarkdown | react-markdown | support. See below. |
-| PathText | support | JetBrains Mono, middle truncation, full Display path in the accessible name. |
-| HashText | support | JetBrains Mono, shortened display, full hash in the accessible name, copy button. |
+| PathText | support | Atkinson Hyperlegible Mono, middle truncation, full Display path in the accessible name. |
+| HashText | support | Atkinson Hyperlegible Mono, shortened display, full hash in the accessible name, copy button. |
 | ErrorNotice | support | Inline Error_Presenter output with optional Retry. |
 
 ### Status markers (`packages/ui/src/components/StatusPill.tsx`)
@@ -239,16 +239,16 @@ type StatusKind = 'verified' | 'needs-decision' | 'failed' | 'unknown' | 'unsupp
                 | 'confirmed' | 'inferred';
 
 const STATUS: Record<StatusKind, { glyph: GlyphId; glyphColor: ColorToken; labelColor: TextToken; label: string }> = {
-  verified:         { glyph: 'check',   glyphColor: 'evergreen', labelColor: 'evergreen',    label: 'Verified' },
-  'needs-decision': { glyph: 'diamond', glyphColor: 'copper',    labelColor: 'copper-text',  label: 'Needs decision' },
-  failed:           { glyph: 'x',       glyphColor: 'error',     labelColor: 'error-text',   label: 'Failed' },
-  unknown:          { glyph: 'question',glyphColor: 'slate',     labelColor: 'text-muted',   label: 'Unknown' },
-  unsupported:      { glyph: 'ban',     glyphColor: 'slate',     labelColor: 'text-muted',   label: 'Unsupported' },
-  confirmed:        { glyph: 'TBD-34',  glyphColor: 'evergreen', labelColor: 'ink',          label: 'Confirmed' },
-  inferred:         { glyph: 'TBD-34',  glyphColor: 'slate',     labelColor: 'ink',          label: 'Inferred' },
+  verified:         { glyph: 'check',   glyphColor: 'ok',        labelColor: 'ok',           label: 'Verified' },
+  'needs-decision': { glyph: 'diamond', glyphColor: 'warn',      labelColor: 'warn-text',    label: 'Needs decision' },
+  failed:           { glyph: 'x',       glyphColor: 'fail',      labelColor: 'fail',         label: 'Failed' },
+  unknown:          { glyph: 'question',glyphColor: 'edge',      labelColor: 'steel',        label: 'Unknown' },
+  unsupported:      { glyph: 'ban',     glyphColor: 'edge',      labelColor: 'steel',        label: 'Unsupported' },
+  confirmed:        { glyph: 'TBD-34',  glyphColor: 'ok',        labelColor: 'ink',          label: 'Confirmed' },
+  inferred:         { glyph: 'TBD-34',  glyphColor: 'edge',      labelColor: 'ink',          label: 'Inferred' },
 };
 ```
-- Glyphs are SVG shapes matching ✓ ◆ ✕ ? ⊘, drawn with `aria-hidden="true"`. As graphics, they need 3:1 (WCAG 1.4.11). Copper (3.0:1), Slate (3.6:1), Error (4.1:1), and Evergreen (6.7:1) all meet it. Drawing them as text characters would make axe treat them as text needing 4.5:1, which Copper, Slate, and Error fail.
+- Glyphs are SVG shapes matching ✓ ◆ ✕ ? ⊘, drawn with `aria-hidden="true"`. As graphics, they need 3:1 (WCAG 1.4.11). On Plate, Edge (4.05:1), Fail (5.58:1), and Ok (5.81:1) meet it, and the Warn glyph sits on its own fill with Ink (8.94:1). Drawing them as SVG keeps axe from treating them as text.
 - Labels always use a text token (Requirement 19.3).
 - Confirmed and Inferred glyphs are picked in Task 34 (requirements Open question 1).
 
@@ -259,7 +259,7 @@ function sealState(latest?: VerificationReport): SealState;          // 'pressed
 function sealPattern(capsuleId: CapsuleId): SealRidge[];             // pure; reads only the 16 UUID bytes
 ```
 - `sealPattern` turns each of the capsule ID's 16 bytes into one ridge arc (start angle and sweep), drawn as concentric arcs. It reads nothing but the ID (Requirement 11.5).
-- `pressed` adds an inset shadow (elevation level 1 inverted) and an Evergreen ring. `failed` shows the ring in Error with the ✕ marker. `unverified` shows the ridges in Slate with no ring.
+- `pressed` adds an inset shadow (elevation level 1 inverted) and an Ok ring. `failed` shows the ring in Fail with the ✕ marker. `unverified` shows the ridges in Edge with no ring.
 - The component always renders a text label next to it ("Verified", "Not verified", "Verification failed") and an accessible name such as "Capsule seal, verified" (Requirements 11.8, 22.4).
 - The seal is a visual ID. It is not a signature, and the copy never calls it one.
 
@@ -284,7 +284,7 @@ function sealPattern(capsuleId: CapsuleId): SealRidge[];             // pure; re
 type ErrorCopy = { title: string; body: string; action?: 'retry' | 'open-settings-scopes' | 'review-plan' | 'choose-name' | 'choose-destination' };
 export const ERROR_COPY = { /* table below */ } satisfies Record<DormbitErrorCode | ClientErrorCode, ErrorCopy>;
 ```
-`satisfies Record<...>` makes the mapping total at compile time (Requirement 25.1). The code is always shown in JetBrains Mono beside the message. Retry appears only when `retryable` is true.
+`satisfies Record<...>` makes the mapping total at compile time (Requirement 25.1). The code is always shown in Atkinson Hyperlegible Mono beside the message. Retry appears only when `retryable` is true.
 
 | Code | Title | Body | Action |
 |---|---|---|---|
@@ -309,10 +309,12 @@ The Rust `message` is shown under the body as detail text. Rust produces it alre
 ### Tokens (`packages/ui/src/tokens/tokens.ts` and generated `tokens.css`)
 ```ts
 export const color = {
-  paper: '#F4F1E9', ink: '#222B29', evergreen: '#315C4F', slate: '#75817D',
-  copper: '#B77F55', error: '#B35C50', sage: '#8DA99A', border: '#DDDCD3',
+  plate: '#F6F7F5', panel: '#ECEEEA', rule: '#D3D7D3', edge: '#737B76',
+  ink: '#1A1E1C', steel: '#59625D',
+  graphite: '#0F1211', graphite2: '#181C1A', onDark: '#E8EBE7', onDarkMuted: '#9AA29D',
+  signal: '#FF4F00', ok: '#1B6E45', okDark: '#3DBE7E', warn: '#F2B200', fail: '#C21F1A', failDark: '#FF6B5E',
 } as const;
-export const text = { muted: '#5E6A66', copperText: '#8E5A33', errorText: '#9A4639' } as const;
+export const text = { signalText: '#B83A00', signalTextDark: '#FF5F1A', warnText: '#8A5A00' } as const;
 export const space = (n: number) => `${n * 4}px`;                  // 4px grid
 export const radius = { sm: '6px', md: '10px', lg: '14px' } as const;
 export const elevation = { 1: '...', 2: '...', 3: '...' } as const; // exactly three levels
@@ -325,26 +327,27 @@ export const motion = { fast: '120ms', base: '160ms', slow: '200ms', easing: 'ea
 }
 ```
 
-Measured contrast on Paper (WCAG formula, recomputed while writing this design):
+Measured contrast (WCAG formula, values from ADR-011):
 
 | Token | Ratio | Allowed use |
 |---|---|---|
-| Ink `#222B29` | 12.87 | body text |
-| Evergreen `#315C4F` | 6.71 | text, primary actions, Verified |
-| Slate `#75817D` | 3.58 | input borders, icons |
-| Copper `#B77F55` | 3.01 | fills, icons |
-| Error `#B35C50` | 4.08 | Large text, icons |
-| Sage `#8DA99A` | 2.25 | fills with Ink text (Ink on Sage 5.72) |
-| Border `#DDDCD3` | 1.22 | dividers, cards |
-| `--text-muted #5E6A66` | 4.99 | secondary text |
-| `--copper-text #8E5A33` | 5.08 | Needs decision labels |
-| `--error-text #9A4639` | 5.62 | error text |
+| Ink `#1A1E1C` | 15.68 on Plate | body text |
+| Steel `#59625D` | 5.87 on Plate, 5.40 on Panel | secondary text |
+| Edge `#737B76` | 4.05 on Plate, 3.73 on Panel | control borders, icons |
+| Signal `#FF4F00` | 3.07 on Plate, 5.71 on Graphite | fills, focus rings, Large text; never on Panel (2.82) |
+| `--signal-text #B83A00` | 5.36 on Plate, 4.94 on Panel | orange text on light surfaces |
+| `--signal-text-dark #FF5F1A` | 6.19 on Graphite | orange text on dark surfaces |
+| Ok `#1B6E45` / Ok-dark `#3DBE7E` | 5.81 on Plate / 7.95 on Graphite | Verified |
+| Warn `#F2B200` | Ink on Warn 8.94, 9.99 on Graphite | Needs decision fill |
+| `--warn-text #8A5A00` | 5.52 on Plate | Needs decision label |
+| Fail `#C21F1A` / Fail-dark `#FF6B5E` | 5.58 on Plate / 6.74 on Graphite | Failed |
+| On-dark `#E8EBE7` / On-dark-muted `#9AA29D` | 15.67 / 7.20 on Graphite | text on dark surfaces |
 
 ### Fonts (`packages/ui/src/fonts/`)
-Inter, Newsreader, and JetBrains Mono as `woff2` files, each with its `OFL.txt`. `@font-face` rules use relative `url()` values that Vite rewrites to bundled asset paths. Stacks:
-- interface: `system-ui, -apple-system, "Inter", sans-serif`
-- headings and brief: `"Newsreader", serif`
-- paths and hashes: `"JetBrains Mono", ui-monospace, monospace`
+Archivo (variable width and weight), Atkinson Hyperlegible Next, and Atkinson Hyperlegible Mono as Latin-subset `woff2` files, each with its `OFL-*.txt`. `fonts.css` declares the `@font-face` rules with relative `url()` values that Vite rewrites to bundled asset paths. Stacks:
+- interface and brief: `"Atkinson Next", system-ui, sans-serif`
+- headings: `"Archivo", "Arial Narrow", system-ui, sans-serif`
+- paths and hashes: `"Atkinson Mono", ui-monospace, "SF Mono", Menlo, monospace`
 
 ### Screens (`packages/ui/src/screens/`)
 Each Screen folder has the Screen component, its State_Matrix entry, and MockClient scenarios for each state.
@@ -361,7 +364,7 @@ Each Screen folder has the Screen component, its State_Matrix entry, and MockCli
 | Integrity Verification | capsule list state; checks Table with markers; failed files; registry marker; limits text; CapsuleSeal |
 | Restore Wizard | capsule, destination (`restore_target_pick`), name Field; pre-check list; Start; Job ProgressSteps |
 | Restoration Result | RST-7 sections; writes outside destination as a number; Git checks; rollback message |
-| Resurrection Brief | SafeMarkdown sections in Newsreader; four outcome rows with markers; citation links to Evidence View; Export |
+| Resurrection Brief | SafeMarkdown sections in Atkinson Hyperlegible Next; four outcome rows with markers; citation links to Evidence View; Export |
 | Settings | sections scopes, consent, defaults, data and privacy, about and licenses (fonts, notices, shortcuts) |
 
 Four outcome rows on the Brief use these markers: "Files restored and verified" with Verified or Failed from the restore report; "Context reconstructed (inferred from evidence)" with the Inferred marker; "AI session resumed: not performed" with Unsupported; "Builds/runs: unknown (never executed)" with Unknown.

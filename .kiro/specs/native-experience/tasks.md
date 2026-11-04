@@ -10,11 +10,11 @@
     - generate `packages/ui/src/tokens/tokens.css` custom properties, including the `prefers-reduced-motion: reduce` block that sets durations to 0 ms
     - _Requirements: 16.1, 16.2, 18.1, 18.2, 18.3, 23.1_
   - [ ] 1.2 Write the contrast test
-    - Vitest in `packages/ui/src/tokens/contrast.test.ts` computing WCAG ratios on Paper and Ink on Sage; assert the plan values to one decimal
+    - Vitest in `packages/ui/src/tokens/contrast.test.ts` computing the WCAG ratios in the ADR-011 table on Plate, Panel, and Graphite; assert them to two decimals
     - assert every text/background pair declared in a component token map meets 4.5:1, or 3:1 for Large text
     - _Requirements: 16.3, 16.4, 16.5, 16.6_
   - [ ] 1.3 Bundle the fonts
-    - `woff2` files and `OFL.txt` for Inter, Newsreader, JetBrains Mono in `packages/ui/src/fonts/`; `@font-face` with relative URLs; the three font stacks
+    - `woff2` files and `OFL-*.txt` for Archivo, Atkinson Hyperlegible Next, and Atkinson Hyperlegible Mono in `packages/ui/src/fonts/` (already added with the landing page); `@font-face` in `fonts.css` with relative URLs; the three font stacks
     - build test: the built CSS contains no `http:` or `https:` font URL
     - _Requirements: 4.3, 17.1, 17.2, 17.3_
   - [ ] 1.4 Build Button, Field, Checkbox, Tabs on React Aria Components
@@ -30,7 +30,7 @@
     - `aria-current="step"`, polite live region for step changes only, focus trap and focus return, Escape to close
     - _Requirements: 21.3, 21.4, 22.3_
   - [ ] 1.8 Build EmptyState, ErrorState, Skeleton, ErrorNotice, and the Error_Presenter
-    - `packages/ui/src/errors/` with `ERROR_COPY satisfies Record<...>` for every §8 code plus `IPC_SCHEMA_MISMATCH`; Retry only when retryable; code shown in JetBrains Mono
+    - `packages/ui/src/errors/` with `ERROR_COPY satisfies Record<...>` for every §8 code plus `IPC_SCHEMA_MISMATCH`; Retry only when retryable; code shown in Atkinson Hyperlegible Mono
     - _Requirements: 25.1, 25.2, 25.3, 25.4, 25.5_
   - [ ] 1.9 Build CapsuleSeal
     - pure `sealPattern(capsuleId)` from the 16 ID bytes; `sealState(latest)` pressed only for Verified; text label and accessible name
@@ -130,7 +130,7 @@
     - every RST-7 section; writes outside destination as a number; HEAD and refs check; working-tree status check; rollback states the destination was not created
     - _Requirements: 13.1, 13.2, 13.3_
   - [ ] 4.3 Polish the Resurrection Brief
-    - SafeMarkdown in Newsreader; four outcome rows with exact BRF-2 wording and markers; citation links to the Evidence View; Export calls `brief_export`
+    - SafeMarkdown in Atkinson Hyperlegible Next; four outcome rows with exact BRF-2 wording and markers; citation links to the Evidence View; Export calls `brief_export`
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 2.1_
   - [ ] 4.4 Complete the State_Matrix for all 12 native Screens
     - test that iterates the State_Matrix and renders every reachable state; fails on a missing entry

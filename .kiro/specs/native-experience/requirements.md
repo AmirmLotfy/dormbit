@@ -205,7 +205,7 @@ This spec covers the complete DORMBIT user interface and its refinement: master 
 
 #### Acceptance Criteria
 
-1. THE Resurrection Brief Screen SHALL render the brief sections through Safe_Markdown in the Newsreader typeface.
+1. THE Resurrection Brief Screen SHALL render the brief sections through Safe_Markdown in the Atkinson Hyperlegible Next typeface.
 2. THE Resurrection Brief Screen SHALL show the Four outcomes as four separate items, each with a Status marker and its exact BRF-2 wording.
 3. THE Resurrection Brief Screen SHALL show the finding ID cited by each line, and WHEN the user activates a citation, THE Screen SHALL open that finding in the Evidence View.
 4. WHEN the user exports the brief, THE Resurrection Brief Screen SHALL call `brief_export` so that Rust opens the save dialog.
@@ -228,11 +228,11 @@ This spec covers the complete DORMBIT user interface and its refinement: master 
 
 #### Acceptance Criteria
 
-1. THE Design_System SHALL define these color tokens with these values: Paper `#F4F1E9`, Ink `#222B29`, Evergreen `#315C4F`, Slate `#75817D`, Copper `#B77F55`, Error `#B35C50`, Sage `#8DA99A`, Border `#DDDCD3`.
-2. THE Design_System SHALL define the text tokens `--text-muted #5E6A66`, `--copper-text #8E5A33`, and `--error-text #9A4639`.
-3. WHEN the contrast test runs, THE test SHALL compute each token's WCAG contrast ratio on Paper and match the plan table rounded to one decimal: Ink 12.9, Evergreen 6.7, Slate 3.6, Copper 3.0, Error 4.1, Sage 2.2, `--text-muted` 5.0, `--copper-text` 5.1, `--error-text` 5.6, and Ink on Sage 5.7.
-4. THE Design_System SHALL use Slate only for input borders and icons, Copper and Sage only as fills, Border only for dividers and cards, and Error only for Large text and icons.
-5. THE Design_System SHALL use Ink, Evergreen, `--text-muted`, `--copper-text`, or `--error-text` for all text below Large text size.
+1. THE Design_System SHALL define these color tokens with these values (ADR-011): Plate `#F6F7F5`, Panel `#ECEEEA`, Rule `#D3D7D3`, Edge `#737B76`, Ink `#1A1E1C`, Steel `#59625D`, Graphite `#0F1211`, Graphite-2 `#181C1A`, On-dark `#E8EBE7`, On-dark-muted `#9AA29D`, Signal `#FF4F00`, Ok `#1B6E45`, Ok-dark `#3DBE7E`, Warn `#F2B200`, Fail `#C21F1A`, Fail-dark `#FF6B5E`.
+2. THE Design_System SHALL define the text tokens `--signal-text #B83A00`, `--signal-text-dark #FF5F1A`, and `--warn-text #8A5A00`.
+3. WHEN the contrast test runs, THE test SHALL compute each WCAG contrast ratio and match the ADR-011 table rounded to two decimals: on Plate, Ink 15.68, Steel 5.87, Edge 4.05, Signal 3.07, `--signal-text` 5.36, Ok 5.81, `--warn-text` 5.52, Fail 5.58; on Panel, Steel 5.40, `--signal-text` 4.94, Edge 3.73; on Graphite, On-dark 15.67, On-dark-muted 7.20, Signal 5.71, `--signal-text-dark` 6.19, Ok-dark 7.95, Warn 9.99, Fail-dark 6.74; and Graphite on Signal 5.71, Ink on Warn 8.94, white on Ok 6.25.
+4. THE Design_System SHALL use Signal only for fills, focus rings, and Large text on Plate or Graphite (never on Panel), Edge only for control borders and icons, Rule only for dividers, and Warn only as a fill with Ink text or as text on Graphite.
+5. THE Design_System SHALL use Ink, Steel, `--signal-text`, `--warn-text`, Ok, or Fail for all text below Large text size on Plate and Panel, and On-dark, On-dark-muted, `--signal-text-dark`, Ok-dark, Warn, or Fail-dark on Graphite.
 6. IF any text and background pair used by a component has a contrast ratio below 4.5:1 for normal text or 3:1 for Large text, THEN the contrast test SHALL fail.
 
 ### Requirement 17: Typography and bundled fonts (§9 Type)
@@ -241,7 +241,7 @@ This spec covers the complete DORMBIT user interface and its refinement: master 
 
 #### Acceptance Criteria
 
-1. THE Design_System SHALL use the system UI font for interface text with Inter as the fallback, Newsreader for headings and the brief, and JetBrains Mono for paths and hashes.
+1. THE Design_System SHALL use Atkinson Hyperlegible Next for interface and brief text, Archivo (variable width and weight) for headings, and Atkinson Hyperlegible Mono for paths and hashes.
 2. THE Design_System SHALL bundle each font file with its OFL license file.
 3. IF the built CSS references a font URL with an `http:` or `https:` scheme, THEN the font test SHALL fail.
 
@@ -262,7 +262,7 @@ This spec covers the complete DORMBIT user interface and its refinement: master 
 
 #### Acceptance Criteria
 
-1. THE Design_System SHALL render Verified with ✓ in Evergreen, Needs decision with ◆ in Copper, Failed with ✕ in Error, Unknown with ? in Slate, and Unsupported with ⊘ in Slate.
+1. THE Design_System SHALL render Verified with ✓ in Ok, Needs decision with ◆ on a Warn fill, Failed with ✕ in Fail, Unknown with ? in Steel, and Unsupported with ⊘ in Steel (Ok-dark and Fail-dark on Graphite).
 2. THE Design_System SHALL render every Status marker as a glyph plus a visible text label.
 3. THE Design_System SHALL render Status marker labels in a text token from Requirement 16.5.
 4. THE Design_System SHALL render each Finding status (Confirmed, Inferred, Unknown, Unsupported) as a Status marker with a distinct glyph and label.
@@ -334,7 +334,7 @@ This spec covers the complete DORMBIT user interface and its refinement: master 
 #### Acceptance Criteria
 
 1. THE Error_Presenter SHALL map every stable DormbitError code in master plan §8 to a title, a plain-language explanation, and an optional action.
-2. THE Error_Presenter SHALL show the DormbitError code next to the message in JetBrains Mono.
+2. THE Error_Presenter SHALL show the DormbitError code next to the message in Atkinson Hyperlegible Mono.
 3. WHERE a DormbitError has `retryable: true`, THE Error_Presenter SHALL offer a Retry action, and WHERE it has `retryable: false`, THE Error_Presenter SHALL NOT offer one.
 4. IF the Error_Presenter receives a code it does not know, THEN it SHALL show a generic message that includes the code.
 5. WHEN a Job ends with `CANCELLED`, THE Error_Presenter SHALL show the cancelled Screen state, not an error state.

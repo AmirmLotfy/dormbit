@@ -18,7 +18,8 @@ Journey 8, the 12 steps:
 12. Observe the failure, then reset.
 
 ## Glossary
-- **Judge_Demo**: the static web app in `apps/demo`, served from GitHub Pages under `/dormbit/`.
+- **Judge_Demo**: the static web app in `apps/demo`, served from GitHub Pages under `/dormbit/demo/`.
+- **Landing_Page**: the static page at `/dormbit/` (`apps/demo/index.html`) that introduces DORMBIT and links to the Judge_Demo and the macOS download (ADR-011).
 - **Visitor**: anyone using the Judge_Demo in a browser, usually a hackathon judge.
 - **Demo_Shell**: Screen 13 (Judge Demo): the Synthetic_Banner, Guided_Rail, Whats_Real_Panel, Reset_Control, and the area that shows the current step's `packages/ui` Screen.
 - **Synthetic_Banner**: the banner with the exact text "Synthetic Demo — No Local Files Accessed".
@@ -300,9 +301,10 @@ Journey 8, the 12 steps:
 #### Acceptance Criteria
 
 1. THE Judge_Demo SHALL build with Vite `base: '/dormbit/'`.
-2. THE Judge_Demo SHALL use hash-based routes, so that every step URL loads without server-side rewrites.
+2. THE Judge_Demo SHALL use hash-based routes inside `/dormbit/demo/`, so that every step URL loads without server-side rewrites.
 3. WHEN `pages.yml` runs, THE workflow SHALL build the Wasm_Core, build `apps/demo`, and deploy the static output to GitHub Pages.
 4. WHEN the preview is deployed, THE smoke test SHALL load the live URL, show the Synthetic_Banner, and complete step 1.
+5. THE build SHALL produce two pages: the Landing_Page at `/dormbit/` and the Judge_Demo at `/dormbit/demo/`.
 
 ### Requirement 21: Native parity (PROP-10)
 
@@ -314,6 +316,22 @@ Journey 8, the 12 steps:
 2. WHEN the differential test runs, THE Wasm_Core SHALL produce, for every generated input in the corpus, capsule bytes equal to the native build's bytes for the same input.
 3. WHEN the E2E suite runs in each browser, THE in-browser capsule built with the Golden inputs SHALL have the Golden capsule's SHA-256 and length.
 4. IF any parity check differs, THEN CI SHALL fail and report the first differing byte offset.
+
+### Requirement 22: Landing page (ADR-011)
+
+**User Story:** As a judge arriving from Devpost, I want a page that explains DORMBIT in a minute and takes me to the demo or the download, so that I know what I'm evaluating before I start.
+
+#### Acceptance Criteria
+
+1. THE Landing_Page SHALL link to the Judge_Demo at `/dormbit/demo/` and to the GitHub release that holds the macOS build.
+2. THE Landing_Page SHALL meet Requirement 15 (no sign-in, no analytics, no outside requests, no storage) and Requirement 18 (Content Security Policy).
+3. WHERE WebGL is available, THE Landing_Page SHALL show the hero capsule as a 3D object that turns when the Visitor drags it.
+4. IF WebGL is unavailable or its context is lost, THEN THE Landing_Page SHALL show the static capsule drawing in the same place.
+5. THE Landing_Page SHALL load the 3D code only after the hero text has rendered.
+6. WHILE `prefers-reduced-motion: reduce` is set, THE Landing_Page SHALL run no automatic motion (no sway, inertia, scroll-linked movement, gradient drift, or reveal effects), and dragging SHALL turn the capsule without easing.
+7. WHERE the browser supports scroll-driven animations, THE Landing_Page SHALL reveal sections with them, and WHERE it does not, THE Landing_Page SHALL show every section without animation.
+8. THE Landing_Page SHALL render without horizontal scrolling at 360, 390, 768, 1024, and 1440 px wide.
+9. THE Landing_Page SHALL label the sample verification report and sample capsule as samples.
 
 ## Open questions
 1. **Sidecar file name and corrupted-capsule path.** DEM-3 and Task 12 describe a JSON sidecar and a prepared corrupted capsule but give no file names. This spec reads the sidecar from the path the foundation generator writes and uses the prepared corrupted capsule as a test oracle only. The foundation spec fixes both paths.
