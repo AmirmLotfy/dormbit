@@ -22,8 +22,8 @@ describe("Zod types equal the Rust-generated types", () => {
   it("match at compile time", () => {
     expectTypeOf<ErrorCode>().toEqualTypeOf<GenErrorCode>();
     expectTypeOf<AppInfo>().toEqualTypeOf<GenAppInfo>();
-    expectTypeOf<DormbitErrorShape>().toMatchTypeOf<GenDormbitError>();
-    expectTypeOf<AppInfoEvent>().toMatchTypeOf<GenAppInfoEvent>();
+    expectTypeOf<DormbitErrorShape>().toExtend<GenDormbitError>();
+    expectTypeOf<AppInfoEvent>().toExtend<GenAppInfoEvent>();
   });
 });
 

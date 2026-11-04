@@ -45,5 +45,6 @@ media/raw/
 *.p12
 *.key
 
-# ts-rs default export dir (real output goes to packages/schema/generated)
+# ts-rs default export dir (real output goes to packages/schema/generated via .cargo/config.toml)
 crates/*/bindings/
+target/ts-rs/
