@@ -33,7 +33,12 @@ done
 log="$logs/$name.log"
 
 sha="$(git -C "$root" rev-parse HEAD 2>/dev/null || echo unknown)"
-if [ -n "$(git -C "$root" status --porcelain 2>/dev/null)" ]; then dirty=true; else dirty=false; fi
+# Dirty means source changes; records written by earlier runs don't count.
+if [ -n "$(git -C "$root" status --porcelain -- . ':(exclude)docs/evidence/runs' 2>/dev/null)" ]; then
+  dirty=true
+else
+  dirty=false
+fi
 started="$(node -e 'process.stdout.write(String(Date.now()))')"
 
 "$@" 2>&1 | tee "$log"
