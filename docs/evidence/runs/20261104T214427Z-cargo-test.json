@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "task": "P02-T04",
+  "command": [
+    "cargo",
+    "test",
+    "-p",
+    "dockline-gen",
+    "--locked"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-04T21:44:28Z",
+  "finished_at": "2026-11-04T21:44:36Z",
+  "duration_ms": 7904,
+  "exit_code": 0,
+  "counts": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "counts_source": "cargo",
+  "env": {},
+  "git": {
+    "sha": "f52f2515fa53a167a52641ab25ed8fbfb924a9da",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261104T214427Z-cargo-test.log"
+}

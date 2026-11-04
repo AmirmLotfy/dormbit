@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "task": "P02-T04",
+  "command": [
+    "sh",
+    "scripts/check-dockline.sh"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-04T21:44:37Z",
+  "finished_at": "2026-11-04T21:44:39Z",
+  "duration_ms": 1511,
+  "exit_code": 0,
+  "counts": null,
+  "counts_source": "unknown",
+  "env": {},
+  "git": {
+    "sha": "f52f2515fa53a167a52641ab25ed8fbfb924a9da",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261104T214437Z-sh-scripts-check-dockline-sh.log"
+}
