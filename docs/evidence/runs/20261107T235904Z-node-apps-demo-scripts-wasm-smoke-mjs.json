@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "task": "P09-T01",
+  "command": [
+    "node",
+    "apps/demo/scripts/wasm-smoke.mjs"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-07T23:59:04Z",
+  "finished_at": "2026-11-07T23:59:05Z",
+  "duration_ms": 265,
+  "exit_code": 0,
+  "counts": null,
+  "counts_source": "unknown",
+  "env": {},
+  "git": {
+    "sha": "58c9cedf282b11e95618a0066c1df63ea8c2a958",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261107T235904Z-node-apps-demo-scripts-wasm-smoke-mjs.log"
+}
