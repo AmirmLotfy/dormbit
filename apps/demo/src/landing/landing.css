@@ -247,13 +247,17 @@ ul {
 .glow {
   position: absolute;
   border-radius: 50%;
-  will-change: transform;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .glow {
+    will-change: transform;
+  }
 }
 .glow--signal {
-  width: 96vmax;
-  height: 96vmax;
-  left: calc(70% - 48vmax);
-  top: calc(46% - 48vmax);
+  width: 62vmax;
+  height: 62vmax;
+  left: calc(70% - 31vmax);
+  top: calc(46% - 31vmax);
   background: radial-gradient(
     closest-side,
     rgb(255 79 0 / 0.34),
@@ -265,10 +269,10 @@ ul {
   );
 }
 .glow--steel {
-  width: 84vmax;
-  height: 84vmax;
-  left: calc(16% - 42vmax);
-  top: calc(4% - 42vmax);
+  width: 54vmax;
+  height: 54vmax;
+  left: calc(16% - 27vmax);
+  top: calc(4% - 27vmax);
   background: radial-gradient(
     closest-side,
     rgb(176 196 188 / 0.13),
@@ -278,10 +282,10 @@ ul {
   );
 }
 .glow--ember {
-  width: 70vmax;
-  height: 70vmax;
-  left: calc(92% - 35vmax);
-  top: calc(104% - 35vmax);
+  width: 46vmax;
+  height: 46vmax;
+  left: calc(92% - 23vmax);
+  top: calc(104% - 23vmax);
   background: radial-gradient(
     closest-side,
     rgb(194 63 0 / 0.26),
@@ -1157,8 +1161,8 @@ ul {
     width: min(100%, 520px);
   }
   .glow--signal {
-    left: calc(55% - 48vmax);
-    top: calc(78% - 48vmax);
+    left: calc(55% - 31vmax);
+    top: calc(78% - 31vmax);
   }
   .step {
     gap: 28px;

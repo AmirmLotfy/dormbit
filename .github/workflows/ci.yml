@@ -127,6 +127,9 @@ jobs:
           bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash) 1.7.7
           ./actionlint
       - name: shellcheck
-        # find works on any bash (macOS ships 3.2, which has no globstar).
+        # The runner image has no shellcheck. find works on any bash (macOS ships 3.2, which
+        # has no globstar).
         run: |
+          command -v shellcheck >/dev/null || brew install shellcheck
+          shellcheck --version
           find scripts -name '*.sh' -print0 | xargs -0 shellcheck .githooks/pre-commit

@@ -13,6 +13,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: ci,
   retries: ci ? 1 : 0,
+  // Shared CI runners are slower than a laptop; Firefox there took 25-35 s per page load.
+  timeout: ci ? 90_000 : 30_000,
+  expect: { timeout: ci ? 15_000 : 5_000 },
   reporter: [["list"]],
   use: { baseURL: BASE, trace: "retain-on-failure" },
   projects: [
