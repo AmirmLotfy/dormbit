@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "task": "P06-T03",
+  "command": [
+    "cargo",
+    "test",
+    "-p",
+    "dormbit-core",
+    "--locked",
+    "--test",
+    "evidence_brief"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-07T23:37:31Z",
+  "finished_at": "2026-11-07T23:37:32Z",
+  "duration_ms": 586,
+  "exit_code": 0,
+  "counts": {
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0
+  },
+  "counts_source": "cargo",
+  "env": {
+    "PROPTEST_CASES": "512"
+  },
+  "git": {
+    "sha": "f5e6b6c5bb3292f4a8159a2f0bd39061324e2cec",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261107T233731Z-cargo-test.log"
+}
