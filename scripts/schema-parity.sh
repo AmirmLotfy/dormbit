@@ -7,6 +7,7 @@ set -eu
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+# shellcheck source=/dev/null
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
 SCHEMA_PARITY_DIR="${SCHEMA_PARITY_DIR:-$ROOT/target/schema-parity}"

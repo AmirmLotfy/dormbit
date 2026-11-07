@@ -1,7 +1,7 @@
 #!/bin/sh
 # Checks the §6 repo layout exists. Exits 1 with one line per missing path.
 set -u
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 fail=0
 req() {
   if [ ! -e "$1" ]; then

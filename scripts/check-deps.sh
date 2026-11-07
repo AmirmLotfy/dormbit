@@ -2,8 +2,9 @@
 # Checks that core/fs/git/wasm never pull in a transport or process-spawning
 # feature, and that git2's network features stay off (GIT-1, ADR-004).
 set -u
+# shellcheck source=/dev/null
 . "$HOME/.cargo/env" 2>/dev/null
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 fail=0
 
 check_no_feature() {

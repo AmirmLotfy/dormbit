@@ -86,7 +86,8 @@ jobs:
       - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
       - run: pnpm install --frozen-lockfile
       - name: Install Playwright browsers
-        run: pnpm --filter e2e exec playwright install --with-deps chromium webkit firefox
+        # --with-deps is Linux-only; the macos-15 runner already has the system libraries.
+        run: pnpm --filter e2e exec playwright install chromium webkit firefox
       - run: pnpm --filter e2e exec playwright test
 
   security:
@@ -126,4 +127,6 @@ jobs:
           bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash) 1.7.7
           ./actionlint
       - name: shellcheck
-        run: shellcheck scripts/**/*.sh .githooks/*
+        # find works on any bash (macOS ships 3.2, which has no globstar).
+        run: |
+          find scripts -name '*.sh' -print0 | xargs -0 shellcheck .githooks/pre-commit
