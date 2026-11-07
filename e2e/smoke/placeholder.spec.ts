@@ -32,9 +32,13 @@ test.describe("landing page", () => {
   });
 
   test("never scrolls sideways from 360 to 1440 px wide", async ({ page }) => {
+    // One page load, then resize: layout is CSS-only, so media queries re-run on resize. Loading
+    // the page five times made Firefox on shared CI runners exceed its time limit.
+    await page.setViewportSize({ width: 360, height: 900 });
+    await page.goto("./");
     for (const width of [360, 390, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto("./");
+      await page.waitForFunction(() => document.readyState === "complete");
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - window.innerWidth,
       );
