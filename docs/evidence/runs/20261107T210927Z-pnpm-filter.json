@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "task": "P04-T02",
+  "command": [
+    "pnpm",
+    "--filter",
+    "./packages/schema",
+    "test"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-07T21:09:27Z",
+  "finished_at": "2026-11-07T21:09:27Z",
+  "duration_ms": 639,
+  "exit_code": 0,
+  "counts": null,
+  "counts_source": "unknown",
+  "env": {
+    "PROPTEST_CASES": "512"
+  },
+  "git": {
+    "sha": "42df08011564f6ab5b21dfbaf725bb7f0c753c80",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261107T210927Z-pnpm-filter.log"
+}

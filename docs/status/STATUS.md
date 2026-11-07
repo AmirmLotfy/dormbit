@@ -40,11 +40,11 @@ Last updated: Nov 4, 2026 (PT), after Task 8 (P01-T03).
 
 ## Phase 04: Capsule and verification (`capsule-and-verification` spec)
 
-| Task         | Title               | State       | Evidence                                                                                                                                                                                                                                                       |
-| ------------ | ------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 19 (P04-T01) | Capture plan engine | Verified    | `2146362`. Clean-tree records at 512 proptest cases: `20261107T202034Z-cargo-test.json` (core 146 passed, 2 skipped), `20261107T202043Z-cargo-test.json` (CLI 3 passed), `20261107T202045Z-cargo-build.json` (wasm32 exit 0). Reviewer APPROVED on iteration 2 |
-| 20 (P04-T02) | Manifest and writer | Implemented | Writer, manifest, Git refs, `dormbit-fs` sink/registry/`rename_excl`, properties 1, 3, 4, 7, golden Dockline capsule, `dormbit-cli capture`. Reviewer APPROVED on iteration 2; evidence pending                                                                |
-| 21 (P04-T03) | Verifier            | Planned     |                                                                                                                                                                                                                                                                |
+| Task         | Title               | State    | Evidence                                                                                                                                                                                                                                                                         |
+| ------------ | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 19 (P04-T01) | Capture plan engine | Verified | `2146362`. Clean-tree records at 512 proptest cases: `20261107T202034Z-cargo-test.json` (core 146 passed, 2 skipped), `20261107T202043Z-cargo-test.json` (CLI 3 passed), `20261107T202045Z-cargo-build.json` (wasm32 exit 0). Reviewer APPROVED on iteration 2                   |
+| 20 (P04-T02) | Manifest and writer | Verified | `42df080`. Clean-tree records at 512 proptest cases: `20261107T210903Z-cargo-test.json` (core, fs, cli: 203 passed, 2 skipped), `20261107T210923Z-cargo-build.json` (wasm32 exit 0), `20261107T210927Z-pnpm-filter.json` (schema tests exit 0). Reviewer APPROVED on iteration 2 |
+| 21 (P04-T03) | Verifier            | Planned  |                                                                                                                                                                                                                                                                                  |
 
 ## Phases 03 and 05 to 18
 
