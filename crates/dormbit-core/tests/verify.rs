@@ -597,3 +597,12 @@ fn a_gzip_object_with_bytes_after_its_member_fails() {
     assert_eq!(state(&report, CheckId::V11ContentHash), CheckState::Fail);
     assert_eq!(state(&report, CheckId::V10StoredHash), CheckState::Pass);
 }
+
+#[test]
+fn layout_stops_safely_on_a_huge_size_field() {
+    let (mut bytes, _) = capsule_with_registry(&small());
+    // The largest 11-digit octal size, with a valid checksum, on the manifest header.
+    patch_field(&mut bytes, 1024, 124..136, 0o77_777_777_777);
+    let lay = dormbit_core::capsule::verify::layout(&bytes);
+    assert!(lay.len() <= 1, "{lay:?}");
+}

@@ -13,6 +13,7 @@
 
 pub mod brief;
 pub mod capsule;
+pub mod discovery;
 pub mod evidence;
 pub mod gitref;
 pub mod model;

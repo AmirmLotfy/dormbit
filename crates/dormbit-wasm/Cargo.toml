@@ -15,6 +15,12 @@ workspace = true
 
 [dependencies]
 dormbit-core = { path = "../dormbit-core" }
+serde.workspace = true
+serde_json.workspace = true
+tar.workspace = true
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen.workspace = true
+
+[dev-dependencies]
+tar.workspace = true

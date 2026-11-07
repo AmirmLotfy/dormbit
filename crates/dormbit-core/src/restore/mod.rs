@@ -15,8 +15,8 @@ pub use fs::{FsFault, MemNode, MemRestoreFs, RestoreFs};
 pub use journal::{Journal, JournalStore, MemJournal};
 pub use objects::{CapsuleObjects, OpenedCapsule};
 pub use planner::{
-    CaseSensitivity, PlanInput, PrecheckReport, PrecheckState, RestorePlan, VolumeFacts,
-    plan_restore,
+    CaseSensitivity, PlanInput, PrecheckOutcome, PrecheckReport, PrecheckState, RestorePlan,
+    VolumeFacts, plan_restore,
 };
 pub use recovery::{RecoveryAction, RecoveryOutcome, recover};
 pub use report::{RestoreReport, RestoreStatus};

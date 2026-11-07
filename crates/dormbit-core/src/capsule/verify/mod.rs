@@ -10,6 +10,7 @@ pub mod report;
 use std::collections::{BTreeMap, BTreeSet};
 use std::io::Read;
 
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use unicode_normalization::UnicodeNormalization;
 
@@ -1147,6 +1148,52 @@ impl<S: CapsuleSource, R: RegistryRead> Job for VerifyJob<S, R> {
     fn cancel(&mut self) {
         self.cancelled = true;
     }
+}
+
+/// One tar entry's position in a capsule: header offset, data offset, data length.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct LayoutEntry {
+    pub name: String,
+    pub header_at: u64,
+    pub data_at: u64,
+    pub data_len: u64,
+}
+
+/// The entry layout of a well-formed capsule (used by the demo's corruption controls to
+/// pick a byte in a named region). Stops at the first header it can't parse.
+pub fn layout(bytes: &[u8]) -> Vec<LayoutEntry> {
+    let mut out = Vec::new();
+    let mut at = 0usize;
+    while at + BLOCK <= bytes.len() {
+        let mut h = [0u8; BLOCK];
+        h.copy_from_slice(&bytes[at..at + BLOCK]);
+        let Ok(Some(hdr)) = parse_header(&h) else {
+            break;
+        };
+        let data_at = at + BLOCK;
+        // Checked: on wasm32 `usize` is 32 bits, and a damaged size field must never wrap
+        // the position backwards (which would loop forever).
+        let Ok(len) = usize::try_from(hdr.size) else {
+            break;
+        };
+        let Some(next) = data_at
+            .checked_add(len)
+            .and_then(|n| n.checked_add(ustar::padding(hdr.size)))
+        else {
+            break;
+        };
+        if data_at.saturating_add(len) > bytes.len() || next <= at {
+            break;
+        }
+        out.push(LayoutEntry {
+            name: hdr.name,
+            header_at: at as u64,
+            data_at: data_at as u64,
+            data_len: hdr.size,
+        });
+        at = next;
+    }
+    out
 }
 
 /// Runs a verification to completion with an unbounded budget (tests and the CLI).

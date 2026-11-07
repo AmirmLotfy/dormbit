@@ -48,3 +48,7 @@ media/raw/
 # ts-rs default export dir (real output goes to packages/schema/generated via .cargo/config.toml)
 crates/*/bindings/
 target/ts-rs/
+
+# Built by scripts/build-wasm.sh
+apps/demo/src/wasm/pkg/
+apps/demo/public/demo-data/

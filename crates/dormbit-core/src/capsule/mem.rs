@@ -21,6 +21,14 @@ impl MemWorkspace {
         Self::default()
     }
 
+    /// A workspace over an existing library (capsules committed earlier stay in place).
+    pub fn with_library(library: BTreeMap<String, Vec<u8>>) -> Self {
+        Self {
+            library,
+            ..Self::default()
+        }
+    }
+
     /// A library that already holds `name` (to test `CAPSULE_EXISTS`).
     pub fn with_existing(name: &str, bytes: Vec<u8>) -> Self {
         let mut ws = Self::default();

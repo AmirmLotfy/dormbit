@@ -894,6 +894,9 @@ name = "dormbit-wasm"
 version = "0.1.0"
 dependencies = [
  "dormbit-core",
+ "serde",
+ "serde_json",
+ "tar",
  "wasm-bindgen",
 ]
 

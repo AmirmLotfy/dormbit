@@ -76,7 +76,7 @@ impl Phase {
 }
 
 /// Real counts of work done in the current phase.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct JobProgress {
     pub phase: Phase,
     pub files_done: u64,
