@@ -2,9 +2,22 @@
 //!
 //! Takes paths as arguments because the developer running it is the trust
 //! root. It is not part of the shipped app (ADR-005).
-
 #![forbid(unsafe_code)]
 
+mod plan;
+
 fn main() {
-    println!("dormbit-cli {}", dormbit_core::VERSION);
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let result = match args.first().map(String::as_str) {
+        Some("plan") => plan::run(&args[1..]),
+        Some("version") | None => Ok(format!("dormbit-cli {}\n", dormbit_core::VERSION)),
+        Some(other) => Err(format!("unknown command: {other} (try: plan, version)")),
+    };
+    match result {
+        Ok(text) => print!("{text}"),
+        Err(e) => {
+            eprintln!("{e}");
+            std::process::exit(2);
+        }
+    }
 }

@@ -33,6 +33,11 @@ impl SafeU64 {
         }
     }
 
+    /// `v`, clamped to [`SafeU64::MAX`]. For totals that saturate rather than fail.
+    pub const fn saturating(v: u64) -> Self {
+        if v > MAX { Self(MAX) } else { Self(v) }
+    }
+
     pub const fn get(self) -> u64 {
         self.0
     }

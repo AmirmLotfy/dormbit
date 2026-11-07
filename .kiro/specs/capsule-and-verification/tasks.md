@@ -76,6 +76,8 @@
     - _Requirements: 10.4, 17.1, 17.2_
   - [ ] 2.4 Implement the `preparing` phase
     - Recompute digest (`PLAN_DIGEST_MISMATCH`); re-apply sensitive rules (`PATH_UNSAFE`); re-list the tree and record `appeared_after_approval`; check each approved path still exists with the same kind (`FILE_CHANGED_DURING_CAPTURE`); `SCOPE_DENIED` for a non-library grant
+    - Expand every included `Dir` item (a rebuildable folder the user turned on) into its files, re-applying every classifier rule to each: sensitive names, the PEM prefix probe, special files, unsafe names, and symlinks as record-only. Expanded sensitive files are excluded, never captured. Check `max_entries` and `max_total_bytes` again on the expanded set (`CAPSULE_LIMIT_EXCEEDED`), since `approve()` counts a `Dir` as zero entries (STATUS D-19)
+    - Add `read_prefix` to the `dormbit-fs` `ReadVfs` (first N bytes of a file of any size)
     - _Requirements: 2.8, 8.1, 8.3, 8.5, 10.9_
   - [ ] 2.5 Implement step 1 (`hashing`)
     - Stream each approved file through SHA-256 and `GzBuilder::new().mtime(0)` at `Compression::default()` into `put_object()`; dedupe by content hash; record `mode & 0o777`, `mtime`, sizes, and hashes; read symlink targets
@@ -98,7 +100,7 @@
     - Existing `<capsule_id>.dormbit` is refused with `CAPSULE_EXISTS` and left byte-identical; temp folder removed after success, failure, and cancel; a folder with a wrong owner token is left in place; source tree unchanged (before/after hashes)
     - _Requirements: 9.8, 9.9, 10.3, 10.4, 10.8_
   - [ ] 2.11 Write property test for captured content (writer side)
-    - `crates/dormbit-core/tests/prop_roundtrip_writer.rs`: random trees, modes, empty and duplicate files, symlinks; decompress objects from the output and compare; run `verify_all` once Task 3.6 lands (until then, an extraction helper in the test checks bytes and modes). Also extend `prop_sensitive.rs` to assert no sensitive path in `entries`.
+    - `crates/dormbit-core/tests/prop_roundtrip_writer.rs`: random trees, modes, empty and duplicate files, symlinks; decompress objects from the output and compare; run `verify_all` once Task 3.6 lands (until then, an extraction helper in the test checks bytes and modes). Also extend `prop_sensitive.rs` to assert no sensitive path in `entries`, including files under an included rebuildable folder (for example `node_modules/pkg/.env` after the user includes `node_modules`).
     - **Property 1: Captured content equals the source (PROP-2, writer side)**
     - **Validates: Requirements 6.3, 8.2, 9.1, 9.2, 11.1, 11.4, 14.7, 14.8, 16.1**
   - [ ] 2.12 Write property test for the Approved set

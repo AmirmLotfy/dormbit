@@ -207,7 +207,7 @@ export class MockClient implements DormbitClient {
         plan_id: p.id === IDS.dockline ? IDS.plan : this.newId(),
         items,
         groups: [],
-        git_treatment: "metadata_only",
+        git_treatment: "full",
         totals: {
           files: 0,
           bytes: 0,

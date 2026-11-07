@@ -89,6 +89,9 @@ pub trait ReadVfs {
     fn read_dir(&self, dir: &RelPath) -> Result<Vec<DirEntry>, VfsError>;
     fn symlink_metadata(&self, path: &RelPath) -> Result<Metadata, VfsError>;
     fn read_limited(&self, path: &RelPath, max_bytes: u64) -> Result<Limited, VfsError>;
+    /// At most the first `max_bytes` of a regular file, whatever its length. Used for
+    /// content probes (a private-key header) that must work on files of any size.
+    fn read_prefix(&self, path: &RelPath, max_bytes: u64) -> Result<Vec<u8>, VfsError>;
     /// The link text of a symlink. It is never resolved.
     fn read_link(&self, path: &RelPath) -> Result<String, VfsError>;
 }

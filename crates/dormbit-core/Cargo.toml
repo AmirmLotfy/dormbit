@@ -21,3 +21,4 @@ ts-rs.workspace = true
 [dev-dependencies]
 proptest.workspace = true
 insta = { workspace = true, features = ["json"] }
+tar.workspace = true

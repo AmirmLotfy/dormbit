@@ -142,7 +142,7 @@ remotes_redacted: Array<string>, };
 export type GitStatus = { modified: SafeU64, staged: SafeU64, untracked: SafeU64, deleted: SafeU64, conflicted: SafeU64, };
 
 
-export type GitTreatment = "metadata_only" | "excluded";
+export type GitTreatment = "full" | "working_tree_only";
 
 
 export type GitUpstream = { ahead: SafeU64, behind: SafeU64, as_of_last_fetch: boolean, };

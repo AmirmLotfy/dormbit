@@ -11,7 +11,10 @@
     deny(clippy::unwrap_used, clippy::expect_used, clippy::panic)
 )]
 
+pub mod capsule;
 pub mod model;
+pub mod plan;
+pub mod util;
 pub mod vfs;
 
 /// The crate version, reported by `app_info` and written into capsule manifests.

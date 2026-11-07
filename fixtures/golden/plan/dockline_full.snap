@@ -1,0 +1,1727 @@
+---
+source: crates/dormbit-core/tests/plan_golden.rs
+---
+{
+  "plan_id": "00000000-0000-4000-8000-000000000001",
+  "items": [
+    {
+      "path": ".env",
+      "kind": "file",
+      "size": 0,
+      "decision": "exclude",
+      "reason": "sensitive_env",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".env.example",
+      "kind": "file",
+      "size": 45,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": ".git/HEAD",
+      "kind": "file",
+      "size": 35,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/config",
+      "kind": "file",
+      "size": 185,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/description",
+      "kind": "file",
+      "size": 38,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/hooks",
+      "kind": "dir",
+      "size": 0,
+      "decision": "exclude",
+      "reason": "git_hooks",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/index",
+      "kind": "file",
+      "size": 2615,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/info/exclude",
+      "kind": "file",
+      "size": 0,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/logs/refs/stash",
+      "kind": "file",
+      "size": 169,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/01/c60ff316e2cf2ca44da742e54a554717e0f525",
+      "kind": "file",
+      "size": 112,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/05/3f5f7d9ea27bde8585ed6175b7bfed74c4bfc6",
+      "kind": "file",
+      "size": 228,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/0a/28ce76ff6231ed84bda0c1185491acda96f031",
+      "kind": "file",
+      "size": 167,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/0a/55a9ce45a0c25402b9bfd4806f4e9013874fdc",
+      "kind": "file",
+      "size": 53,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/0a/8bb214f63f52c16a64a5e582218db0201e494f",
+      "kind": "file",
+      "size": 61,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/0b/28b3a1fa2f85408da1de873e341f07efaee7ae",
+      "kind": "file",
+      "size": 175,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/0c/66fdecc78856042b49f77fe306b019dd72466e",
+      "kind": "file",
+      "size": 89,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/0e/5d0e0ca361445d5d61479c0a62c9a802e7340a",
+      "kind": "file",
+      "size": 347,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/0f/d3f0de19eec55353b502880134c8a04174a707",
+      "kind": "file",
+      "size": 152,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/10/4026a5dfab3fedd390eeb67a1e0cbaa0d65c6b",
+      "kind": "file",
+      "size": 185,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/10/45ed1e6d0a3c88490c91f6a520be363dc4317d",
+      "kind": "file",
+      "size": 133,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/11/8b06599c5b274272a814f77a8963eef96f74b7",
+      "kind": "file",
+      "size": 48,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/13/7f27c1b333642501b0aebd4307f6008e3c3f85",
+      "kind": "file",
+      "size": 473,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/14/1c2f9b41c46579d73197994dbaacc095d145e5",
+      "kind": "file",
+      "size": 382,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/17/59a0b936c8ed2a38843c5833dabbf916baf770",
+      "kind": "file",
+      "size": 472,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/17/9541979cee23e673f1ae7d851aef49515b3ce4",
+      "kind": "file",
+      "size": 166,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/18/b749ebdbc3fca00c190db95cd9c9bb322b87b5",
+      "kind": "file",
+      "size": 230,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/1a/d12bfabb4658ab37a8c7a73e7fdb24125c4e72",
+      "kind": "file",
+      "size": 167,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/1b/22874cd82ac6b950da9c874635837eba0367b1",
+      "kind": "file",
+      "size": 273,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/1d/eeb28fe056aaac05aa6fde7d9bc2e74b66b52c",
+      "kind": "file",
+      "size": 347,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/1f/c7fd8258bea6f31bba4e66df2ae72f76cacece",
+      "kind": "file",
+      "size": 169,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/20/4fa674b577aa888d5d0c690aaef4fce86e2a98",
+      "kind": "file",
+      "size": 72,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/22/dd51a35ba3aa0a860fa579fd00dda235d20ad9",
+      "kind": "file",
+      "size": 167,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/23/b078fd16aaa3db9b4c4fee8023ca2a8d6bdb66",
+      "kind": "file",
+      "size": 347,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/25/1c1460b67c43f104209ed493b3a05c75ab38eb",
+      "kind": "file",
+      "size": 347,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/25/aca5eae1656ca40658be5e74305bf432bb5617",
+      "kind": "file",
+      "size": 236,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/26/07ec82a7c2a8f549b6957d8b963bbf9305ac68",
+      "kind": "file",
+      "size": 166,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/27/2405bc3d410f3e3575c9e796c41baa59d5c0c9",
+      "kind": "file",
+      "size": 121,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/2f/28e0f0a6c78e595f7735c44b50e920f8338ce2",
+      "kind": "file",
+      "size": 224,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/30/f4a1a7d94b8a190ffbd027ddcb8be9b2becf79",
+      "kind": "file",
+      "size": 473,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/31/3de06f5bdb0b61f04a45fea1430a2e8888f508",
+      "kind": "file",
+      "size": 615,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/32/aa85c04385ce3055489fb5bfd73f5e8f749f80",
+      "kind": "file",
+      "size": 166,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/35/1ba2caed677f98ebce57cbff7953a775d293a3",
+      "kind": "file",
+      "size": 124,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/3e/458b63360b266563fe7c5dadfabf8d5f5501b4",
+      "kind": "file",
+      "size": 212,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/3e/769a1e15492f085410d3c6cd7a575c30000898",
+      "kind": "file",
+      "size": 170,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/42/6b1755437ddf5fb60f50778962de34c7b94646",
+      "kind": "file",
+      "size": 59,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/42/6cc6fd3a1793a801231a287df3c224cb240f9e",
+      "kind": "file",
+      "size": 52,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/46/5f632b730a45782c368db8ad5c745a765f3145",
+      "kind": "file",
+      "size": 192,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/46/e9b2aae9ba6fe7b3fb911b1f0a3719bf7ff374",
+      "kind": "file",
+      "size": 184,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/49/9f72acbd5952a88e6523682e9c88445c7c0d01",
+      "kind": "file",
+      "size": 53,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/4d/c42a085c50a538ecdfe5cbe5c586a4833838e8",
+      "kind": "file",
+      "size": 347,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/4f/10e4cf1cefae4c9c16674d64fbd81687ac92ad",
+      "kind": "file",
+      "size": 297,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/50/734592a9852836363883b15cdf44a082bb8ef6",
+      "kind": "file",
+      "size": 473,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/51/c20029aa3877c15cada820fc121afc7dc0847b",
+      "kind": "file",
+      "size": 444,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/53/bf26160d66122301613687af84f6b8ac2b7534",
+      "kind": "file",
+      "size": 182,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/54/42a8cd8ecaa1c6563470fccd688d9b384a216e",
+      "kind": "file",
+      "size": 444,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/54/82da8075e6df7300ec7fc598b876e1db36d358",
+      "kind": "file",
+      "size": 121,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/55/1c78a8c880f8eeffaa31596bd8fbc92cb2fdc1",
+      "kind": "file",
+      "size": 91,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/56/bfb6ed7f8553702def6ffa0bd0b5f5070dd8bb",
+      "kind": "file",
+      "size": 88,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/59/9f64d69f72188d3513cdc676f00a1152e66dc8",
+      "kind": "file",
+      "size": 141,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/5a/917d8d6e1593dab100432c57354ee902f7e02b",
+      "kind": "file",
+      "size": 176,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/5b/21a47d95a7743f25f1d6c338b67c587b0d8abb",
+      "kind": "file",
+      "size": 111,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/5c/a23fd14fc0ebbea72a4d5910f25ae6fc4f5bf3",
+      "kind": "file",
+      "size": 111,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/5d/1f8613fb8f8b7c4cccde78bec5ee624727b895",
+      "kind": "file",
+      "size": 252,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/60/62e920db3eac37d79142deac88db024de02480",
+      "kind": "file",
+      "size": 174,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/60/7289c9e4358cac3b64503b51d9359b8aece5dc",
+      "kind": "file",
+      "size": 172,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/61/36cb4d1baebca96b7a1a27a22e311a7e53c121",
+      "kind": "file",
+      "size": 118,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/61/4bdc6e53aa0d957bf508424942768cd26504c9",
+      "kind": "file",
+      "size": 109,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/63/1a68608c90b557307c23262264aa854e02280d",
+      "kind": "file",
+      "size": 87,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/64/4cfd12cf8f9f5160e8d6bfd2a51cb22bdd33de",
+      "kind": "file",
+      "size": 83,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/68/785aafd0cd91167333c6266adde3695c964364",
+      "kind": "file",
+      "size": 85,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/71/366ef7b6c77458fa0f256e35465357459410f9",
+      "kind": "file",
+      "size": 91,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/71/65ab5422ba658f9d95f26cf1eb4a552ae51e34",
+      "kind": "file",
+      "size": 56,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/72/a5652aca240041a6189fc2d7702df368e5b6d6",
+      "kind": "file",
+      "size": 52,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/73/a996cef58b0680bcf6b19186d309855589b8ad",
+      "kind": "file",
+      "size": 52,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/75/4421abc6d3e987e5f1cf85551f35a2c67b1450",
+      "kind": "file",
+      "size": 167,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/79/3f6bc47122251584c715af7040d14fc969125a",
+      "kind": "file",
+      "size": 174,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/7b/f65abd487b1657cf8a5e2732e96e0f6ecdd068",
+      "kind": "file",
+      "size": 135,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/7c/f5b7960d05bc2c4fbca9d85c3fc98d9762753c",
+      "kind": "file",
+      "size": 126,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/7d/0a1991dae466a5f7b97b0aceb68e6690e445e7",
+      "kind": "file",
+      "size": 52,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/7d/1ea0616c74055be1af791cf2aa14bb96e068e6",
+      "kind": "file",
+      "size": 180,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/7f/49cf4e564e4a0fde4bd25afb1bbd8143737ca6",
+      "kind": "file",
+      "size": 47,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/82/bc646b6c9cb00fe09cbd4dbcf41fcec466ac6d",
+      "kind": "file",
+      "size": 121,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/83/950b5386a5145f409fb2c80fbaafa07095b2f0",
+      "kind": "file",
+      "size": 473,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/85/470896c20e1730ee498831a75cf1af55926f65",
+      "kind": "file",
+      "size": 206,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/87/7e4db5a5fbba1ed908e7320b866386c7409b09",
+      "kind": "file",
+      "size": 89,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/8a/0bf5826a8bc9312862d17f80f096a0b317c704",
+      "kind": "file",
+      "size": 48,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/8a/ae916c90fe0565ed5d5ab208207ea95f4f023d",
+      "kind": "file",
+      "size": 444,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/8f/48d3fc6fede84abec4b6b98fab5a110901153b",
+      "kind": "file",
+      "size": 92,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/90/7f182874d75ecb85b780b873352c64a3792320",
+      "kind": "file",
+      "size": 473,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/90/ad172814643d44de00400fe9ee9bb4d291d619",
+      "kind": "file",
+      "size": 226,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/95/4788685ebbc1a46c2f346d69e0bb32fbdde269",
+      "kind": "file",
+      "size": 473,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/96/eb0b41fc7962886d958c0f9374212a31c5c330",
+      "kind": "file",
+      "size": 83,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/97/e5dbad3a97b4bea86828281013675fd2fb414a",
+      "kind": "file",
+      "size": 147,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/98/e7c785317a6a8b3f990a7ae3a54e6910cdcf11",
+      "kind": "file",
+      "size": 338,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/9a/3551120a241c8bb1890c187dd30e607e4e94e0",
+      "kind": "file",
+      "size": 179,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/9b/c37604eb95c036d2eb604311cca8681edb35a4",
+      "kind": "file",
+      "size": 185,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/9c/21bdb3c7b8b4b74a7d4dc06eef832c810d8503",
+      "kind": "file",
+      "size": 114,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/9c/e5a2c885e12d73368b0daeaf4b738a318e7736",
+      "kind": "file",
+      "size": 167,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/a2/3e785d5d9a1510e6b424b63fb6059a8c8dc784",
+      "kind": "file",
+      "size": 55,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/a2/ac85e6dd8f744a4b61af530f28bff78f7308bc",
+      "kind": "file",
+      "size": 173,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/a3/aae3d6f548a2da0d0ca7f5181cf410a67e2ba5",
+      "kind": "file",
+      "size": 142,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/a6/89a969ce9500dc87d4c9d0635299dbe4c4f741",
+      "kind": "file",
+      "size": 382,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/aa/01f4dd2ec0b824653996f971ff943d0e6e5a1b",
+      "kind": "file",
+      "size": 61,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/aa/223fce6dd80305e9c3a5aa305d142164ebeacd",
+      "kind": "file",
+      "size": 323,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/ab/30067a879439a43b1b1461f232017516315530",
+      "kind": "file",
+      "size": 472,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/b4/27d15f99e62a888fd9bcb84fcea82b56d75bcb",
+      "kind": "file",
+      "size": 154,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/b5/201fc0a37df2ada1385b71e1d369a547a26416",
+      "kind": "file",
+      "size": 167,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/b6/6bb436322a148e24df1d648e1a2bd72fffc7a0",
+      "kind": "file",
+      "size": 179,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/b7/56ff016ec35b2b4173e3b4ea4c268f330bc390",
+      "kind": "file",
+      "size": 81,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/b7/586a460b7e87c30dfe2322b183e541ed2a6272",
+      "kind": "file",
+      "size": 255,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/b7/b12e5d2d46ebb8f3007be53377722b4c1c65f7",
+      "kind": "file",
+      "size": 131,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/b9/4563ef940644c6ab10ad2f7003cafd81f2a01a",
+      "kind": "file",
+      "size": 112,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/bc/bfc5718b44f895ee71a144ac7e9c7dea174a14",
+      "kind": "file",
+      "size": 170,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/bd/484d0854f782547a882cd65f6c0f2776526628",
+      "kind": "file",
+      "size": 47,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/bd/a2fa0fc706deaa585d64a256d4399251874d00",
+      "kind": "file",
+      "size": 119,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/c6/f6952b4b5f768d47554d88d305f62fba77db54",
+      "kind": "file",
+      "size": 173,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/c9/f2986857c7a0dc275193b10d9ed7fc4452842d",
+      "kind": "file",
+      "size": 87,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/ca/d747f02200aabd431c34b8965fdd6c35e4cd16",
+      "kind": "file",
+      "size": 52,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/ce/d9376aeba70a8fd28a4b344c8e9fa949f8f01d",
+      "kind": "file",
+      "size": 327,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/cf/c8976cae8f9ad87937991f2cc4d3c484f53cf3",
+      "kind": "file",
+      "size": 167,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d0/9de8bc8dda47c0bc5520fd047fe12b8fd18875",
+      "kind": "file",
+      "size": 112,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d0/c968be0c0fb9767caaac8bf3ccb7f1335c5f66",
+      "kind": "file",
+      "size": 473,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d1/bdedd1d7ef8d27b151cd28aea256d67d0ba35c",
+      "kind": "file",
+      "size": 386,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d2/5cb5bf26aaef597b54ed7f38373c393d8f3b59",
+      "kind": "file",
+      "size": 473,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d2/c22e29bf526885c0de535f939e7fbac0dca05c",
+      "kind": "file",
+      "size": 160,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d5/b283a3acacfde49584bc56b3ebe33d0301a9d8",
+      "kind": "file",
+      "size": 23,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d7/4566816a7b83b9d89c5a3ef9ee52e61e6176c0",
+      "kind": "file",
+      "size": 313,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d8/36bfd8e80dfe044bec51deb19872b2b30801b2",
+      "kind": "file",
+      "size": 332,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d8/9f4dd12a860f0da302eda918f66ebde9e9d567",
+      "kind": "file",
+      "size": 347,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d9/2b83a543edcad755048d036c65359e06324855",
+      "kind": "file",
+      "size": 89,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d9/55d547ff2945d9e8daf8827d24d7697bb4cf64",
+      "kind": "file",
+      "size": 141,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/d9/878f7e598956eaa89e2a3ea9d153e1c5897c27",
+      "kind": "file",
+      "size": 142,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/da/d6fdeeb87cd77b19bae40784203b8b0f076e08",
+      "kind": "file",
+      "size": 82,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/db/81fbbf017d5b1291eb49956d03a6f9ce108075",
+      "kind": "file",
+      "size": 174,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/dc/5a1e5b36275b9fac85e87c19640be43ee66d55",
+      "kind": "file",
+      "size": 187,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/dc/bff6b6a913e5424b3727d7c2c3974c2e7a2a4b",
+      "kind": "file",
+      "size": 171,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/dd/aac2a92f168db0d7fdbf5643510972d8df3c31",
+      "kind": "file",
+      "size": 224,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/dd/c9c8c4b5731cdfb209a4d783109a50a7e0f58c",
+      "kind": "file",
+      "size": 53,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/e1/8964646c14a8daace89794e65949250899ef71",
+      "kind": "file",
+      "size": 189,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/e3/c30d7270d0de456ca6476d4b99bd4a7ea9fd2d",
+      "kind": "file",
+      "size": 184,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/e3/f26964e2ab1df19e7593f5f426a25f909ae3ec",
+      "kind": "file",
+      "size": 149,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/e6/d15b97b6139963146e5e304e0b5c8c987af308",
+      "kind": "file",
+      "size": 147,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/eb/f916107af387a4b06c7cc97f5079bff0d9f050",
+      "kind": "file",
+      "size": 112,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/ec/5bab4cead52d8126058c232311225275fc00c5",
+      "kind": "file",
+      "size": 89,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/ec/a229dd315ebdaf15b3d1b37ae2b6a9eedb18a5",
+      "kind": "file",
+      "size": 347,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/ef/ef99a22c21569fd6ee831dbd091e789d471533",
+      "kind": "file",
+      "size": 87,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/f4/af220bb95cb368e14ebb64b97f70521e693309",
+      "kind": "file",
+      "size": 54,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/f9/ff60bbc7495e1d8105f0b10212162d36f5f709",
+      "kind": "file",
+      "size": 179,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/fa/a0bd27fa72ad8c70dd3904c7b94829c8c3e02a",
+      "kind": "file",
+      "size": 284,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/fb/8edde003ef5adff46cb8bccd4af907bdb427fc",
+      "kind": "file",
+      "size": 182,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/fc/4b4e0123f4853570adb30f607d288b097bb189",
+      "kind": "file",
+      "size": 47,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/fe/4ade2eec7b19365a87a388cdea01707ec5ce12",
+      "kind": "file",
+      "size": 227,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/fe/dad2dfc81d3ba55cd844b566f0f48a4836c821",
+      "kind": "file",
+      "size": 226,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/objects/ff/d4602dedf11e3d0598ae1037a32bd5792459f5",
+      "kind": "file",
+      "size": 473,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/refs/heads/feature/pdf-export",
+      "kind": "file",
+      "size": 41,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/refs/heads/main",
+      "kind": "file",
+      "size": 41,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".git/refs/stash",
+      "kind": "file",
+      "size": 41,
+      "decision": "include",
+      "reason": "git_internal",
+      "editable": false,
+      "warning": null
+    },
+    {
+      "path": ".gitignore",
+      "kind": "file",
+      "size": 39,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": ".kiro/specs/pdf-export/requirements.md",
+      "kind": "file",
+      "size": 164,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": ".kiro/specs/pdf-export/tasks.md",
+      "kind": "file",
+      "size": 311,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": ".nvmrc",
+      "kind": "file",
+      "size": 8,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "CHANGELOG.md",
+      "kind": "file",
+      "size": 158,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "README.md",
+      "kind": "file",
+      "size": 295,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "data/dev.sqlite",
+      "kind": "file",
+      "size": 4096,
+      "decision": "undecided",
+      "reason": "data_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "dist",
+      "kind": "dir",
+      "size": 75,
+      "decision": "exclude",
+      "reason": "rebuildable",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "kind": "file",
+      "size": 245,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "drizzle.config.ts",
+      "kind": "file",
+      "size": 180,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "index.html",
+      "kind": "file",
+      "size": 201,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "node_modules",
+      "kind": "dir",
+      "size": 59,
+      "decision": "exclude",
+      "reason": "rebuildable",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "notes/pdf-ideas.md",
+      "kind": "file",
+      "size": 179,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "package.json",
+      "kind": "file",
+      "size": 615,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "server/db/schema.ts",
+      "kind": "file",
+      "size": 770,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "server/db/seed.ts",
+      "kind": "file",
+      "size": 369,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "server/index.ts",
+      "kind": "file",
+      "size": 331,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "server/routes/customers.ts",
+      "kind": "file",
+      "size": 508,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "server/routes/health.ts",
+      "kind": "file",
+      "size": 154,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "server/routes/invoices.ts",
+      "kind": "file",
+      "size": 412,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "src/App.tsx",
+      "kind": "file",
+      "size": 163,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "src/lib/money.test.ts",
+      "kind": "file",
+      "size": 368,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "src/lib/money.ts",
+      "kind": "file",
+      "size": 357,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "src/main.tsx",
+      "kind": "file",
+      "size": 139,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "src/pages/InvoiceDetail.tsx",
+      "kind": "file",
+      "size": 262,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "src/pages/Invoices.tsx",
+      "kind": "file",
+      "size": 354,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "src/pdf/renderInvoice.test.ts",
+      "kind": "file",
+      "size": 412,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "src/pdf/renderInvoice.ts",
+      "kind": "file",
+      "size": 1164,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "tsconfig.json",
+      "kind": "file",
+      "size": 209,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    },
+    {
+      "path": "vite.config.ts",
+      "kind": "file",
+      "size": 194,
+      "decision": "include",
+      "reason": "project_file",
+      "editable": true,
+      "warning": null
+    }
+  ],
+  "groups": [
+    {
+      "name": "Included",
+      "file_count": 182,
+      "bytes": 39963
+    },
+    {
+      "name": "Needs decision",
+      "file_count": 1,
+      "bytes": 4096
+    },
+    {
+      "name": "Excluded: sensitive",
+      "file_count": 1,
+      "bytes": 0
+    },
+    {
+      "name": "Excluded: rebuildable",
+      "file_count": 2,
+      "bytes": 134
+    },
+    {
+      "name": "Unsupported",
+      "file_count": 1,
+      "bytes": 0
+    }
+  ],
+  "git_treatment": "full",
+  "totals": {
+    "files": 187,
+    "bytes": 44193,
+    "included_files": 182,
+    "included_bytes": 39963,
+    "secret_scan_skipped": 147
+  },
+  "digest": "8ef09c967d175bb9eecf4f5a15fe417a26542455fa3ea28e56c062beac02537a"
+}

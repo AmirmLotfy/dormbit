@@ -249,8 +249,10 @@ pub struct PlanGroup {
 #[serde(rename_all = "snake_case")]
 #[ts(export)]
 pub enum GitTreatment {
-    MetadataOnly,
-    Excluded,
+    /// Capture `.git` (except hooks, lock files, and fsmonitor sockets).
+    Full,
+    /// Capture the working tree only; every `.git` item is excluded.
+    WorkingTreeOnly,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]

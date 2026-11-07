@@ -142,7 +142,7 @@ export const PlanGroupSchema = z.strictObject({
   file_count: SafeU64Schema,
   bytes: SafeU64Schema,
 });
-export const GitTreatmentSchema = z.enum(["metadata_only", "excluded"]);
+export const GitTreatmentSchema = z.enum(["full", "working_tree_only"]);
 export const PlanTotalsSchema = z.strictObject({
   files: SafeU64Schema,
   bytes: SafeU64Schema,

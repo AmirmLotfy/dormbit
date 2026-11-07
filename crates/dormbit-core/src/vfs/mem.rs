@@ -217,6 +217,18 @@ impl ReadVfs for MemVfs {
         }
     }
 
+    fn read_prefix(&self, path: &RelPath, max_bytes: u64) -> Result<Vec<u8>, VfsError> {
+        match self.get(path)? {
+            Node::File { data, .. } => {
+                let n = usize::try_from(max_bytes)
+                    .unwrap_or(usize::MAX)
+                    .min(data.len());
+                Ok(data[..n].to_vec())
+            }
+            _ => Err(VfsError::Io("not a regular file".into())),
+        }
+    }
+
     fn read_link(&self, path: &RelPath) -> Result<String, VfsError> {
         match self.get(path)? {
             Node::Symlink { target } => Ok(target.clone()),

@@ -15,3 +15,4 @@ dormbit-core = { path = "../dormbit-core" }
 dormbit-fs = { path = "../dormbit-fs" }
 dormbit-git = { path = "../dormbit-git" }
 dormbit-agents = { path = "../dormbit-agents" }
+tar.workspace = true

@@ -159,7 +159,7 @@ unit_enums! {
     FindingStatus [Confirmed, Inferred, Unknown]
     Decision [Include, Exclude, Undecided]
     PlanItemKind [File, Dir, Symlink, Special]
-    GitTreatment [MetadataOnly, Excluded]
+    GitTreatment [Full, WorkingTreeOnly]
     CheckStatus [Pass, Fail, Skipped]
     RegistryMatch [Match, Mismatch, NotInRegistry]
     RestoreState [Staged, Written, Verified, Committed, Cleaned]
