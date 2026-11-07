@@ -13,12 +13,15 @@ Local-first macOS app (Tauri 2 + Rust + React) that shelves dormant developer pr
 - Status ledger and deviations: `docs/status/STATUS.md`. Evidence records: `docs/evidence/runs/`.
 - Repo: https://github.com/AmirmLotfy/dormbit (public, MIT). Git identity is the GitHub noreply address.
 
-## Current position (Nov 4, 2026)
+## Current position (Nov 7, 2026)
 
-- Phase 02 (`foundation`): Tasks 9-12 done (scaffold, hardened Tauri shell, shared contracts with PROP-11 parity, test tooling, Evidence_Runner, Playwright + axe, Dockline fixture). Task 13 (Kiro setup) in progress; Task 14 (CI, Pages deploy) next.
-- Landing page with the interactive 3D capsule is built early in `apps/demo` (ADR-011, judge-demo Requirement 22).
-- Then Phase 03 (`scope-and-discovery`) and Phase 08 (design system) in parallel.
-- User actions still open: Analyze Requirements and Correctness on the two security specs.
+- Phase 02 (`foundation`) is built and CI is green on `main` ([run](https://github.com/AmirmLotfy/dormbit/actions/runs/42354901364)). Open: fire each hook
+  once in a fresh Kiro session and record it (tasks 5.9, 5.10), then close the gate.
+- The landing page with the interactive 3D capsule is built in `apps/demo` (ADR-011).
+- Next: Phase 03 (`scope-and-discovery`) with Phase 08 (design system) in parallel.
+- User actions still open: paste `docs/kiro/mcp.json` and `docs/kiro/kiroignore.txt`, apply the
+  permissions files, run Analyze Requirements and Correctness on the two security specs, and
+  enable GitHub private vulnerability reporting before release.
 
 ## Environment facts that matter
 

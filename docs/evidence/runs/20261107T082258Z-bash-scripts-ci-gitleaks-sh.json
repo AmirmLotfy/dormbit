@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "task": "P02-T06",
+  "command": [
+    "bash",
+    "scripts/ci/gitleaks.sh"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-07T08:22:58Z",
+  "finished_at": "2026-11-07T08:23:02Z",
+  "duration_ms": 4288,
+  "exit_code": 0,
+  "counts": null,
+  "counts_source": "unknown",
+  "env": {},
+  "git": {
+    "sha": "1c47b1412da715508d8f7da1f6f0ed2d1fd18208",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261107T082258Z-bash-scripts-ci-gitleaks-sh.log"
+}
