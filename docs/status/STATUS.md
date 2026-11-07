@@ -40,11 +40,11 @@ Last updated: Nov 4, 2026 (PT), after Task 8 (P01-T03).
 
 ## Phase 04: Capsule and verification (`capsule-and-verification` spec)
 
-| Task         | Title               | State       | Evidence                                                                                                                                                  |
-| ------------ | ------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 19 (P04-T01) | Capture plan engine | Implemented | Classifier, secret scanner, digest, edits, approval, golden Dockline plan, property tests 6 and 7, `dormbit-cli plan`. Evidence record and review pending |
-| 20 (P04-T02) | Manifest and writer | Planned     |                                                                                                                                                           |
-| 21 (P04-T03) | Verifier            | Planned     |                                                                                                                                                           |
+| Task         | Title               | State    | Evidence                                                                                                                                                                                                                                                       |
+| ------------ | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 19 (P04-T01) | Capture plan engine | Verified | `2146362`. Clean-tree records at 512 proptest cases: `20261107T202034Z-cargo-test.json` (core 146 passed, 2 skipped), `20261107T202043Z-cargo-test.json` (CLI 3 passed), `20261107T202045Z-cargo-build.json` (wasm32 exit 0). Reviewer APPROVED on iteration 2 |
+| 20 (P04-T02) | Manifest and writer | Planned  |                                                                                                                                                                                                                                                                |
+| 21 (P04-T03) | Verifier            | Planned  |                                                                                                                                                                                                                                                                |
 
 ## Phases 03 and 05 to 18
 

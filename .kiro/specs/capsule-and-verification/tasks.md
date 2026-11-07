@@ -1,63 +1,63 @@
 # Implementation Plan
 
-- [ ] 1. Capture plan engine (P04-T01, Task 19)
+- [x] 1. Capture plan engine (P04-T01, Task 19)
   - Depends on: foundation task 3 (P02-T03, Task 11) for `DormbitError` and ts-rs/Zod contracts
   - Depends on: foundation task 4 (P02-T04, Task 12) for the Dockline fixture, proptest, and insta
   - Depends on: scope-and-discovery task 1 (P03-T01, Task 15) for the read-only `Vfs` and `ScopeGrant`
   - Depends on: scope-and-discovery task 2 (P03-T02, Task 16) for rebuildable classification and gitignore matching
   - Depends on: scope-and-discovery task 3 (P03-T03, Task 17) for `.git` detection
-  - [ ] 1.1 Define plan types
+  - [x] 1.1 Define plan types
     - `crates/dormbit-core/src/plan/model.rs`: `CapturePlan`, `PlanItem`, `ItemKind`, `Decision`, `ReasonCode` (with `group()`), `Group`, `GitTreatment`, `PlanWarning`, `WarningId`, `GroupSummary`, `PlanTotals`, `ApprovedPlan`, `DecisionOverride`, `PlanEdit`; derive `serde` and `ts-rs`
     - `crates/dormbit-core/src/capsule/limits.rs`: `CapsuleLimits`, loaded from settings
     - Add proposed error codes `PLAN_INCOMPLETE`, `PLAN_ITEM_LOCKED`, `CAPSULE_LIMIT_EXCEEDED`, `CAPSULE_EXISTS`, `IO_FAILED` to `DormbitError`
     - _Requirements: 1.2, 1.4, 7.5, 12.1, 19.1_
-  - [ ] 1.2 Implement the classifier with fixed precedence
+  - [x] 1.2 Implement the classifier with fixed precedence
     - `crates/dormbit-core/src/plan/classify.rs`: rules 1-18 from the design table, walking through `Vfs` without following symlinks; rebuildable folders, `.git/hooks/`, and fsmonitor folders become single `Dir` items
     - Safe-path and NFC-collision checks with `unicode-normalization`
     - Add the read-only `read_link` method to `ReadVfs`, `MemVfs`, and the `dormbit-fs` implementation (never resolves the link)
     - _Requirements: 1.1, 1.3, 1.5, 1.6, 1.7, 1.8, 1.10, 6.2, 6.5_
-  - [ ] 1.3 Implement sensitive-file rules
+  - [x] 1.3 Implement sensitive-file rules
     - `.env*` except `.env.example`, `.env.sample`, `.env.template`; `*.pem`, `*.p12`; private-key names and first-line PEM `PRIVATE KEY` header; the credential-file list
     - All non-editable, Decision `Exclude`, applied before rebuildable, data, gitignore, and Git rules
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.9_
-  - [ ] 1.4 Implement gitignored-review, data-file, symlink, and special-file rules
+  - [x] 1.4 Implement gitignored-review, data-file, symlink, and special-file rules
     - `gitignored_not_rebuildable` and `data_file` go to Needs decision as `Undecided`; `rebuildable` goes to Excluded: rebuildable and is editable
     - Symlinks Included as `symlink_record_only`, not editable; FIFOs, sockets, and devices Unsupported as `special_file`
     - _Requirements: 4.1, 4.2, 4.3, 6.1, 6.4_
-  - [ ] 1.5 Implement Git treatment
+  - [x] 1.5 Implement Git treatment
     - `Full`: `.git` Included as `git_internal`, except `git_hooks`, `git_lock`, `git_fsmonitor` items in Unsupported
     - `WorkingTreeOnly`: all `.git` items get `Exclude` with `git_working_tree_only`
     - `.git` as a regular file: Included plus warning `git_external_dir`
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.9_
-  - [ ] 1.6 Implement the secret scanner
+  - [x] 1.6 Implement the secret scanner
     - `crates/dormbit-core/src/plan/secrets.rs`: token-prefix, assignment, and URL-userinfo patterns; returns a line number only, never the matched text
     - Scan `.git/config` and working-tree items with `Include` or `Undecided`; skip `.git/objects/**`, `.git/index`, and binary files; count skips
     - Tests build secret-like strings at runtime from fragments; run gitleaks on the test sources
     - _Requirements: 3.1, 3.2, 3.5, 3.6, 3.7_
-  - [ ] 1.7 Implement plan digest and totals
+  - [x] 1.7 Implement plan digest and totals
     - `crates/dormbit-core/src/plan/digest.rs`: canonical compact JSON from the design, items sorted by path bytes, SHA-256
     - Compute `groups` and `totals` per Group and Decision
     - _Requirements: 1.9, 7.1, 7.3_
-  - [ ] 1.8 Implement edits and approval
+  - [x] 1.8 Implement edits and approval
     - `crates/dormbit-core/src/plan/approve.rs`: `apply_edit` (rejects non-editable items with `PLAN_ITEM_LOCKED`, recomputes digest, drops any stored approval)
     - `approve`: `PLAN_DIGEST_MISMATCH`, then `PLAN_INCOMPLETE` for `Undecided` items or unacknowledged warnings, then `CAPSULE_LIMIT_EXCEEDED` for entry count; records `approved_at` from `Clock`, `acks`, and `overrides`
     - _Requirements: 2.7, 3.3, 3.4, 3.8, 4.4, 5.6, 7.2, 7.4, 7.5, 7.6, 7.7, 12.2_
-  - [ ] 1.9 Write property test for the plan digest
+  - [x] 1.9 Write property test for the plan digest
     - `crates/dormbit-core/tests/prop_plan_digest.rs`
     - **Property 6: The plan digest tracks every decision**
     - **Validates: Requirements 5.6, 7.1, 7.2, 7.3, 7.4**
-  - [ ] 1.10 Write property test for sensitive-file exclusion (plan side)
+  - [x] 1.10 Write property test for sensitive-file exclusion (plan side)
     - `crates/dormbit-core/tests/prop_sensitive.rs`: random trees with sensitive files at any depth, random edit sequences; every include attempt fails with `PLAN_ITEM_LOCKED`. Task 2.11 extends it to the manifest.
     - **Property 7: Sensitive files never enter a capsule**
     - **Validates: Requirements 2.1, 2.3, 2.4, 2.5, 2.6, 2.7, 2.9**
-  - [ ] 1.11 Add the golden Dockline plan and unit tests
+  - [x] 1.11 Add the golden Dockline plan and unit tests
     - insta snapshot of the Dockline plan: `.env` in Excluded: sensitive, `.env.example` Included, `data/dev.sqlite` in Needs decision, `dist/` and `node_modules/` in Excluded: rebuildable
     - Unit tests for every reason code and each precedence conflict
     - _Requirements: 1.11, 4.5_
-  - [ ] 1.12 Add `dormbit-cli plan`
+  - [x] 1.12 Add `dormbit-cli plan`
     - `crates/dormbit-cli/src/plan.rs`: prints groups, reason codes, warnings, and the digest for a granted folder
     - _Requirements: 1.1, 7.1_
-  - [ ] 1.13 Checkpoint: run `cargo test -p dormbit-core`, `cargo test -p dormbit-cli`, and `cargo build -p dormbit-core --target wasm32-unknown-unknown`, and record evidence with `scripts/evidence/run.sh`
+  - [x] 1.13 Checkpoint: run `cargo test -p dormbit-core`, `cargo test -p dormbit-cli`, and `cargo build -p dormbit-core --target wasm32-unknown-unknown`, and record evidence with `scripts/evidence/run.sh`
 
 - [ ] 2. Manifest and capsule writer (P04-T02, Task 20)
   - Owner: rust-security
@@ -77,7 +77,7 @@
   - [ ] 2.4 Implement the `preparing` phase
     - Recompute digest (`PLAN_DIGEST_MISMATCH`); re-apply sensitive rules (`PATH_UNSAFE`); re-list the tree and record `appeared_after_approval`; check each approved path still exists with the same kind (`FILE_CHANGED_DURING_CAPTURE`); `SCOPE_DENIED` for a non-library grant
     - Expand every included `Dir` item (a rebuildable folder the user turned on) into its files, re-applying every classifier rule to each: sensitive names, the PEM prefix probe, special files, unsafe names, and symlinks as record-only. Expanded sensitive files are excluded, never captured. Check `max_entries` and `max_total_bytes` again on the expanded set (`CAPSULE_LIMIT_EXCEEDED`), since `approve()` counts a `Dir` as zero entries (STATUS D-19)
-    - Add `read_prefix` to the `dormbit-fs` `ReadVfs` (first N bytes of a file of any size)
+    - Add `read_prefix` and `read_link` to the `dormbit-fs` `ReadVfs` (first N bytes of a file of any size)
     - _Requirements: 2.8, 8.1, 8.3, 8.5, 10.9_
   - [ ] 2.5 Implement step 1 (`hashing`)
     - Stream each approved file through SHA-256 and `GzBuilder::new().mtime(0)` at `Compression::default()` into `put_object()`; dedupe by content hash; record `mode & 0o777`, `mtime`, sizes, and hashes; read symlink targets

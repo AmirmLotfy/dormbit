@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "task": "P04-T01",
+  "command": [
+    "cargo test -p dormbit-cli --locked"
+  ],
+  "cwd": "~/Desktop/Kiro/DORMBIT",
+  "started_at": "2026-11-07T20:20:18Z",
+  "finished_at": "2026-11-07T20:20:18Z",
+  "duration_ms": 63,
+  "exit_code": 127,
+  "counts": null,
+  "counts_source": "unknown",
+  "env": {
+    "PROPTEST_CASES": "512"
+  },
+  "git": {
+    "sha": "214636280080eebbd6e165eef8b7cab6c9197ec1",
+    "dirty": false
+  },
+  "host": {
+    "os": "macOS 26.6.2",
+    "arch": "arm64"
+  },
+  "log": ".scratch/logs/20261107T202018Z-cargo-test-p-dormbit-cli-locked.log"
+}
