@@ -121,49 +121,49 @@
     - _Requirements: 11.10_
   - [x] 2.16 Checkpoint: run `cargo test -p dormbit-core -p dormbit-fs -p dormbit-cli`, `cargo build -p dormbit-core --target wasm32-unknown-unknown`, and `pnpm --filter ./packages/schema test`, and record evidence with `scripts/evidence/run.sh`
 
-- [ ] 3. Verifier and malicious fixtures (P04-T03, Task 21)
+- [x] 3. Verifier and malicious fixtures (P04-T03, Task 21)
   - Owner: rust-security
   - Depends on: task 2
-  - [ ] 3.1 Implement the strict ustar parser
+  - [x] 3.1 Implement the strict ustar parser
     - `crates/dormbit-core/src/capsule/verifier/ustar.rs`: no `tar` crate; checksum, strict octal, every field byte-compared with the design table; typeflag `0` only; name allowlist; padding and end-of-archive checks; early end of file → `CAPSULE_TRUNCATED`
     - _Requirements: 13.2, 13.6, 13.7, 13.8, 13.10, 13.11, 13.13_
-  - [ ] 3.2 Implement container checks V01-V06
+  - [x] 3.2 Implement container checks V01-V06
     - Marker exact match, version form → Unsupported; entry order and duplicates; limits checked before the bytes they protect
     - _Requirements: 12.4, 12.5, 13.3, 13.4, 13.5, 13.9_
-  - [ ] 3.3 Implement manifest checks V07-V09 and V12
+  - [x] 3.3 Implement manifest checks V07-V09 and V12
     - Strict parse, `schema_version`, Safe paths, exact and NFC duplicates, file-versus-parent conflicts, symlink entry fields, object-set equality, totals
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.11, 14.12_
-  - [ ] 3.4 Implement object checks V10-V11 with bounded decompression
+  - [x] 3.4 Implement object checks V10-V11 with bounded decompression
     - One pass: stored SHA-256, gzip decoder capped at `size + 1` bytes, content SHA-256; `identity` encoding accepted; continue after a failed object; map failures to every referencing entry
     - _Requirements: 12.6, 12.7, 14.7, 14.8, 14.9_
-  - [ ] 3.5 Implement trailer and registry checks V13-V14
+  - [x] 3.5 Implement trailer and registry checks V13-V14
     - `END` manifest digest and object count; whole-file SHA-256; `Match`, `Mismatch` (Fail), `NotInRegistry` (Unknown)
     - _Requirements: 13.12, 15.1, 15.2, 15.3, 15.4, 15.5_
-  - [ ] 3.6 Implement the report and `VerifyJob`
+  - [x] 3.6 Implement the report and `VerifyJob`
     - `report.rs`: one `CheckResult` per ID, `NotRun` after a stop, `failed_files` with `unverifiable` after a stop, status rules, fixed limitations text, `file_sha256` and `manifest_sha256`
     - `job.rs`: `step(budget)` with phases and real counts; cancel → `CANCELLED`; `verify_all`; set `last_verified_at` on Verified for registered capsules
     - `crates/dormbit-fs/src/capsule_source.rs`: `FsCapsuleSource`, reopened read-only on every `open()`
     - _Requirements: 13.1, 14.10, 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 17.1, 17.2, 17.5_
-  - [ ] 3.7 Write the malicious fixture generator and fixtures
+  - [x] 3.7 Write the malicious fixture generator and fixtures (built in memory by the test, STATUS D-28)
     - `crates/dormbit-core/tests/support/malicious.rs` builds raw bytes with valid hashes and trailer except the defect under test, writing `fixtures/malicious/<name>.dormbit` and `<name>.expected.json`
     - Fixtures: traversal, absolute path, symlink entry, duplicate entry (object and manifest-path variants), truncation, missing trailer, archive bomb (overflow and ratio variants), bad marker (content and name variants), unknown version (marker and `schema_version` variants), manifest/object mismatch (missing and extra variants), corrupt object
     - `crates/dormbit-core/tests/malicious.rs` asserts each expected status and code, and that the generator output matches the committed files
     - _Requirements: 12.5, 12.6, 13.3, 13.4, 13.7, 13.9, 13.11, 14.3, 14.4, 14.6, 14.7_
-  - [ ] 3.8 Write property test for corruption detection
+  - [x] 3.8 Write property test for corruption detection
     - `crates/dormbit-core/tests/prop_corruption.rs`: every offset with random non-zero XOR masks, and every truncation length, over generated capsules
     - **Property 2: Any single-byte flip or truncation fails verification (PROP-3)**
     - **Validates: Requirements 13.5, 13.6, 13.10, 13.11, 13.12, 14.7, 14.8, 14.9, 16.2**
-  - [ ] 3.9 Write property test for bounded verification
+  - [x] 3.9 Write property test for bounded verification
     - `crates/dormbit-core/tests/prop_verifier_bounds.rs`: random bytes and mutated capsules through a counting `CapsuleSource` and a counting decoder; no panics
     - **Property 8: Verification work is bounded on hostile input**
     - **Validates: Requirements 12.4, 12.5, 12.6, 12.7**
-  - [ ] 3.10 Complete the writer round-trip property with the verifier
+  - [x] 3.10 Complete the writer round-trip property with the verifier
     - Switch `prop_roundtrip_writer.rs` to assert `verify_all` reports Verified with `registry_match = Match`
     - _Requirements: 15.2, 16.1_
-  - [ ] 3.11 Add `dormbit-cli verify`
+  - [x] 3.11 Add `dormbit-cli verify`
     - Prints status, each check, damaged files, registry match, and limitations; smoke test on the Dockline capsule and on `fixtures/malicious/corrupt-object.dormbit` (names the damaged file)
     - _Requirements: 14.7, 16.2, 16.4, 16.5_
-  - [ ] 3.12 Checkpoint: run `cargo test -p dormbit-core -p dormbit-fs -p dormbit-cli` with `PROPTEST_CASES=10000` locally (512 in CI) and `cargo build -p dormbit-core --target wasm32-unknown-unknown`, and record evidence with `scripts/evidence/run.sh`
+  - [x] 3.12 Checkpoint: run `cargo test -p dormbit-core -p dormbit-fs -p dormbit-cli` with `PROPTEST_CASES=10000` locally (512 in CI) and `cargo build -p dormbit-core --target wasm32-unknown-unknown`, and record evidence with `scripts/evidence/run.sh`
 
 - [ ] 4. Plan, Capture, and Verification screens (P04-T04, Task 22)
   - Depends on: tasks 1, 2, 3

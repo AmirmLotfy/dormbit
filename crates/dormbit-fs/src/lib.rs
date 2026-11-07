@@ -7,11 +7,13 @@
 #![deny(unsafe_code)]
 
 pub mod capsule_sink;
+pub mod capsule_source;
 pub mod registry;
 pub mod rename;
 pub mod vfs;
 
 pub use capsule_sink::{FsCapsuleSink, FsWorkspace};
+pub use capsule_source::FsCapsuleSource;
 pub use registry::FsCapsuleRegistry;
 pub use rename::{RenameError, rename_excl};
 pub use vfs::FsVfs;

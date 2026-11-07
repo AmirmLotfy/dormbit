@@ -7,6 +7,8 @@ mod kit;
 use std::collections::BTreeMap;
 
 use dormbit_core::capsule::manifest::Entry;
+use dormbit_core::capsule::verify::RegistryState;
+use dormbit_core::capsule::{BytesSource, CapsuleLimits, MemRegistry, ReportStatus, verify_all};
 use dormbit_core::model::GitTreatment;
 use dormbit_core::util::sha256_hex;
 use dormbit_core::vfs::MemVfs;
@@ -69,7 +71,14 @@ proptest! {
         let (plan, ok) = approved(&v, GitTreatment::Full, &[]);
         let (out, bytes) = capture(&v, plan, ok);
         let entries = read_tar(&bytes);
-        prop_assert_eq!(out.record.file_sha256, sha256_hex(&bytes));
+        prop_assert_eq!(&out.record.file_sha256, &sha256_hex(&bytes));
+        // Task 3.10: the verifier agrees, and the capsule matches its registry record.
+        let mut reg = MemRegistry::default();
+        reg.records.insert(out.record.capsule_id.as_str().to_owned(), out.record.clone());
+        let report = verify_all(BytesSource::new(bytes.clone()), reg, CapsuleLimits::default())
+            .unwrap_or_else(|e| panic!("{e}"));
+        prop_assert_eq!(report.status, ReportStatus::Verified);
+        prop_assert_eq!(report.registry_match, RegistryState::Match);
         for e in &out.manifest.entries {
             match (e, t.get(e.path())) {
                 (Entry::File { sha256, mode, size, .. }, Some(Node::File { data, mode: m })) => {

@@ -153,6 +153,16 @@ fn captures_a_real_folder_into_the_library_and_leaves_the_source_unchanged() {
         .unwrap();
     assert_eq!(rec, Some(out.record));
 
+    // The verifier reopens the file from disk and agrees with the registry.
+    let src =
+        dormbit_fs::FsCapsuleSource::new(open(s.lib.path()), &names(s.lib.path())[0]).unwrap();
+    let report = dormbit_core::capsule::verify_all(src, reg, CapsuleLimits::default()).unwrap();
+    assert_eq!(report.status, dormbit_core::capsule::ReportStatus::Verified);
+    assert_eq!(
+        report.registry_match,
+        dormbit_core::capsule::verify::RegistryState::Match
+    );
+
     // The system tar reads it (an independent reader).
     let listed = std::process::Command::new("tar")
         .arg("-tf")
