@@ -48,7 +48,7 @@ fn item_is_editable(reason: &str) -> bool {
 /// Refuses a plan whose items disagree with the rules, even if its digest was recomputed:
 /// an unknown reason, an `editable` flag that differs from the reason table, a locked item
 /// whose decision isn't the rule's, or an included file with a sensitive name.
-fn check_well_formed(plan: &CapturePlan) -> Result<(), DormbitError> {
+pub fn check_well_formed(plan: &CapturePlan) -> Result<(), DormbitError> {
     let bad = |path: &str| {
         DormbitError::new(
             ErrorCode::PlanItemLocked,

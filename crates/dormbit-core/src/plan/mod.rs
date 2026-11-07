@@ -10,9 +10,11 @@ mod gitignore;
 mod reason;
 mod secrets;
 
-pub use classify::{REBUILDABLE_DIRS, sensitive_name};
+pub use classify::{
+    Candidate, REBUILDABLE_DIRS, classify_tree, expand_dir, sensitive_name, sensitive_pem,
+};
 pub use digest::plan_digest;
-pub use edit::{ack_id, apply_edit, approve};
+pub use edit::{ack_id, apply_edit, approve, check_well_formed};
 pub use reason::{Group, ReasonCode};
 
 use crate::capsule::CapsuleLimits;
@@ -137,7 +139,7 @@ pub(crate) fn refresh(plan: &mut CapturePlan) {
 
 /// The group an item is shown in. An undecided item always sits in "Needs decision", and an
 /// edited item moves with its decision.
-pub(crate) fn group_of(it: &PlanItem) -> Group {
+pub fn group_of(it: &PlanItem) -> Group {
     let base = ReasonCode::parse(&it.reason).map_or(Group::Included, ReasonCode::group);
     match (it.decision, base) {
         (Decision::Undecided, _) => Group::NeedsDecision,

@@ -12,6 +12,7 @@
 )]
 
 pub mod capsule;
+pub mod gitref;
 pub mod model;
 pub mod plan;
 pub mod util;

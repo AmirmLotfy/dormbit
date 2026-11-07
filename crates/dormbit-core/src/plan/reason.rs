@@ -54,6 +54,20 @@ impl Group {
         }
     }
 
+    /// The stable code written into the manifest's `excluded[].group`.
+    pub fn code(self) -> &'static str {
+        match self {
+            Group::Included => "included",
+            Group::NeedsDecision => "needs_decision",
+            Group::ExcludedSensitive => "excluded_sensitive",
+            Group::ExcludedRebuildable => "excluded_rebuildable",
+            Group::ExcludedGit => "excluded_git",
+            Group::Unsupported => "unsupported",
+            Group::Unreadable => "unreadable",
+            Group::ExcludedByYou => "excluded_by_you",
+        }
+    }
+
     pub const ALL: [Group; 8] = [
         Group::Included,
         Group::NeedsDecision,

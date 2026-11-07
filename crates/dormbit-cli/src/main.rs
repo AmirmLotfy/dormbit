@@ -4,14 +4,18 @@
 //! root. It is not part of the shipped app (ADR-005).
 #![forbid(unsafe_code)]
 
+mod capture;
 mod plan;
 
 fn main() {
     let args: Vec<String> = std::env::args().skip(1).collect();
     let result = match args.first().map(String::as_str) {
         Some("plan") => plan::run(&args[1..]),
+        Some("capture") => capture::run(&args[1..]),
         Some("version") | None => Ok(format!("dormbit-cli {}\n", dormbit_core::VERSION)),
-        Some(other) => Err(format!("unknown command: {other} (try: plan, version)")),
+        Some(other) => Err(format!(
+            "unknown command: {other} (try: plan, capture, version)"
+        )),
     };
     match result {
         Ok(text) => print!("{text}"),

@@ -12,3 +12,10 @@ workspace = true
 
 [dependencies]
 dormbit-core = { path = "../dormbit-core" }
+cap-std.workspace = true
+libc.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

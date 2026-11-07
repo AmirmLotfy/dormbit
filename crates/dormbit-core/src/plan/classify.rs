@@ -103,6 +103,30 @@ struct Ctx<'a> {
     treatment: GitTreatment,
     limits: &'a CapsuleLimits,
     gitignore: Gitignore,
+    /// Inside a folder the user included as a whole: nested rebuildable folders are walked,
+    /// not collapsed, and the root `.gitignore` doesn't apply (the user chose the folder).
+    expanding: bool,
+}
+
+/// Lists every file under `dir` (a rebuildable folder the user included) with every leaf rule
+/// re-applied: sensitive names and PEM content, special files, unsafe names, over-size,
+/// unreadable, and symlinks as record-only (STATUS D-19). Never follows a symlink.
+pub fn expand_dir<V: ReadVfs>(
+    vfs: &V,
+    dir: &RelPath,
+    limits: &CapsuleLimits,
+) -> Result<Vec<Candidate>, DormbitError> {
+    let ctx = Ctx {
+        treatment: GitTreatment::WorkingTreeOnly,
+        limits,
+        gitignore: Gitignore::default(),
+        expanding: true,
+    };
+    let mut out = Vec::new();
+    walk(vfs, dir, false, &ctx, &mut out)?;
+    mark_collisions(&mut out);
+    out.sort_by(|a, b| a.path.as_bytes().cmp(b.path.as_bytes()));
+    Ok(out)
 }
 
 pub fn classify_tree<V: ReadVfs>(
@@ -118,6 +142,7 @@ pub fn classify_tree<V: ReadVfs>(
         treatment,
         limits,
         gitignore,
+        expanding: false,
     };
     let mut out = Vec::new();
     walk(vfs, &RelPath::root(), false, &ctx, &mut out)?;
@@ -207,7 +232,7 @@ fn walk<V: ReadVfs>(
                 collapse(vfs, &path, ReasonCode::GitHooks, out)?;
             } else if in_git && name.starts_with("fsmonitor--daemon") {
                 collapse(vfs, &path, ReasonCode::GitFsmonitor, out)?;
-            } else if !in_git && REBUILDABLE_DIRS.contains(&name) {
+            } else if !in_git && !ctx.expanding && REBUILDABLE_DIRS.contains(&name) {
                 collapse(vfs, &path, ReasonCode::Rebuildable, out)?;
             } else {
                 walk(vfs, &path, in_git || is_git_root, ctx, out)?;
@@ -342,7 +367,7 @@ fn classify_leaf<V: ReadVfs>(
     if is_data_file(name) {
         return done(ReasonCode::DataFile, size);
     }
-    if ctx.gitignore.is_ignored(path.as_str(), false) {
+    if !ctx.expanding && ctx.gitignore.is_ignored(path.as_str(), false) {
         return done(ReasonCode::GitignoredNotRebuildable, size);
     }
     // 18: everything else.

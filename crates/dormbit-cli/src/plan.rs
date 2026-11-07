@@ -153,6 +153,11 @@ pub fn render(plan: &CapturePlan) -> String {
     out
 }
 
+pub fn load(a: &PlanArgs) -> Result<MemVfs, String> {
+    let file = std::fs::File::open(&a.tar).map_err(|e| format!("cannot open {}: {e}", a.tar))?;
+    load_tar(file, a.prefix.as_deref())
+}
+
 pub fn run(args: &[String]) -> Result<String, String> {
     let a = parse(args)?;
     let file = std::fs::File::open(&a.tar).map_err(|e| format!("cannot open {}: {e}", a.tar))?;
