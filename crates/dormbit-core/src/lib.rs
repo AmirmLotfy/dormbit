@@ -15,6 +15,7 @@ pub mod capsule;
 pub mod gitref;
 pub mod model;
 pub mod plan;
+pub mod restore;
 pub mod util;
 pub mod vfs;
 

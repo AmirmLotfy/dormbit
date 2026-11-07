@@ -10,6 +10,7 @@ pub mod capsule_sink;
 pub mod capsule_source;
 pub mod registry;
 pub mod rename;
+pub mod restore;
 pub mod vfs;
 
 pub use capsule_sink::{FsCapsuleSink, FsWorkspace};

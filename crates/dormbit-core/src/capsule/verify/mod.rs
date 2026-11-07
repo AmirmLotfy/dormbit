@@ -28,7 +28,7 @@ pub use report::{
 const TRAILER_MAX: u64 = 256;
 /// What `GzBuilder::new().mtime(0)` writes at level 6: magic, deflate, no flags, mtime 0,
 /// XFL 0, OS 255.
-const GZIP_HEADER: [u8; 10] = [0x1f, 0x8b, 0x08, 0x00, 0, 0, 0, 0, 0x00, 0xff];
+pub(crate) const GZIP_HEADER: [u8; 10] = [0x1f, 0x8b, 0x08, 0x00, 0, 0, 0, 0, 0x00, 0xff];
 const MARKER_MAX: u64 = 64;
 const CHUNK: usize = 64 * 1024;
 
@@ -99,7 +99,7 @@ impl RegistryRead for NoRegistry {
 
 /// Why parsing stopped.
 #[derive(Debug, Clone)]
-enum Stop {
+pub(crate) enum Stop {
     Fail(CheckId, ErrorCode, String),
     Unsupported(CheckId, ErrorCode, String),
     Truncated(u64),
@@ -181,11 +181,11 @@ impl Reader {
 }
 
 #[derive(Debug, Clone)]
-struct Hdr {
-    name: String,
-    size: u64,
-    mode: u32,
-    mtime: u64,
+pub(crate) struct Hdr {
+    pub(crate) name: String,
+    pub(crate) size: u64,
+    pub(crate) mode: u32,
+    pub(crate) mtime: u64,
 }
 
 fn strict_octal(field: &[u8]) -> Option<u64> {
@@ -206,7 +206,7 @@ fn allowed_name(name: &str) -> bool {
     matches!(name, "DORMBIT" | "manifest.json" | "END") || object_hash(name).is_some()
 }
 
-fn object_hash(name: &str) -> Option<&str> {
+pub(crate) fn object_hash(name: &str) -> Option<&str> {
     let h = name.strip_prefix("objects/")?;
     is_hex64(h).then_some(h)
 }
@@ -216,7 +216,7 @@ fn is_hex64(s: &str) -> bool {
 }
 
 /// `None` is an all-zero block (end of archive).
-fn parse_header(h: &[u8; BLOCK]) -> Result<Option<Hdr>, Stop> {
+pub(crate) fn parse_header(h: &[u8; BLOCK]) -> Result<Option<Hdr>, Stop> {
     if h.iter().all(|&b| b == 0) {
         return Ok(None);
     }
