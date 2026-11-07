@@ -2,8 +2,9 @@
 # Checks that core/fs/git/wasm never pull in a transport or process-spawning
 # feature, and that git2's network features stay off (GIT-1, ADR-004).
 set -u
+# A missing ~/.cargo/env makes `.` exit a non-interactive sh, so test for it first.
 # shellcheck source=/dev/null
-. "$HOME/.cargo/env" 2>/dev/null
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 cd "$(dirname "$0")/.." || exit 1
 fail=0
 

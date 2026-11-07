@@ -55,6 +55,24 @@ test.describe("landing page", () => {
   });
 });
 
+test("the hero only goes 3D on hardware-accelerated WebGL", async ({ page }) => {
+  await page.goto("./");
+  await expect(page.locator("html")).toHaveAttribute("data-hero", /^(3d|fallback)$/, {
+    timeout: 20_000,
+  });
+  const { hero, software } = await page.evaluate(() => {
+    const gl = document.createElement("canvas").getContext("webgl2");
+    const ext = gl?.getExtension("WEBGL_debug_renderer_info");
+    const renderer = ext && gl ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : "";
+    return {
+      hero: document.documentElement.dataset.hero,
+      software: !gl || /swiftshader|llvmpipe|software|softpipe/i.test(renderer),
+    };
+  });
+  // Software or missing WebGL must keep the SVG capsule; hardware WebGL may use the 3D one.
+  if (software) expect(hero).toBe("fallback");
+});
+
 test("demo page loads with no critical axe violations", async ({ page, baseURL }) => {
   const outside = watchOutsideRequests(page, baseURL ?? "");
   await page.goto("./demo/");
