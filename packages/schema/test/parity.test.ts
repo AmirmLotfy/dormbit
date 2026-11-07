@@ -20,7 +20,7 @@ const names = [...generated.matchAll(/^export type (\w+)/gm)].map((m) => m[1] ??
 
 function schemaFor(name: string): z.ZodType {
   if (name === "JobEvent") return S.JobEventSchema(S.DiscoveryResultSchema);
-  // The wire type has 13 codes; ErrorCodeSchema adds the client-only IPC_SCHEMA_MISMATCH,
+  // The wire type has 18 codes; ErrorCodeSchema adds the client-only IPC_SCHEMA_MISMATCH,
   // which Rust must (and does) reject. Parity is about what crosses IPC.
   if (name === "ErrorCode") return S.WireErrorCodeSchema;
   const schema = (S as Record<string, unknown>)[`${name}Schema`];

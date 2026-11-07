@@ -157,8 +157,8 @@ unit_enums! {
     ScopeKind [Read, CapsuleLibrary, RestoreTarget]
     ScopeVia [NativePicker]
     FindingStatus [Confirmed, Inferred, Unknown]
-    Decision [Include, Exclude]
-    PlanItemKind [File, Symlink]
+    Decision [Include, Exclude, Undecided]
+    PlanItemKind [File, Dir, Symlink, Special]
     GitTreatment [MetadataOnly, Excluded]
     CheckStatus [Pass, Fail, Skipped]
     RegistryMatch [Match, Mismatch, NotInRegistry]
@@ -187,7 +187,7 @@ structs! {
     DiscoveryResult { projects_found, entries_scanned }
     PlanItem { path, kind, size, decision, reason, editable, warning }
     PlanGroup { name, file_count, bytes }
-    PlanTotals { files, bytes, included_files, included_bytes }
+    PlanTotals { files, bytes, included_files, included_bytes, secret_scan_skipped }
     CapturePlan { plan_id, items, groups, git_treatment, totals, digest }
     PlanApproveInput { digest, acks, overrides }
     ApprovedPlan { digest, approved_at, acks, overrides }

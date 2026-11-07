@@ -209,6 +209,8 @@ pub struct DiscoveryResult {
 pub enum Decision {
     Include,
     Exclude,
+    /// Needs the user's decision before the plan can be approved.
+    Undecided,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
@@ -216,7 +218,10 @@ pub enum Decision {
 #[ts(export)]
 pub enum PlanItemKind {
     File,
+    /// A folder captured or skipped as one item (for example `node_modules/`).
+    Dir,
     Symlink,
+    Special,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
@@ -255,6 +260,8 @@ pub struct PlanTotals {
     pub bytes: SafeU64,
     pub included_files: SafeU64,
     pub included_bytes: SafeU64,
+    /// Items the secret scanner skipped (binary, or Git internals).
+    pub secret_scan_skipped: SafeU64,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]

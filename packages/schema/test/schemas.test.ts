@@ -21,8 +21,8 @@ const info = {
 };
 
 describe("schemas", () => {
-  it("lists 13 wire codes plus the client-only code", () => {
-    expect(ErrorCodeSchema.options).toHaveLength(14);
+  it("lists 18 wire codes plus the client-only code", () => {
+    expect(ErrorCodeSchema.options).toHaveLength(19);
     expect(ErrorCodeSchema.safeParse("IPC_SCHEMA_MISMATCH").success).toBe(true);
     expect(ErrorCodeSchema.safeParse("NOPE").success).toBe(false);
   });

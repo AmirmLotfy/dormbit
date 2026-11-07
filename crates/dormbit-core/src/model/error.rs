@@ -23,11 +23,21 @@ pub enum ErrorCode {
     RestoreVolumeUnsupported,
     RestoreInsufficientSpace,
     Cancelled,
+    /// Approval refused: an item is undecided or a warning isn't acknowledged.
+    PlanIncomplete,
+    /// An edit targeted an item the rules lock (sensitive, unsupported, symlink).
+    PlanItemLocked,
+    /// A configured or hard limit was exceeded (entries, file size, total size).
+    CapsuleLimitExceeded,
+    /// A capsule with that ID already exists in the library.
+    CapsuleExists,
+    /// A disk read or write failed for a reason that isn't a data error.
+    IoFailed,
 }
 
 impl ErrorCode {
     /// Every code, in declaration order. Used by tests and the TS/Rust parity check.
-    pub const ALL: [ErrorCode; 13] = [
+    pub const ALL: [ErrorCode; 18] = [
         ErrorCode::ScopeDenied,
         ErrorCode::PathUnsafe,
         ErrorCode::PlanDigestMismatch,
@@ -41,6 +51,11 @@ impl ErrorCode {
         ErrorCode::RestoreVolumeUnsupported,
         ErrorCode::RestoreInsufficientSpace,
         ErrorCode::Cancelled,
+        ErrorCode::PlanIncomplete,
+        ErrorCode::PlanItemLocked,
+        ErrorCode::CapsuleLimitExceeded,
+        ErrorCode::CapsuleExists,
+        ErrorCode::IoFailed,
     ];
 
     /// Whether trying again can reasonably succeed. Deliberately conservative: only two codes
@@ -138,7 +153,7 @@ mod tests {
         for c in ErrorCode::ALL {
             assert!(seen.insert(c), "duplicate {c:?}");
         }
-        assert_eq!(seen.len(), 13);
+        assert_eq!(seen.len(), 18);
     }
 
     #[test]

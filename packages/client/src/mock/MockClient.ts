@@ -208,7 +208,13 @@ export class MockClient implements DormbitClient {
         items,
         groups: [],
         git_treatment: "metadata_only",
-        totals: { files: 0, bytes: 0, included_files: 0, included_bytes: 0 },
+        totals: {
+          files: 0,
+          bytes: 0,
+          included_files: 0,
+          included_bytes: 0,
+          secret_scan_skipped: 0,
+        },
         digest: "",
       });
       this.data.plans.set(plan.plan_id, plan);
@@ -581,6 +587,7 @@ function withTotals(plan: CapturePlan): CapturePlan {
       bytes: sum(plan.items),
       included_files: inc.length,
       included_bytes: sum(inc),
+      secret_scan_skipped: 0,
     },
     digest: fakeDigest(plan.items.map((i) => `${i.path}:${i.decision}`).join("\n")),
   };

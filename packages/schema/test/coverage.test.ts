@@ -27,7 +27,7 @@ describe("error code parity (Requirement 14.6)", () => {
     const onlyRust = rust.filter((c) => !ts.includes(c as (typeof ts)[number]));
     const onlyTs = ts.filter((c) => !rust.includes(c));
     expect({ onlyRust, onlyTs }).toEqual({ onlyRust: [], onlyTs: [] });
-    expect(rust).toHaveLength(13);
+    expect(rust).toHaveLength(18);
   });
 
   it("has exactly one client-only code, and it is not retryable", () => {

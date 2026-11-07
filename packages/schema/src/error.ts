@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-/** The 13 codes Rust can send. Order matches `ErrorCode::ALL` in dormbit-core. */
+/** The 18 codes Rust can send (13 from plan §8, 5 added for capture: STATUS D-11). Order matches `ErrorCode::ALL` in dormbit-core. */
 export const WIRE_ERROR_CODES = [
   "SCOPE_DENIED",
   "PATH_UNSAFE",
@@ -15,6 +15,11 @@ export const WIRE_ERROR_CODES = [
   "RESTORE_VOLUME_UNSUPPORTED",
   "RESTORE_INSUFFICIENT_SPACE",
   "CANCELLED",
+  "PLAN_INCOMPLETE",
+  "PLAN_ITEM_LOCKED",
+  "CAPSULE_LIMIT_EXCEEDED",
+  "CAPSULE_EXISTS",
+  "IO_FAILED",
 ] as const;
 
 /** Raised only by TypeScript, when a message from Rust fails validation (Requirement 14.4). */

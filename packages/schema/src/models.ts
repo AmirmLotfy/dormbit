@@ -126,8 +126,8 @@ export const DiscoveryResultSchema = z.strictObject({
 
 // ---- plan ------------------------------------------------------------------------------------
 
-export const DecisionSchema = z.enum(["include", "exclude"]);
-export const PlanItemKindSchema = z.enum(["file", "symlink"]);
+export const DecisionSchema = z.enum(["include", "exclude", "undecided"]);
+export const PlanItemKindSchema = z.enum(["file", "dir", "symlink", "special"]);
 export const PlanItemSchema = z.strictObject({
   path: z.string(),
   kind: PlanItemKindSchema,
@@ -148,6 +148,7 @@ export const PlanTotalsSchema = z.strictObject({
   bytes: SafeU64Schema,
   included_files: SafeU64Schema,
   included_bytes: SafeU64Schema,
+  secret_scan_skipped: SafeU64Schema,
 });
 export const CapturePlanSchema = z.strictObject({
   plan_id: PlanIdSchema,

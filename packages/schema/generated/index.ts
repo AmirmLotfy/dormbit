@@ -88,7 +88,7 @@ export type CheckStatus = "pass" | "fail" | "skipped";
 export type ConsentRecord = { adapter_id: AdapterId, granted: boolean, updated_at: string, };
 
 
-export type Decision = "include" | "exclude";
+export type Decision = "include" | "exclude" | "undecided";
 
 
 export type DiscoveryResult = { projects_found: SafeU64, entries_scanned: SafeU64, };
@@ -106,7 +106,7 @@ export type DormbitError = { code: ErrorCode, message: string, retryable: boolea
  * Zod string, a row in the foundation design table, and the plan owner's approval.
  * `IPC_SCHEMA_MISMATCH` is deliberately absent: only TypeScript produces it.
  */
-export type ErrorCode = "SCOPE_DENIED" | "PATH_UNSAFE" | "PLAN_DIGEST_MISMATCH" | "FILE_CHANGED_DURING_CAPTURE" | "CAPSULE_MALFORMED" | "CAPSULE_TRUNCATED" | "CAPSULE_HASH_MISMATCH" | "CAPSULE_VERSION_UNSUPPORTED" | "RESTORE_DEST_EXISTS" | "RESTORE_COLLISION" | "RESTORE_VOLUME_UNSUPPORTED" | "RESTORE_INSUFFICIENT_SPACE" | "CANCELLED";
+export type ErrorCode = "SCOPE_DENIED" | "PATH_UNSAFE" | "PLAN_DIGEST_MISMATCH" | "FILE_CHANGED_DURING_CAPTURE" | "CAPSULE_MALFORMED" | "CAPSULE_TRUNCATED" | "CAPSULE_HASH_MISMATCH" | "CAPSULE_VERSION_UNSUPPORTED" | "RESTORE_DEST_EXISTS" | "RESTORE_COLLISION" | "RESTORE_VOLUME_UNSUPPORTED" | "RESTORE_INSUFFICIENT_SPACE" | "CANCELLED" | "PLAN_INCOMPLETE" | "PLAN_ITEM_LOCKED" | "CAPSULE_LIMIT_EXCEEDED" | "CAPSULE_EXISTS" | "IO_FAILED";
 
 
 export type EvidenceRef = { 
@@ -195,10 +195,14 @@ export type PlanItem = {
 path: string, kind: PlanItemKind, size: SafeU64, decision: Decision, reason: string, editable: boolean, warning: string | null, };
 
 
-export type PlanItemKind = "file" | "symlink";
+export type PlanItemKind = "file" | "dir" | "symlink" | "special";
 
 
-export type PlanTotals = { files: SafeU64, bytes: SafeU64, included_files: SafeU64, included_bytes: SafeU64, };
+export type PlanTotals = { files: SafeU64, bytes: SafeU64, included_files: SafeU64, included_bytes: SafeU64, 
+/**
+ * Items the secret scanner skipped (binary, or Git internals).
+ */
+secret_scan_skipped: SafeU64, };
 
 
 export type PrecheckReport = { ok: boolean, issues: Array<string>, required_bytes: SafeU64, available_bytes: SafeU64, };

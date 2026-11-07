@@ -12,6 +12,7 @@
 )]
 
 pub mod model;
+pub mod vfs;
 
 /// The crate version, reported by `app_info` and written into capsule manifests.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
