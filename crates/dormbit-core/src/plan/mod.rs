@@ -8,7 +8,7 @@ mod digest;
 mod edit;
 mod gitignore;
 mod reason;
-mod secrets;
+pub mod secrets;
 
 pub use classify::{
     Candidate, REBUILDABLE_DIRS, classify_tree, expand_dir, sensitive_name, sensitive_pem,

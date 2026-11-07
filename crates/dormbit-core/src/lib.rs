@@ -11,7 +11,9 @@
     deny(clippy::unwrap_used, clippy::expect_used, clippy::panic)
 )]
 
+pub mod brief;
 pub mod capsule;
+pub mod evidence;
 pub mod gitref;
 pub mod model;
 pub mod plan;

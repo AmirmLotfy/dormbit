@@ -1,0 +1,1374 @@
+---
+source: crates/dormbit-core/tests/evidence_brief.rs
+---
+{
+  "findings": [
+    {
+      "id": "F-a6a1ae5078d3",
+      "rule": "identity.name",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Project name: "
+        },
+        {
+          "t": "Code",
+          "v": "dockline-invoices"
+        },
+        {
+          "t": "Text",
+          "v": " (from `package.json`)."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/name"
+        }
+      ]
+    },
+    {
+      "id": "F-d40a10bae015",
+      "rule": "stack.manifest",
+      "statement": [
+        {
+          "t": "Code",
+          "v": "package.json"
+        },
+        {
+          "t": "Text",
+          "v": ": Node.js package."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_stat",
+          "path": "package.json",
+          "stat": "file",
+          "size": 615
+        }
+      ]
+    },
+    {
+      "id": "F-f4c0d4ed5e9a",
+      "rule": "stack.dependency",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "SQLite (better-sqlite3): "
+        },
+        {
+          "t": "Code",
+          "v": "better-sqlite3"
+        },
+        {
+          "t": "Text",
+          "v": " "
+        },
+        {
+          "t": "Code",
+          "v": "^11.8.1"
+        },
+        {
+          "t": "Text",
+          "v": " in `dependencies`."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/dependencies/better-sqlite3"
+        }
+      ]
+    },
+    {
+      "id": "F-20546f84aecd",
+      "rule": "stack.dependency",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Drizzle ORM: "
+        },
+        {
+          "t": "Code",
+          "v": "drizzle-orm"
+        },
+        {
+          "t": "Text",
+          "v": " "
+        },
+        {
+          "t": "Code",
+          "v": "^0.39.3"
+        },
+        {
+          "t": "Text",
+          "v": " in `dependencies`."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/dependencies/drizzle-orm"
+        }
+      ]
+    },
+    {
+      "id": "F-1611bed91bef",
+      "rule": "stack.dependency",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Fastify: "
+        },
+        {
+          "t": "Code",
+          "v": "fastify"
+        },
+        {
+          "t": "Text",
+          "v": " "
+        },
+        {
+          "t": "Code",
+          "v": "^5.2.1"
+        },
+        {
+          "t": "Text",
+          "v": " in `dependencies`."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/dependencies/fastify"
+        }
+      ]
+    },
+    {
+      "id": "F-31f532199074",
+      "rule": "stack.dependency",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "React: "
+        },
+        {
+          "t": "Code",
+          "v": "react"
+        },
+        {
+          "t": "Text",
+          "v": " "
+        },
+        {
+          "t": "Code",
+          "v": "^19.0.0"
+        },
+        {
+          "t": "Text",
+          "v": " in `dependencies`."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/dependencies/react"
+        }
+      ]
+    },
+    {
+      "id": "F-7d72bc86a565",
+      "rule": "stack.dependency",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "TypeScript: "
+        },
+        {
+          "t": "Code",
+          "v": "typescript"
+        },
+        {
+          "t": "Text",
+          "v": " "
+        },
+        {
+          "t": "Code",
+          "v": "^5.7.3"
+        },
+        {
+          "t": "Text",
+          "v": " in `devDependencies`."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/devDependencies/typescript"
+        }
+      ]
+    },
+    {
+      "id": "F-3ae2ae4d2906",
+      "rule": "stack.dependency",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Vite: "
+        },
+        {
+          "t": "Code",
+          "v": "vite"
+        },
+        {
+          "t": "Text",
+          "v": " "
+        },
+        {
+          "t": "Code",
+          "v": "^6.1.0"
+        },
+        {
+          "t": "Text",
+          "v": " in `devDependencies`."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/devDependencies/vite"
+        }
+      ]
+    },
+    {
+      "id": "F-8a5a3e0b9d96",
+      "rule": "stack.dependency",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Vitest: "
+        },
+        {
+          "t": "Code",
+          "v": "vitest"
+        },
+        {
+          "t": "Text",
+          "v": " "
+        },
+        {
+          "t": "Code",
+          "v": "^3.0.5"
+        },
+        {
+          "t": "Text",
+          "v": " in `devDependencies`."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/devDependencies/vitest"
+        }
+      ]
+    },
+    {
+      "id": "F-e038eb40c410",
+      "rule": "stack.framework",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Fastify API server"
+        },
+        {
+          "t": "Text",
+          "v": " with Drizzle ORM"
+        },
+        {
+          "t": "Text",
+          "v": " (inferred from its dependencies)."
+        }
+      ],
+      "status": "inferred",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/dependencies/drizzle-orm"
+        },
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/dependencies/fastify"
+        }
+      ]
+    },
+    {
+      "id": "F-acfe23062758",
+      "rule": "stack.framework",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "React + Vite frontend (inferred from its dependencies)."
+        }
+      ],
+      "status": "inferred",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/dependencies/react"
+        },
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/devDependencies/vite"
+        }
+      ]
+    },
+    {
+      "id": "F-c10931f492aa",
+      "rule": "toolchain.file",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Node "
+        },
+        {
+          "t": "Code",
+          "v": "22.13.1"
+        },
+        {
+          "t": "Text",
+          "v": " (from "
+        },
+        {
+          "t": "Code",
+          "v": ".nvmrc"
+        },
+        {
+          "t": "Text",
+          "v": ")."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": ".nvmrc",
+          "start_line": 1,
+          "end_line": 1,
+          "anchor": "22.13.1"
+        }
+      ]
+    },
+    {
+      "id": "F-87a219eaf2aa",
+      "rule": "git.branch",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Checked-out branch: "
+        },
+        {
+          "t": "Code",
+          "v": "feature/pdf-export"
+        },
+        {
+          "t": "Text",
+          "v": " at "
+        },
+        {
+          "t": "Code",
+          "v": "bcbfc5718b44"
+        },
+        {
+          "t": "Text",
+          "v": "."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "git_ref",
+          "name": "refs/heads/feature/pdf-export"
+        }
+      ]
+    },
+    {
+      "id": "F-c58a50150c1b",
+      "rule": "git.feature_branch",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Work was happening on a feature branch, "
+        },
+        {
+          "t": "Code",
+          "v": "feature/pdf-export"
+        },
+        {
+          "t": "Text",
+          "v": " (inferred from the branch name)."
+        }
+      ],
+      "status": "inferred",
+      "evidence": [
+        {
+          "kind": "git_ref",
+          "name": "refs/heads/feature/pdf-export"
+        }
+      ]
+    },
+    {
+      "id": "F-792e0df837f4",
+      "rule": "git.uncommitted",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Uncommitted changes at scan time: "
+        },
+        {
+          "t": "Count",
+          "v": 2
+        },
+        {
+          "t": "Text",
+          "v": " modified, "
+        },
+        {
+          "t": "Count",
+          "v": 0
+        },
+        {
+          "t": "Text",
+          "v": " staged, "
+        },
+        {
+          "t": "Count",
+          "v": 1
+        },
+        {
+          "t": "Text",
+          "v": " untracked."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "git_status",
+          "modified": 2,
+          "staged": 0,
+          "untracked": 1
+        }
+      ]
+    },
+    {
+      "id": "F-3e65a3565e86",
+      "rule": "git.wip_commit",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "The last commit is marked work in progress: "
+        },
+        {
+          "t": "Quote",
+          "v": "WIP: pdf totals"
+        },
+        {
+          "t": "Text",
+          "v": "."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "git_commit",
+          "oid": "bcbfc5718b44f895ee71a144ac7e9c7dea174a14"
+        }
+      ]
+    },
+    {
+      "id": "F-99442b799b12",
+      "rule": "git.stash",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "There "
+        },
+        {
+          "t": "Text",
+          "v": "is "
+        },
+        {
+          "t": "Count",
+          "v": 1
+        },
+        {
+          "t": "Text",
+          "v": " stash entry."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "git_ref",
+          "name": "refs/stash"
+        }
+      ]
+    },
+    {
+      "id": "F-4b90222e190c",
+      "rule": "docs.present",
+      "statement": [
+        {
+          "t": "Code",
+          "v": "CHANGELOG.md"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Quote",
+          "v": "Changelog"
+        },
+        {
+          "t": "Text",
+          "v": "."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": "CHANGELOG.md",
+          "start_line": 1,
+          "end_line": 1,
+          "anchor": "# "
+        }
+      ]
+    },
+    {
+      "id": "F-1c911176a421",
+      "rule": "docs.present",
+      "statement": [
+        {
+          "t": "Code",
+          "v": "README.md"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Quote",
+          "v": "Dockline Invoices"
+        },
+        {
+          "t": "Text",
+          "v": "."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 1,
+          "anchor": "# "
+        }
+      ]
+    },
+    {
+      "id": "F-b9461adafc7b",
+      "rule": "docs.present",
+      "statement": [
+        {
+          "t": "Code",
+          "v": "docs/ROADMAP.md"
+        },
+        {
+          "t": "Text",
+          "v": " is present."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_stat",
+          "path": "docs/ROADMAP.md",
+          "stat": "file",
+          "size": 245
+        }
+      ]
+    },
+    {
+      "id": "F-075ef325bb0a",
+      "rule": "kiro.tasks_progress",
+      "statement": [
+        {
+          "t": "Code",
+          "v": ".kiro/specs/pdf-export/tasks.md"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Count",
+          "v": 3
+        },
+        {
+          "t": "Text",
+          "v": " of "
+        },
+        {
+          "t": "Count",
+          "v": 7
+        },
+        {
+          "t": "Text",
+          "v": " tasks complete."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": ".kiro/specs/pdf-export/tasks.md",
+          "start_line": 3,
+          "end_line": 9,
+          "anchor": "- ["
+        }
+      ]
+    },
+    {
+      "id": "F-d5e53bad1ea7",
+      "rule": "kiro.task_unchecked",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Unchecked task: "
+        },
+        {
+          "t": "Quote",
+          "v": "4. Compute totals with the shared money helpers"
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": ".kiro/specs/pdf-export/tasks.md",
+          "start_line": 6,
+          "end_line": 6,
+          "anchor": "- ["
+        }
+      ]
+    },
+    {
+      "id": "F-b8ea2b8114eb",
+      "rule": "kiro.task_unchecked",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Unchecked task: "
+        },
+        {
+          "t": "Quote",
+          "v": "5. Embed the shop logo"
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": ".kiro/specs/pdf-export/tasks.md",
+          "start_line": 7,
+          "end_line": 7,
+          "anchor": "- ["
+        }
+      ]
+    },
+    {
+      "id": "F-8bd14d7969e1",
+      "rule": "kiro.task_unchecked",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Unchecked task: "
+        },
+        {
+          "t": "Quote",
+          "v": "6. Snapshot-test the rendered PDF"
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": ".kiro/specs/pdf-export/tasks.md",
+          "start_line": 8,
+          "end_line": 8,
+          "anchor": "- ["
+        }
+      ]
+    },
+    {
+      "id": "F-428a7eecaf8e",
+      "rule": "kiro.task_unchecked",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Unchecked task: "
+        },
+        {
+          "t": "Quote",
+          "v": "7. Document PDF export in the README"
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": ".kiro/specs/pdf-export/tasks.md",
+          "start_line": 9,
+          "end_line": 9,
+          "anchor": "- ["
+        }
+      ]
+    },
+    {
+      "id": "F-a3c1c06e40d2",
+      "rule": "work.todo",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "TODO at "
+        },
+        {
+          "t": "Code",
+          "v": "src/pdf/renderInvoice.ts:14"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Quote",
+          "v": "totals block (subtotal, tax, total) aligned right"
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": "src/pdf/renderInvoice.ts",
+          "start_line": 14,
+          "end_line": 14,
+          "anchor": "TODO"
+        }
+      ]
+    },
+    {
+      "id": "F-6e610f5d7245",
+      "rule": "work.todo",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "FIXME at "
+        },
+        {
+          "t": "Code",
+          "v": "src/pdf/renderInvoice.ts:15"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Quote",
+          "v": "tax is computed per line here, which double-rounds; use taxCents(subtotal) once"
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": "src/pdf/renderInvoice.ts",
+          "start_line": 15,
+          "end_line": 15,
+          "anchor": "FIXME"
+        }
+      ]
+    },
+    {
+      "id": "F-9ef3c40ebe58",
+      "rule": "work.skipped_test",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Skipped test at "
+        },
+        {
+          "t": "Code",
+          "v": "src/pdf/renderInvoice.test.ts:9"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Quote",
+          "v": "prints totals that match the invoice"
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": "src/pdf/renderInvoice.test.ts",
+          "start_line": 9,
+          "end_line": 9,
+          "anchor": "it.skip("
+        }
+      ]
+    },
+    {
+      "id": "F-14d47fe745c4",
+      "rule": "work.area",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Unfinished work around "
+        },
+        {
+          "t": "Code",
+          "v": "pdf-export"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Count",
+          "v": 4
+        },
+        {
+          "t": "Text",
+          "v": " unchecked tasks, "
+        },
+        {
+          "t": "Count",
+          "v": 2
+        },
+        {
+          "t": "Text",
+          "v": " TODO/FIXME, "
+        },
+        {
+          "t": "Count",
+          "v": 1
+        },
+        {
+          "t": "Text",
+          "v": " skipped test (inferred from shared names). Why it stopped is unknown."
+        }
+      ],
+      "status": "inferred",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": ".kiro/specs/pdf-export/tasks.md",
+          "start_line": 6,
+          "end_line": 6,
+          "anchor": "- ["
+        },
+        {
+          "kind": "file_lines",
+          "path": ".kiro/specs/pdf-export/tasks.md",
+          "start_line": 7,
+          "end_line": 7,
+          "anchor": "- ["
+        },
+        {
+          "kind": "file_lines",
+          "path": ".kiro/specs/pdf-export/tasks.md",
+          "start_line": 8,
+          "end_line": 8,
+          "anchor": "- ["
+        },
+        {
+          "kind": "file_lines",
+          "path": ".kiro/specs/pdf-export/tasks.md",
+          "start_line": 9,
+          "end_line": 9,
+          "anchor": "- ["
+        },
+        {
+          "kind": "file_lines",
+          "path": "src/pdf/renderInvoice.test.ts",
+          "start_line": 9,
+          "end_line": 9,
+          "anchor": "it.skip("
+        },
+        {
+          "kind": "file_lines",
+          "path": "src/pdf/renderInvoice.ts",
+          "start_line": 14,
+          "end_line": 14,
+          "anchor": "TODO"
+        },
+        {
+          "kind": "file_lines",
+          "path": "src/pdf/renderInvoice.ts",
+          "start_line": 15,
+          "end_line": 15,
+          "anchor": "FIXME"
+        },
+        {
+          "kind": "git_ref",
+          "name": "refs/heads/feature/pdf-export"
+        }
+      ]
+    },
+    {
+      "id": "F-f94561a7e030",
+      "rule": "adapter.session",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Claude Code session "
+        },
+        {
+          "t": "Code",
+          "v": "0b9e6c3a-5f1d-4e2b-9a7c-3d8e1f2a4b6c"
+        },
+        {
+          "t": "Text",
+          "v": ", last active "
+        },
+        {
+          "t": "Code",
+          "v": "2025-05-21"
+        },
+        {
+          "t": "Text",
+          "v": ", branch "
+        },
+        {
+          "t": "Code",
+          "v": "feature/pdf-export"
+        },
+        {
+          "t": "Text",
+          "v": ". Not resumed by DORMBIT."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "agent_session",
+          "adapter": "claude_code",
+          "session_id": "0b9e6c3a-5f1d-4e2b-9a7c-3d8e1f2a4b6c"
+        }
+      ]
+    },
+    {
+      "id": "F-95dd60142763",
+      "rule": "env.example_key",
+      "statement": [
+        {
+          "t": "Code",
+          "v": "DATABASE_URL"
+        },
+        {
+          "t": "Text",
+          "v": " is listed in "
+        },
+        {
+          "t": "Code",
+          "v": ".env.example"
+        },
+        {
+          "t": "Text",
+          "v": "; its value needs to be supplied."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": ".env.example",
+          "start_line": 1,
+          "end_line": 1,
+          "anchor": "DATABASE_URL"
+        }
+      ]
+    },
+    {
+      "id": "F-e80271e0b2cc",
+      "rule": "env.example_key",
+      "statement": [
+        {
+          "t": "Code",
+          "v": "SESSION_SECRET"
+        },
+        {
+          "t": "Text",
+          "v": " is listed in "
+        },
+        {
+          "t": "Code",
+          "v": ".env.example"
+        },
+        {
+          "t": "Text",
+          "v": "; its value needs to be supplied."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": ".env.example",
+          "start_line": 2,
+          "end_line": 2,
+          "anchor": "SESSION_SECRET"
+        }
+      ]
+    },
+    {
+      "id": "F-5e7b1d032044",
+      "rule": "env.example_key",
+      "statement": [
+        {
+          "t": "Code",
+          "v": "SMTP_PASSWORD"
+        },
+        {
+          "t": "Text",
+          "v": " is listed in "
+        },
+        {
+          "t": "Code",
+          "v": ".env.example"
+        },
+        {
+          "t": "Text",
+          "v": "; its value needs to be supplied."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_lines",
+          "path": ".env.example",
+          "start_line": 3,
+          "end_line": 3,
+          "anchor": "SMTP_PASSWORD"
+        }
+      ]
+    },
+    {
+      "id": "F-7398f8321fe9",
+      "rule": "sensitive.present",
+      "statement": [
+        {
+          "t": "Code",
+          "v": ".env"
+        },
+        {
+          "t": "Text",
+          "v": " exists. It wasn't read and isn't in a capsule."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_stat",
+          "path": ".env",
+          "stat": "file",
+          "size": null
+        }
+      ]
+    },
+    {
+      "id": "F-66bd2fa7681d",
+      "rule": "unknown.pause_reason",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Why work paused: unknown. Nothing in the project states it."
+        }
+      ],
+      "status": "unknown",
+      "evidence": [
+        {
+          "kind": "file_stat",
+          "path": "",
+          "stat": "dir",
+          "size": null
+        }
+      ]
+    },
+    {
+      "id": "F-3f73e8e14327",
+      "rule": "unknown.builds",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Whether the project builds or runs: unknown. DORMBIT never runs project code."
+        }
+      ],
+      "status": "unknown",
+      "evidence": [
+        {
+          "kind": "file_stat",
+          "path": "",
+          "stat": "dir",
+          "size": null
+        }
+      ]
+    },
+    {
+      "id": "F-2673c54f1bdf",
+      "rule": "unknown.deploy_target",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Where it deploys: unknown."
+        }
+      ],
+      "status": "unknown",
+      "evidence": [
+        {
+          "kind": "file_stat",
+          "path": "",
+          "stat": "dir",
+          "size": null
+        }
+      ]
+    },
+    {
+      "id": "F-c35c99a5bea7",
+      "rule": "scan.skipped_files",
+      "statement": [
+        {
+          "t": "Count",
+          "v": 2
+        },
+        {
+          "t": "Text",
+          "v": " files weren't read for evidence (sensitive, ignored, data, binary, or too large)."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_stat",
+          "path": "",
+          "stat": "dir",
+          "size": null
+        }
+      ]
+    },
+    {
+      "id": "F-99ca9d434fee",
+      "rule": "cmd.documented",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Documented command "
+        },
+        {
+          "t": "Code",
+          "v": "npm run api"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Code",
+          "v": "tsx server/index.ts"
+        },
+        {
+          "t": "Text",
+          "v": ". DORMBIT hasn't run it."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/scripts/api"
+        }
+      ]
+    },
+    {
+      "id": "F-9cd00ad20727",
+      "rule": "cmd.documented",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Documented command "
+        },
+        {
+          "t": "Code",
+          "v": "npm run db:push"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Code",
+          "v": "drizzle-kit push"
+        },
+        {
+          "t": "Text",
+          "v": ". DORMBIT hasn't run it."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/scripts/db:push"
+        }
+      ]
+    },
+    {
+      "id": "F-11aced661a95",
+      "rule": "cmd.documented",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Documented command "
+        },
+        {
+          "t": "Code",
+          "v": "npm run dev"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Code",
+          "v": "vite"
+        },
+        {
+          "t": "Text",
+          "v": ". DORMBIT hasn't run it."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/scripts/dev"
+        }
+      ]
+    },
+    {
+      "id": "F-96abe2c33230",
+      "rule": "cmd.documented",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "Documented command "
+        },
+        {
+          "t": "Code",
+          "v": "npm run test"
+        },
+        {
+          "t": "Text",
+          "v": ": "
+        },
+        {
+          "t": "Code",
+          "v": "vitest run"
+        },
+        {
+          "t": "Text",
+          "v": ". DORMBIT hasn't run it."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "manifest_key",
+          "path": "package.json",
+          "pointer": "/scripts/test"
+        }
+      ]
+    },
+    {
+      "id": "F-dd43e46dde5f",
+      "rule": "prerun.none",
+      "statement": [
+        {
+          "t": "Text",
+          "v": "No lifecycle scripts in `package.json` and no folder-open tasks in `.vscode/tasks.json`"
+        },
+        {
+          "t": "Text",
+          "v": ", and no risky Git config keys in the Git snapshot"
+        },
+        {
+          "t": "Text",
+          "v": " were found."
+        }
+      ],
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "file_stat",
+          "path": ".git/config",
+          "stat": "file",
+          "size": 185
+        },
+        {
+          "kind": "file_stat",
+          "path": ".vscode/tasks.json",
+          "stat": "absent",
+          "size": null
+        },
+        {
+          "kind": "file_stat",
+          "path": "package.json",
+          "stat": "file",
+          "size": 615
+        }
+      ]
+    }
+  ],
+  "files_scanned": 28,
+  "files_skipped": 2
+}
