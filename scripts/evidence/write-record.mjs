@@ -72,7 +72,8 @@ const started = Number(opts.started);
 const finished = Number(opts.finished);
 const rel = relative(opts.root, opts.log);
 const env = {};
-for (const k of ["PROPTEST_CASES", "FC_NUM_RUNS"]) {
+// DEMO_URL and DEMO_SHA name the deployed site and commit a live E2E run tested (P09-T04).
+for (const k of ["PROPTEST_CASES", "FC_NUM_RUNS", "DEMO_URL", "DEMO_SHA"]) {
   if (process.env[k] !== undefined) env[k] = redact(process.env[k]);
 }
 

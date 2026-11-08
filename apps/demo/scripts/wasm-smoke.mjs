@@ -38,7 +38,10 @@ const cap = call("capture");
 const bytes = e.capsule_bytes();
 check((await hex(bytes)) === cap.record.file_sha256, "WebCrypto SHA-256 equals the capsule record");
 check(call("verify").status === "verified", "capsule verifies");
-check(call("restore", { target_name: "dockline-invoices" }).refused === true, "restore into the existing name is refused");
+check(
+  call("restore", { target_name: "dockline-invoices" }).refused === true,
+  "restore into the existing name is refused",
+);
 const r = call("restore", { target_name: "dockline-restored" });
 check(r.report.status === "verified", "restore verified");
 const files = call("restored_files").files;
@@ -46,7 +49,10 @@ let same = 0;
 for (const f of files) {
   if ((await hex(e.restored_file_bytes(f.path))) === f.expected_sha256) same++;
 }
-check(same === files.length && same > 100, `independent re-hash: ${same}/${files.length} files match`);
+check(
+  same === files.length && same > 100,
+  `independent re-hash: ${same}/${files.length} files match`,
+);
 const b = call("brief");
 check(b.markdown.includes("- AI session resumed: not performed."), "brief has the four outcomes");
 console.log("wasm smoke: all checks passed");
