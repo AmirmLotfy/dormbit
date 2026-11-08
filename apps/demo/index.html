@@ -4,10 +4,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="description" content="DORMBIT finds the projects you stopped touching, seals each into a capsule you can verify, and restores it byte for byte. Local only, open source." />
+    <meta
+      name="description"
+      content="DORMBIT finds the projects you stopped touching, seals each into a capsule you can verify, and restores it byte for byte. Local only, open source."
+    />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>DORMBIT · Pick up where your project stopped</title>
-    <link rel="preload" href="../../packages/ui/src/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      href="../../packages/ui/src/fonts/archivo.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="./src/landing/landing.css" />
     <script type="module" src="./src/landing/main.ts"></script>
   </head>
@@ -29,7 +38,10 @@
     <main id="main">
       <!-- 1. Hero -->
       <section class="hero" id="top" aria-labelledby="hero-title" data-shot="hero">
-        <div class="hero__glow" aria-hidden="true"><span class="glow glow--signal"></span><span class="glow glow--steel"></span><span class="glow glow--ember"></span></div>
+        <div class="hero__glow" aria-hidden="true">
+          <span class="glow glow--signal"></span><span class="glow glow--steel"></span
+          ><span class="glow glow--ember"></span>
+        </div>
         <div class="wrap hero__grid">
           <div class="hero__copy">
             <p class="label hero__spec">DB-1 · macOS 13+ · Local only · MIT</p>
@@ -44,53 +56,62 @@
             </p>
             <div class="hero__actions">
               <a class="btn btn--signal" href="demo/">Run the demo in your browser</a>
-              <a class="btn btn--ghost" href="https://github.com/AmirmLotfy/dormbit/releases">Download for macOS</a>
+              <a class="btn btn--ghost" href="https://github.com/AmirmLotfy/dormbit/releases"
+                >Download for macOS</a
+              >
             </div>
             <p class="hero__note">The demo is synthetic. It never reads your files.</p>
           </div>
 
           <figure class="hero__unit">
             <div class="hero__stage">
-            <svg viewBox="0 0 560 460" role="img" aria-labelledby="unit-title">
-              <title id="unit-title">
-                A DORMBIT capsule drawn like a flight recorder, painted international orange
-              </title>
-              <ellipse class="u-shadow" cx="270" cy="430" rx="240" ry="16" />
-              <polygon class="u-side" points="420,170 500,118 500,352 420,404" />
-              <polygon class="u-top" points="40,170 120,118 500,118 420,170" />
-              <rect class="u-front" x="40" y="170" width="380" height="234" />
-              <rect class="u-tape" x="40" y="192" width="380" height="22" />
-              <rect class="u-tape" x="40" y="360" width="380" height="22" />
-              <polygon class="u-tape-side" points="420,192 500,140 500,162 420,214" />
-              <polygon class="u-tape-side" points="420,360 500,308 500,330 420,382" />
-              <path class="u-cyl" d="M200 62 L200 138 A70 18 0 0 0 340 138 L340 62 Z" />
-              <path
-                class="u-tape"
-                d="M200 86 L200 104 A70 18 0 0 0 340 104 L340 86 A70 18 0 0 1 200 86 Z"
-              />
-              <ellipse class="u-cyl-top" cx="270" cy="62" rx="70" ry="18" />
-              <text
-                class="u-stencil"
-                x="62"
-                y="262"
-                textLength="336"
-                lengthAdjust="spacingAndGlyphs"
-              >
-                DORMBIT CAPSULE
-              </text>
-              <text class="u-small" x="62" y="290" textLength="336" lengthAdjust="spacingAndGlyphs">
-                RECOVER WITH DORMBIT · DO NOT DISCARD
-              </text>
-              <text class="u-mono" x="62" y="320">dockline-invoices.dormbit</text>
-              <text class="u-mono" x="62" y="341">sha256 e0a0 323b … c6e3 74</text>
-              <circle class="u-screw" cx="54" cy="181" r="4" />
-              <circle class="u-screw" cx="406" cy="181" r="4" />
-              <circle class="u-screw" cx="54" cy="394" r="4" />
-              <circle class="u-screw" cx="406" cy="394" r="4" />
-            </svg>
+              <svg viewBox="0 0 560 460" role="img" aria-labelledby="unit-title">
+                <title id="unit-title">
+                  A DORMBIT capsule drawn like a flight recorder, painted international orange
+                </title>
+                <ellipse class="u-shadow" cx="270" cy="430" rx="240" ry="16" />
+                <polygon class="u-side" points="420,170 500,118 500,352 420,404" />
+                <polygon class="u-top" points="40,170 120,118 500,118 420,170" />
+                <rect class="u-front" x="40" y="170" width="380" height="234" />
+                <rect class="u-tape" x="40" y="192" width="380" height="22" />
+                <rect class="u-tape" x="40" y="360" width="380" height="22" />
+                <polygon class="u-tape-side" points="420,192 500,140 500,162 420,214" />
+                <polygon class="u-tape-side" points="420,360 500,308 500,330 420,382" />
+                <path class="u-cyl" d="M200 62 L200 138 A70 18 0 0 0 340 138 L340 62 Z" />
+                <path
+                  class="u-tape"
+                  d="M200 86 L200 104 A70 18 0 0 0 340 104 L340 86 A70 18 0 0 1 200 86 Z"
+                />
+                <ellipse class="u-cyl-top" cx="270" cy="62" rx="70" ry="18" />
+                <text
+                  class="u-stencil"
+                  x="62"
+                  y="262"
+                  textLength="336"
+                  lengthAdjust="spacingAndGlyphs"
+                >
+                  DORMBIT CAPSULE
+                </text>
+                <text
+                  class="u-small"
+                  x="62"
+                  y="290"
+                  textLength="336"
+                  lengthAdjust="spacingAndGlyphs"
+                >
+                  RECOVER WITH DORMBIT · DO NOT DISCARD
+                </text>
+                <text class="u-mono" x="62" y="320">dockline-invoices.dormbit</text>
+                <text class="u-mono" x="62" y="341">sha256 e0a0 323b … c6e3 74</text>
+                <circle class="u-screw" cx="54" cy="181" r="4" />
+                <circle class="u-screw" cx="406" cy="181" r="4" />
+                <circle class="u-screw" cx="54" cy="394" r="4" />
+                <circle class="u-screw" cx="406" cy="394" r="4" />
+              </svg>
             </div>
             <figcaption class="label hero__caption">
-              Flight recorders are painted this orange so they can be found. So are capsules. Drag to turn it.
+              Flight recorders are painted this orange so they can be found. So are capsules. Drag
+              to turn it.
             </figcaption>
           </figure>
         </div>
@@ -568,7 +589,9 @@
             </p>
             <div class="cta__actions">
               <a class="btn btn--dark" href="demo/">Run the demo</a>
-              <a class="btn btn--outline" href="https://github.com/AmirmLotfy/dormbit/releases">Download for macOS</a>
+              <a class="btn btn--outline" href="https://github.com/AmirmLotfy/dormbit/releases"
+                >Download for macOS</a
+              >
               <p class="cta__note">
                 Ad-hoc signed, not notarized. macOS asks you to approve it once in Privacy &amp;
                 Security.
@@ -599,6 +622,10 @@
             <dd>
               <a href="https://github.com/AmirmLotfy/dormbit">github.com/AmirmLotfy/dormbit</a>
             </dd>
+          </div>
+          <div>
+            <dt>Build</dt>
+            <dd>%BUILD_LABEL%</dd>
           </div>
           <div>
             <dt>Sheet</dt>

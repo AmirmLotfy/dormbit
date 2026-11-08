@@ -15,6 +15,12 @@ import { type DemoData, STEPS, STEP_VIEWS } from "./steps";
 
 const HOME = import.meta.env.BASE_URL;
 
+const SHA = import.meta.env.VITE_BUILD_SHA;
+const BUILD_LABEL =
+  SHA !== undefined && /^[0-9a-f]{7,40}$/.test(SHA)
+    ? `Preview build ${SHA.slice(0, 7)}`
+    : "Local build";
+
 export const BANNER = "Synthetic Demo — No Local Files Accessed";
 
 function subscribeMotion(cb: () => void) {
@@ -252,6 +258,11 @@ export function Shell() {
         </main>
         <WhatsReal />
       </div>
+      <footer className="demo-foot">
+        <span className="mono">{BUILD_LABEL}</span>
+        <span aria-hidden="true"> · </span>
+        <a href="https://github.com/AmirmLotfy/dormbit">Source on GitHub</a>
+      </footer>
     </div>
   );
 }

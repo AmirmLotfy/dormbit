@@ -31,10 +31,24 @@ function contentSecurityPolicy(): Plugin {
   };
 }
 
+// Footer label: "Preview build <short SHA>" when ci sets VITE_BUILD_SHA (judge-demo 20.3).
+function buildLabel(): Plugin {
+  let label = "Local build";
+  return {
+    name: "dormbit-build-label",
+    configResolved(config) {
+      const sha: unknown = config.env.VITE_BUILD_SHA;
+      if (typeof sha === "string" && /^[0-9a-f]{7,40}$/.test(sha))
+        label = `Preview build ${sha.slice(0, 7)}`;
+    },
+    transformIndexHtml: (html) => html.replaceAll("%BUILD_LABEL%", label),
+  };
+}
+
 // base matches the GitHub Pages project path (ADR-009). Two pages: the landing page at
 // /dormbit/ and the judge demo at /dormbit/demo/ (hash routes inside it).
 export default defineConfig({
-  plugins: [react(), contentSecurityPolicy()],
+  plugins: [react(), contentSecurityPolicy(), buildLabel()],
   base: "/dormbit/",
   build: {
     rolldownOptions: {

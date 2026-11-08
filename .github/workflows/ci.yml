@@ -95,6 +95,9 @@ jobs:
   e2e:
     runs-on: macos-15
     needs: wasm
+    env:
+      # Shown in the site footer; the pages workflow deploys this job's tested build.
+      VITE_BUILD_SHA: ${{ github.sha }}
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
       # The demo imports the wasm-bindgen glue, which is built (not committed) by the wasm job.
@@ -108,6 +111,12 @@ jobs:
         # --with-deps is Linux-only; the macos-15 runner already has the system libraries.
         run: pnpm --filter e2e exec playwright install chromium webkit firefox
       - run: pnpm --filter e2e exec playwright test
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: demo-dist
+          path: apps/demo/dist
+          if-no-files-found: error
+          retention-days: 7
 
   security:
     runs-on: macos-15

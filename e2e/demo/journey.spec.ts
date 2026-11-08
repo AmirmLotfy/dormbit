@@ -9,11 +9,13 @@ import { expect, test, type Page } from "@playwright/test";
 const BANNER = "Synthetic Demo — No Local Files Accessed";
 
 async function start(page: Page) {
+  // The site's own origin: the local preview, or the deployed site when DEMO_URL is set.
+  const origin = new URL(test.info().project.use.baseURL ?? "http://127.0.0.1/").origin;
   const outside: string[] = [];
   page.on("request", (r) => {
-    const u = new URL(r.url());
-    if (u.hostname !== "127.0.0.1" && u.protocol !== "data:" && u.protocol !== "blob:")
-      outside.push(r.url());
+    const url = r.url();
+    if (!url.startsWith(origin) && !url.startsWith("data:") && !url.startsWith("blob:"))
+      outside.push(url);
   });
   await page.goto("demo/");
   await expect(page.getByText(BANNER)).toBeVisible();
@@ -185,6 +187,15 @@ test("the downloaded brief carries the four outcomes", async ({ page }) => {
     "Builds/runs: unknown (never executed).",
   ])
     expect(md).toContain(label);
+});
+
+test("the deployed site serves the commit ci tested", async ({ page }) => {
+  const sha = process.env.DEMO_SHA ?? "";
+  test.skip(sha === "", "runs only against a deployed build");
+  await page.goto("demo/");
+  await expect(page.getByText(`Preview build ${sha.slice(0, 7)}`)).toBeVisible();
+  await page.goto("./");
+  await expect(page.getByText(`Preview build ${sha.slice(0, 7)}`)).toBeVisible();
 });
 
 test.describe("at 360 px", () => {
