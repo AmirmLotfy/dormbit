@@ -4,7 +4,9 @@ import react from "@vitejs/plugin-react";
 // The site loads only its own files. Injected at build time; dev mode needs inline HMR scripts.
 const CSP = [
   "default-src 'self'",
-  "script-src 'self'",
+  // 'wasm-unsafe-eval' lets the judge demo compile its own WebAssembly core; scripts still
+  // load only from this site.
+  "script-src 'self' 'wasm-unsafe-eval'",
   "style-src 'self'",
   "img-src 'self' data: blob:",
   "font-src 'self'",

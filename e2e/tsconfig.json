@@ -3,5 +3,5 @@
   "compilerOptions": {
     "types": ["node"]
   },
-  "include": ["playwright.config.ts", "smoke"]
+  "include": ["playwright.config.ts", "smoke", "demo"]
 }

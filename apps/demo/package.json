@@ -7,13 +7,16 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "wasm": "sh ../../scripts/build-wasm.sh"
   },
   "dependencies": {
     "@dormbit/ui": "workspace:*",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "three": "0.187.0"
+    "three": "0.187.0",
+    "@dormbit/schema": "workspace:*",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@types/react": "19.3.0",

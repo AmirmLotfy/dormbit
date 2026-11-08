@@ -4,6 +4,7 @@ import { z } from "zod";
 
 export * from "./error.js";
 export * from "./models.js";
+export * from "./core.js";
 export type * from "../generated/index.js";
 // The class wins over the generated wire type of the same name (that one is DormbitErrorShape).
 export { DormbitError } from "./error.js";

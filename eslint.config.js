@@ -10,6 +10,8 @@ export default tseslint.config(
       "**/target/**",
       "**/node_modules/**",
       "packages/schema/generated/**",
+      // wasm-bindgen output, built by scripts/build-wasm.sh (not committed).
+      "apps/demo/src/wasm/pkg/**",
       "fixtures/**",
       ".scratch/**",
     ],

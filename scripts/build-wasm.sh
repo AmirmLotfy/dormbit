@@ -9,7 +9,7 @@ out=apps/demo/src/wasm/pkg
 pub=apps/demo/public/demo-data
 cargo build -p dormbit-wasm --target wasm32-unknown-unknown --release --locked
 mkdir -p "$out" "$pub"
-wasm-bindgen --target web --no-typescript --out-dir "$out" \
+wasm-bindgen --target web --out-dir "$out" \
   target/wasm32-unknown-unknown/release/dormbit_wasm.wasm
 if command -v wasm-opt >/dev/null 2>&1; then
   wasm-opt -Oz --enable-bulk-memory --enable-nontrapping-float-to-int \
