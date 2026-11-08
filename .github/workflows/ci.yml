@@ -111,6 +111,8 @@ jobs:
         # --with-deps is Linux-only; the macos-15 runner already has the system libraries.
         run: pnpm --filter e2e exec playwright install chromium webkit firefox
       - run: pnpm --filter e2e exec playwright test
+      - name: Bundle scan (no file pickers, file inputs, or analytics)
+        run: node scripts/check-bundle.mjs apps/demo/dist
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: demo-dist

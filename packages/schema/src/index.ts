@@ -1,5 +1,7 @@
 // Zod schemas for every IPC type. Wire types come from Rust (ts-rs) in ../generated; the
 // type tests in ../test keep each schema and its generated type identical.
+// First: turns off Zod's eval probe before any schema is used (see config.ts).
+import "./config.js";
 import { z } from "zod";
 
 export * from "./error.js";
