@@ -21,8 +21,9 @@ Local-first macOS app (Tauri 2 + Rust + React) that shelves dormant developer pr
   - The evidence engine and brief (P06, gaps in D-44).
   - Discovery and the WebAssembly demo engine.
   - The judge demo (P09-T02/T03 Tested, D-48).
-- The site is live at https://amirmlotfy.github.io/dormbit/ (demo at `/dormbit/demo/`).
-  - `pages.yml` deploys only after a green `ci` run on `main`, ships the dist that ci tested, and re-runs Playwright against the live URL (D-50).
+- The site is live on Vercel at https://dormbit.vercel.app/ (demo at `/demo/`; D-53). GitHub Pages is unpublished.
+  - `scripts/deploy-vercel.sh [ci-run-id]` ships the `demo-dist` artifact from a green `ci` run on `main`, with HTTP security headers from `apps/demo/vercel.json`. The Vercel CLI on this Mac is logged in as `mellardoo` (project `mellardoos-projects/dormbit`).
+  - `site-smoke.yml` runs the Playwright suite against the live site every day through judging.
   - P09-T04 is In progress; its open subtasks are listed in STATUS.
 - Repo settings done: private vulnerability reporting is on, and the homepage URL is set.
 - The demo video's voice script, shot list, and music prompt are in `media/script/` (P15-T01, D-49). They wait for the user's approval; the user records the voice and generates the music.

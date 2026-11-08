@@ -11,7 +11,7 @@ evidence-backed brief of where you left off.
 
 Built for the [Kiroween 2026](https://kiroween.devpost.com/) hackathon, Frankenstein category.
 
-- **Web demo:** https://amirmlotfy.github.io/dormbit/ _(deployed in the release phase)_
+- **Web demo:** https://dormbit.vercel.app/ (the judge demo is at https://dormbit.vercel.app/demo/)
 - **Plan of record:** [`docs/MASTER_PLAN.md`](docs/MASTER_PLAN.md)
 - **Progress ledger:** [`docs/status/STATUS.md`](docs/status/STATUS.md)
 
@@ -77,7 +77,7 @@ pnpm --filter @dormbit/desktop tauri build   # builds and ad-hoc signs DORMBIT.a
 Run the web demo locally:
 
 ```sh
-pnpm --filter @dormbit/demo dev   # then open the printed localhost URL at /dormbit/
+pnpm --filter @dormbit/demo dev   # then open the printed localhost URL
 ```
 
 ## How it was built with Kiro
