@@ -70,3 +70,29 @@ DORMBIT. Pick up where your project stopped.
 | V09  | Test numbers come from recorded runs                                             | The video reads every test number from `docs/evidence/runs/*.json`                                                                          |
 
 Never said or implied (Requirement 14.4): resuming an AI session, running or building a project, encryption, notarization.
+
+## Text for one full take
+
+The same ten lines, written the way a voice generator should say them, with one paragraph per line. The captions keep the written forms above: DORMBIT, `.env`, TODOs, and the exact outcome labels.
+
+```text
+Every developer has a folder like this. A project you'll get back to someday. The branch is still checked out. The to-dos are still there. But the context is gone.
+
+This is Dormbit. It finds projects like that, preserves them, and brings them back. You grant it one folder. It never follows symlinks, never runs your code, and never runs the git command.
+
+It reads the project the way you would: the branch you were on, the uncommitted changes, the unchecked tasks in your Kiro spec, the to-do you left on line fourteen. Every finding points to its evidence. What it can't know stays unknown.
+
+Before anything is written, you approve a plan. Secret files like dot env are locked out: never read, never captured. Your approval is tied to a digest of that exact plan. Change one decision, and you approve again.
+
+The capture hashes every file, checks it again, and writes a capsule: a standard tar archive with a manifest you can read without Dormbit. Then a separate verifier re-reads the whole capsule and checks it, rule by rule.
+
+Restore never overwrites anything. It stages every file in a hidden folder, verifies them, and commits with one exclusive rename, which macOS refuses if the name is taken.
+
+Now break it. Flip one byte inside a stored file, and verification fails and names the file. Damage the capsule after it passed its checks, and the restore catches it before committing. The destination is never created.
+
+Then the resurrection brief: where you stopped, what's unfinished, and what to do next, with every line citing its evidence. And it reports four outcomes, separately, every time. Files restored and verified. Context reconstructed, inferred from evidence. AI session resumed: not performed. Builds and runs: unknown, never executed.
+
+One Rust core, two bodies: a native Mac app, and a WebAssembly demo in your browser. Built spec-first in Kiro. A reviewer agent caught real bugs, like a forged plan that could have slipped a dot env file into a capsule. Every test number on screen comes from a recorded run.
+
+Dormbit. Pick up where your project stopped.
+```
