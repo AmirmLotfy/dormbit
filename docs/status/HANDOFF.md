@@ -13,12 +13,12 @@ Local-first macOS app (Tauri 2 + Rust + React) that shelves dormant developer pr
 - Status ledger and deviations: `docs/status/STATUS.md`. Evidence records: `docs/evidence/runs/`.
 - Repo: https://github.com/AmirmLotfy/dormbit (public, MIT). Git identity is the GitHub noreply address.
 
-## Current position (Nov 7, 2026)
+## Current position (Nov 8, 2026)
 
-- Phase 02 (`foundation`) is built and CI is green on `main` ([run](https://github.com/AmirmLotfy/dormbit/actions/runs/42354901364)). Open: fire each hook
-  once in a fresh Kiro session and record it (tasks 5.9, 5.10), then close the gate.
-- The landing page with the interactive 3D capsule is built in `apps/demo` (ADR-011).
-- Next: Phase 03 (`scope-and-discovery`) with Phase 08 (design system) in parallel.
+- Done and pushed, with clean-tree evidence and reviewer approval: the capsule (P04 Verified), the restore core and native layer (P05, gaps in D-40), the evidence engine and brief (P06, gaps in D-44), discovery, and the WebAssembly demo engine.
+- The judge demo (`apps/demo`, `/dormbit/demo/`) runs all 12 steps on the real core. Record `20261108T004329Z-pnpm-filter.json` has 28 Playwright tests passing in Chromium, WebKit, Firefox, and iPhone 13 (P09-T02/T03 Tested, D-48). CI is green on `fa4d8b7` ([run](https://github.com/AmirmLotfy/dormbit/actions/runs/42431485143)); the wasm job builds the engine and shares it as an artifact.
+- Next: a GitHub Pages workflow for `apps/demo` (P09-T04). Then the desktop Tauri commands over the native layers, the desktop UI reusing the demo screens, and native Git via `dormbit-git`. Then the phase gate notes, the release, the video, and Devpost.
+- Still open from P02: fire each hook once in a fresh Kiro session and record it (tasks 5.9, 5.10).
 - User actions still open: paste `docs/kiro/mcp.json` and `docs/kiro/kiroignore.txt`, apply the
   permissions files, run Analyze Requirements and Correctness on the two security specs, and
   enable GitHub private vulnerability reporting before release.
@@ -29,7 +29,7 @@ Local-first macOS app (Tauri 2 + Rust + React) that shelves dormant developer pr
 - Inline terminal output is unreliable in the IDE; write command output to a file and read it back.
 - Background processes need the mise shims on `PATH`, or corepack prompts and hangs.
 - Kiro always asks before writing `.kiro/agents` and `.kiro/hooks`; it always denies agent writes to `.kiro/settings/` and `.kiroignore`.
-- Disk space is tight on this Mac; free space has dipped below 500 MB when other apps install runtimes.
+- Disk space is tight on this Mac; free space has dipped below 500 MB, and a full disk shows up as `ENOSPC` test failures. `cargo clean --release` and removing `target/debug/incremental` free about 2.5 GB. Exclude `dockline-gen` from local `cargo test` (its determinism test is slow on this disk); CI runs it.
 - gitleaks runs as a pre-commit hook (`core.hooksPath=.githooks`). Reviewed false positives go in `.gitleaksignore`.
 
 ## Rules that must not be weakened
