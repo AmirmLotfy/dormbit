@@ -34,8 +34,14 @@ jobs:
 
   ts:
     runs-on: macos-15
+    needs: wasm
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      # The demo imports the wasm-bindgen glue, which is built (not committed) by the wasm job.
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: demo-wasm
+          path: apps/demo
       - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
@@ -54,12 +60,19 @@ jobs:
       - name: Install wasm-bindgen-cli 0.2.130
         run: cargo install wasm-bindgen-cli --version 0.2.130 --locked
       - run: cargo build -p dormbit-wasm --target wasm32-unknown-unknown --release --locked
-      - name: Run wasm-bindgen on the output
-        run: |
-          wasm-bindgen --version
-          wasm-bindgen --target web --out-dir "$RUNNER_TEMP/wasm-out" \
-            target/wasm32-unknown-unknown/release/dormbit_wasm.wasm
-          ls -la "$RUNNER_TEMP/wasm-out"
+      - name: Build the demo engine and its glue
+        run: sh scripts/build-wasm.sh
+      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
+      - name: WebAssembly smoke test (WebCrypto re-hash)
+        run: node apps/demo/scripts/wasm-smoke.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: demo-wasm
+          path: |
+            apps/demo/src/wasm/pkg
+            apps/demo/public/demo-data
+          if-no-files-found: error
+          retention-days: 7
 
   contracts:
     runs-on: macos-15
@@ -81,8 +94,14 @@ jobs:
 
   e2e:
     runs-on: macos-15
+    needs: wasm
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      # The demo imports the wasm-bindgen glue, which is built (not committed) by the wasm job.
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: demo-wasm
+          path: apps/demo
       - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
       - run: pnpm install --frozen-lockfile
       - name: Install Playwright browsers
