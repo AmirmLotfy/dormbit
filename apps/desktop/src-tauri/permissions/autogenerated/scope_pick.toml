@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-scope-pick"
+description = "Enables the scope_pick command without any pre-configured scope."
+commands.allow = ["scope_pick"]
+
+[[permission]]
+identifier = "deny-scope-pick"
+description = "Denies the scope_pick command without any pre-configured scope."
+commands.deny = ["scope_pick"]

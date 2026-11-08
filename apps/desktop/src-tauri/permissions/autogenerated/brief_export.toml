@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-brief-export"
+description = "Enables the brief_export command without any pre-configured scope."
+commands.allow = ["brief_export"]
+
+[[permission]]
+identifier = "deny-brief-export"
+description = "Denies the brief_export command without any pre-configured scope."
+commands.deny = ["brief_export"]

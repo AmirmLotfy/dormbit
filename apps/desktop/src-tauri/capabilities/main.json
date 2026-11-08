@@ -2,5 +2,20 @@
   "identifier": "main",
   "description": "The main window may call exactly the allowlisted DORMBIT commands. No core:*, fs, shell, dialog, http, opener, or process permissions.",
   "windows": ["main"],
-  "permissions": ["allow-app-info"]
+  "permissions": [
+    "allow-app-info",
+    "allow-scope-pick",
+    "allow-discovery-start",
+    "allow-evidence-get",
+    "allow-plan-create",
+    "allow-plan-set-decision",
+    "allow-plan-approve",
+    "allow-capture-start",
+    "allow-verify-start",
+    "allow-restore-target-pick",
+    "allow-restore-precheck",
+    "allow-restore-start",
+    "allow-brief-get",
+    "allow-brief-export"
+  ]
 }

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-restore-precheck"
+description = "Enables the restore_precheck command without any pre-configured scope."
+commands.allow = ["restore_precheck"]
+
+[[permission]]
+identifier = "deny-restore-precheck"
+description = "Denies the restore_precheck command without any pre-configured scope."
+commands.deny = ["restore_precheck"]

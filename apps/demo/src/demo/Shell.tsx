@@ -10,7 +10,7 @@ import {
 } from "react";
 import { DormbitError } from "@dormbit/schema";
 import { DemoApi, missingFeatures } from "./api";
-import { errorText } from "./steps";
+import { errorText } from "@dormbit/ui";
 import { type DemoData, STEPS, STEP_VIEWS } from "./steps";
 
 const HOME = import.meta.env.BASE_URL;

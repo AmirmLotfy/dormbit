@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-restore-target-pick"
+description = "Enables the restore_target_pick command without any pre-configured scope."
+commands.allow = ["restore_target_pick"]
+
+[[permission]]
+identifier = "deny-restore-target-pick"
+description = "Denies the restore_target_pick command without any pre-configured scope."
+commands.deny = ["restore_target_pick"]

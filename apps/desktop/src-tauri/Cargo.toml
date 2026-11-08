@@ -18,6 +18,19 @@ tauri = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 dormbit-core = { path = "../../../crates/dormbit-core" }
+dormbit-fs = { path = "../../../crates/dormbit-fs" }
+dormbit-git = { path = "../../../crates/dormbit-git" }
+cap-std = { workspace = true }
+rfd = { workspace = true }
+uuid = { workspace = true, features = ["v4"] }
+
+[dev-dependencies]
+tar = { workspace = true }
+tempfile = { workspace = true }
+[features]
+# Recording builds only: folder and save panels read their answer from environment
+# variables (DORMBIT_TEST_PICK_READ, DORMBIT_TEST_PICK_RESTORE, DORMBIT_TEST_SAVE_DIR).
+test-picker = []
 
 [lints]
 workspace = true

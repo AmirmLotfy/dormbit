@@ -41,7 +41,22 @@ const PLAN_COMMANDS: [&str; 28] = [
 ];
 
 /// Grows with each spec's commands. No `core:*` entry is allowed unless added here by name.
-const EXPECTED_PERMISSIONS: &[&str] = &["allow-app-info"];
+const EXPECTED_PERMISSIONS: &[&str] = &[
+    "allow-app-info",
+    "allow-scope-pick",
+    "allow-discovery-start",
+    "allow-evidence-get",
+    "allow-plan-create",
+    "allow-plan-set-decision",
+    "allow-plan-approve",
+    "allow-capture-start",
+    "allow-verify-start",
+    "allow-restore-target-pick",
+    "allow-restore-precheck",
+    "allow-restore-start",
+    "allow-brief-get",
+    "allow-brief-export",
+];
 
 const BANNED_PREFIXES: &[&str] = &[
     "fs:",
@@ -269,13 +284,21 @@ fn the_csp_matches_the_design() {
 // ---- self-tests: the guard must fail on bad inputs ----------------------------------------
 
 fn good() -> (Vec<Capability>, Vec<String>, Vec<String>) {
+    // Every expected permission granted, and the matching handlers in both lists.
+    let commands: Vec<String> = EXPECTED_PERMISSIONS
+        .iter()
+        .map(|p| p.trim_start_matches("allow-").replace('-', "_"))
+        .collect();
     (
         vec![Capability {
             name: "main.json".into(),
-            permissions: vec!["allow-app-info".into()],
+            permissions: EXPECTED_PERMISSIONS
+                .iter()
+                .map(|p| (*p).to_owned())
+                .collect(),
         }],
-        vec!["app_info".into()],
-        vec!["app_info".into()],
+        commands.clone(),
+        commands,
     )
 }
 
@@ -328,9 +351,14 @@ fn self_test_rejects_a_missing_expected_permission() {
 #[test]
 fn self_test_rejects_an_extra_handler() {
     let (c, mut h, m) = good();
-    h.push("scope_pick".into());
+    // A command not in the plan list at all.
+    h.push("read_any_file".into());
     let v = run(&c, &h, &m, "", "", &[]);
-    assert!(v.iter().any(|x| x.contains("differ")), "{v:?}");
+    assert!(
+        v.iter()
+            .any(|x| x.contains("differ") || x.contains("not in the plan")),
+        "{v:?}"
+    );
 }
 
 #[test]

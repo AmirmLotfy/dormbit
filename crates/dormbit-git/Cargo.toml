@@ -12,3 +12,9 @@ workspace = true
 
 [dependencies]
 dormbit-core = { path = "../dormbit-core" }
+git2 = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+tar = { workspace = true }
+tempfile = { workspace = true }
