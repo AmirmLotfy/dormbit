@@ -62,9 +62,18 @@ Last updated: Nov 4, 2026 (PT), after Task 8 (P01-T03).
 | 27-28 (P06-T01, T02) | Evidence engine and rules              | In progress | 37 rules with fixed statuses and sections, stable finding IDs, sensitive files never read, secret-looking text hidden, standing unknowns; Dockline golden findings. Gaps in D-44         |
 | 29-30 (P06-T03, T04) | Brief generator, renderer, and screens | In progress | Brief with the four outcomes as fixed separate lines, every line cited, strict citation checker, Markdown escaping; golden briefs with and without a restore. Screens and export pending |
 
-## Phases 03 and 07 to 18
+## Phase 09: Judge demo (`judge-demo` spec)
 
-All Planned. Task lists and dependencies live in `.kiro/specs/*/tasks.md`; the master plan is [MASTER_PLAN.md](../MASTER_PLAN.md).
+| Task         | Title                                         | State       | Evidence                                                                                                                                                                                                                                                                                                                                             |
+| ------------ | --------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 38 (P09-T01) | WebAssembly bindings                          | In progress | `e5fc0d3`: demo engine over the real core, `scripts/build-wasm.sh`, Node smoke test with a WebCrypto re-hash. Gaps in D-45 to D-47                                                                                                                                                                                                                   |
+| 39 (P09-T02) | Dataset and demo shell                        | Tested      | `bdc4221`. Clean-tree record `20261108T004329Z-pnpm-filter.json` (Playwright, 28 passed in Chromium, WebKit, Firefox, iPhone 13): journey through the brief, CSP, axe at four states, no outside requests, no sideways scroll at 360 px. Reviewer APPROVED on iteration 2. Not yet checked subtask by subtask against `tasks.md`; deviations in D-48 |
+| 40 (P09-T03) | Corruption tests, collision, reset, downloads | Tested      | Same record: all three damage controls caught, the name collision refused, Reset, and both downloads (capsule hash matches the one shown at capture). An earlier run, `20261108T003930Z-pnpm-filter.json`, failed with ENOSPC (disk full)                                                                                                            |
+| 41 (P09-T04) | E2E tests and Pages preview                   | Planned     |                                                                                                                                                                                                                                                                                                                                                      |
+
+## Phases 03, 07, 08, and 10 to 18
+
+Planned, except that the Phase 03 discovery core (`crates/dormbit-core/src/discovery.rs`) is committed at `e5fc0d3` and has no ledger rows yet. Task lists and dependencies live in `.kiro/specs/*/tasks.md`; the master plan is [MASTER_PLAN.md](../MASTER_PLAN.md).
 
 ## Known deviations from the master plan
 
