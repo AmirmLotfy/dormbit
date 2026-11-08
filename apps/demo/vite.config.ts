@@ -45,11 +45,11 @@ function buildLabel(): Plugin {
   };
 }
 
-// base matches the GitHub Pages project path (ADR-009). Two pages: the landing page at
-// /dormbit/ and the judge demo at /dormbit/demo/ (hash routes inside it).
+// Served from the site root on Vercel (D-53). Two pages: the landing page at / and the judge
+// demo at /demo/.
 export default defineConfig({
   plugins: [react(), contentSecurityPolicy(), buildLabel()],
-  base: "/dormbit/",
+  base: "/",
   build: {
     rolldownOptions: {
       input: { main: "index.html", demo: "demo/index.html" },

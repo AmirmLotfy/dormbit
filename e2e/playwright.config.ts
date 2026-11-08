@@ -5,9 +5,9 @@ import { defineConfig, devices } from "@playwright/test";
 const PORT = 4173;
 // DEMO_URL points the suite at a deployed site (the pages workflow's smoke job) instead.
 const LIVE = process.env.DEMO_URL;
-if (LIVE !== undefined && !/^https:\/\/[^/]+\/dormbit\/$/.test(LIVE))
-  throw new Error("DEMO_URL must be an https URL ending in /dormbit/");
-const BASE = LIVE ?? `http://127.0.0.1:${String(PORT)}/dormbit/`;
+if (LIVE !== undefined && !/^https:\/\/[^/]+\/$/.test(LIVE))
+  throw new Error("DEMO_URL must be an https site root ending in /");
+const BASE = LIVE ?? `http://127.0.0.1:${String(PORT)}/`;
 const ci = process.env.CI === "true" || process.env.CI === "1";
 
 export default defineConfig({
